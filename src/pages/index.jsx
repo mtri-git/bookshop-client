@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import BookCard from '../components/BookCard'
 import { v4 as uuidv4 } from 'uuid'
+import Slider from '../components/Slider'
 
 export default function Home() {
 	useEffect(() => {
@@ -21,6 +22,9 @@ export default function Home() {
 	}
 	return (
 		<main className='homepage'>
+			<div className='p-10 w-10/12 m-auto'>
+				<Slider/>
+			</div>
 			<div className='wrapper divide-y'>
 				<div className='grid gap-4 p-5 m-5 sm:grid sm:grid-cols-5'>
 					<h2 className='text-4xl font-bold text-center pt-5 sm:grid-cols-2 sm:col-span-5'>

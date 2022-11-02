@@ -51,7 +51,7 @@ export default function Login() {
 							</h2>
 						</Link>
 						<div className='xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0'>
-							<form>
+							<form className='border-2 p-20'>
 								<div className='flex flex-row items-center justify-center lg:justify-start'>
 									<p className='text-lg mb-0 mr-4'>
 										Đăng nhập với

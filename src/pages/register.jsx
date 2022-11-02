@@ -55,24 +55,18 @@ export default function Register() {
 		<>
 			<main className='my-10 py-10'>
 				<div className='px-6 h-full text-gray-800'>
-				<h1 className='text-center pb-10 text-6xl font-bold text-orange-500'>
-					Đăng nhập
-				</h1>
+					<h1 className='text-center pb-10 text-6xl font-bold text-orange-500'>
+						Đăng nhập
+					</h1>
 					<div className='flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6'>
-						{/* <h1 className='text-center pb-10 text-6xl font-bold text-orange-500'>Đăng ký tài khoản</h1> */}
 						<Link
 							to={HOME_PATH}
 							className='justify-self-center self-center grow-0 shrink-1'>
 							<img src='/vite.svg' className='w-80' />
 						</Link>
 						<div className='xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0'>
-							<form>
+							<form className='border-2 p-20'>
 								<div className='flex flex-row items-center justify-center lg:justify-start'></div>
-								<div className='flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5'>
-									<p className='text-center font-semibold mx-4 mb-0'>
-										Or
-									</p>
-								</div>
 								{/* Email input */}
 								<InputField ref={emailRef}>
 									Email hoặc số điện thoại
@@ -127,7 +121,7 @@ export default function Register() {
 					</div>
 				</div>
 			</main>
-			<Footer/>
+			<Footer />
 		</>
 	)
 }

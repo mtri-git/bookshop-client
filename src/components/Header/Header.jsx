@@ -12,8 +12,8 @@ library.add(faCartShopping)
 export default function Header() {
   
   // className for NavLink using Tailwind
-  const unActiveClassNameTW = "select-none cursor-pointer w-full h-full rounded  block text-lg text-gray-700 hover:bg-orange-100 md:hover:bg-transparent md:hover:text-orange-500 md:p-0 active:text-orange-500"
-  const activeClassNameTW =  "select-none cursor-pointer w-full h-full text-orange-500 text-lg hover:bg-orange-100"
+  const unActiveClassNameTW = "select-none cursor-pointer w-full h-full rounded  block text-lg text-gray-700 hover:text-orange-600 md:hover:bg-transparent md:hover:text-orange-500 md:p-0 active:text-orange-500"
+  const activeClassNameTW =  "select-none cursor-pointer w-full h-full text-orange-500 border-b-4 border-orange-500 text-lg hover:text-orange-600"
   const navigate = useNavigate();
   const searchRef = useRef()
 
@@ -68,31 +68,31 @@ export default function Header() {
               </div>
               <ul className="flex p-3 mt-4 bg-gray-50 rounded-lg border border-gray-100 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white">
 
-              <li className='rounded hover:bg-orange-100'>
+              <li className='rounded'>
                 <NavLink onClick={(ev) => ev.stopPropagation()} to={HOME_PATH} end className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}>
                     Trang chủ
                 </NavLink>
                 </li>
 
-                <li className='rounded hover:bg-orange-100'>
+                <li className='rounded '>
                 <NavLink to={BOOK_PATH} className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}>
                     Sách
                 </NavLink>
                 </li>
                 
-                <li className='rounded hover:bg-orange-100'>
+                <li className='rounded '>
                 <NavLink to={CATEGORY_PATH} className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}>
                     Thể loại
                 </NavLink>
                 </li>
 
-                <li className='rounded hover:bg-orange-100'>
+                <li className='rounded '>
                 <NavLink to={LOGIN_PATH} className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}>
                     Đăng nhập/Đăng ký
                 </NavLink>
                 </li>
 
-                <li className='select-none cursor-pointer rounded hover:bg-orange-100'>
+                <li className='select-none cursor-pointer rounded '>
                   <DropDownMenu title='Tài khoản'>
                         <DropDownMenuItem link={PROFILE_PATH}>Thông tin</DropDownMenuItem>
                         <DropDownMenuItem link={PAYMENT_PATH}>Thanh toán</DropDownMenuItem>
@@ -101,7 +101,7 @@ export default function Header() {
                     </DropDownMenu>
                 </li>
 
-                <li className='rounded hover:bg-orange-100'>
+                <li className='rounded '>
                 <NavLink to={CART_PATH} className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}>
                 <FontAwesomeIcon icon="fa-solid fa-cart-shopping" />
                 <span>Giỏ hàng</span>
