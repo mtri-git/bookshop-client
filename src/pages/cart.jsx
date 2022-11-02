@@ -126,10 +126,22 @@ export default function Cart() {
 		//   </div>
 		// </body>
 		<main>
-			<div className='border-2 my-2 mx-5 rounded'>
+			<div className='border-2 my-2 mx-5 rounded font-normal'>
+				<div className='flex gap-5 text-lg'>
+					<div className='flex-initial w-2/6 text-right'><span>Sản phẩm</span></div>
+					<div className='flex-initial text-right w-4/12'><span>Số lượng</span></div>
+					<div className='flex-initial text-right pl-10'><span>Thành tiền</span></div>
+				</div>
 				<CartItem />
 				<CartItem />
 				<CartItem />
+			</div>
+			<div className='text-center'>
+				<div className='p-4'>
+					<span className='text-xl font-bold p-4 '>Thành tiền</span>
+					<span className='text-xl font-bold text-red-600 p-4'>200.000đ</span>
+				</div>
+				<button className='bg-red-600 text-white text-xl px-5 py-2 rounded-xl w-10/12 m-5'>Thanh toán</button>
 			</div>
 		</main>
 	)

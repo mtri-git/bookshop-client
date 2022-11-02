@@ -13,7 +13,7 @@ export default function BookCard({
 	//
 	const path = generatePath(BOOK_DETAIL_PATH, { id: title })
 	return (
-        <div className='p-1 m-1 hover:shadow max-w-sm'>
+        <div className='p-1 m-1 hover:shadow-xl'>
 		<Link className='hover:shadow' to={path}>
 			<div className='bg-orange-500 rounded-full px-1 py-2 m-1 text-white font-bold absolute text-right top-0 right-0'>
 				<span>47%</span>
