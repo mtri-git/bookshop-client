@@ -52,7 +52,7 @@ function App() {
 				<Route path={CART_PATH} element={<Cart />} />
 				<Route path={SEARCH_PATH} element={<Search />} />
 				<Route path={PAYMENT_PATH} element={<Payment />} />
-
+				<Route path={CART_PATH} element={<Cart />} />
 				<Route />
 				{/* Category path */}
 				<Route path={CATEGORY_PATH}>
@@ -79,11 +79,7 @@ function App() {
 				<Route element={<ProfileLayout />}>
 					<Route path={PROFILE_PATH} element={<Profile />} />
 					<Route path={WISHLIST_PATH} element={<Wishlist />} />
-					<Route
-						path={PAYMENT_HISTORY_PATH}
-						element={<PaymentHistory />}
-					/>
-					<Route path={CART_PATH} element={<Cart />} />
+					<Route path={PAYMENT_HISTORY_PATH} element={<PaymentHistory />} />
 				</Route>
 
 				<Route path={PUBLISHER_PATH}>

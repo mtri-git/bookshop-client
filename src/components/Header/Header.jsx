@@ -86,18 +86,17 @@ export default function Header() {
                 </NavLink>
                 </li>
 
-                <li className='rounded '>
+                {/* <li className='rounded '>
                 <NavLink to={LOGIN_PATH} className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}>
                     Đăng nhập/Đăng ký
                 </NavLink>
-                </li>
+                </li> */}
 
-                <li className='select-none cursor-pointer rounded '>
+                <li className='select-none cursor-pointer rounded flex'>
+                  {/* <div className='w-8 h-8 m-auto rounded-full border border-orange-600'>
+                    <img className='w-full h-full rounded-full' src="https://cdn.myanimelist.net/images/characters/9/409383.jpg"/>
+                  </div> */}
                   <DropDownMenu title='Tài khoản'>
-                        <DropDownMenuItem link={PROFILE_PATH}>Thông tin</DropDownMenuItem>
-                        <DropDownMenuItem link={PAYMENT_PATH}>Thanh toán</DropDownMenuItem>
-                        <DropDownMenuItem link={CART_PATH}>Giỏ hàng</DropDownMenuItem>
-                        <DropDownMenuItem link={PROFILE_PATH}>Đăng xuất</DropDownMenuItem>
                     </DropDownMenu>
                 </li>
 

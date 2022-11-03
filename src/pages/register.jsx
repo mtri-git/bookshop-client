@@ -6,31 +6,26 @@ import Footer from '../components/Footer'
 import Button from '../components/Button'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import {toast_error, toast_success} from '../utils/toastNotify'
+import authService from '../services/authService'
+import { v4 as uuidv4 } from 'uuid'
 
 export default function Register() {
 	const emailRef = React.createRef()
+	const fullnameRef = React.createRef()
 	const passwordRef = React.createRef()
 	const rePasswordRef = React.createRef()
 
-	const toast_error = (err) => {
-		toast.error(err, {
-			position: 'top-center',
-			autoClose: 3000,
-			hideProgressBar: true,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-			theme: 'colored',
-		})
+	const register = async(data)=> {
+		await authService.register(data)
 	}
 
 	const onSubmit = () => {
 		const value = {} // contain login data
 		value.email = emailRef.current.value
+		value.fullname = fullnameRef.current.value
 		value.password = passwordRef.current.value
 		value.rePassword = rePasswordRef.current.value
-		console.log(value)
 
 		if (!value.email) {
 			toast_error('Thiếu email')
@@ -38,19 +33,32 @@ export default function Register() {
 		} else if (!value.password) {
 			toast_error('Thiếu mật khẩu')
 			return
+		} else if (!value.fullname) {
+			toast_error('Thiếu họ và tên')
+			return
 		} else if (!value.rePassword) {
 			toast_error('Cần xác nhận mật khẩu')
 			return
 		}
+		else if(value.rePassword !== value.password)
+		{
+			toast_error('Mật khẩu xác nhận không khớp')
+			return
+		}
+
 		const mailRegex =
 			/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 		if (!mailRegex.test(value.email)) {
 			toast_error('Email sai định dạng')
 			return
 		}
-		// show error
+		const {rePassword ,...registerData} = value
+		const data = register(registerData)
+		console.log(data);
+		if(data)
+			toast_success('👍 Wow so easy')
+		console.log(registerData)
 	}
-
 	return (
 		<>
 			<main className='my-10 py-10'>
@@ -68,16 +76,20 @@ export default function Register() {
 							<form className='border-2 p-20'>
 								<div className='flex flex-row items-center justify-center lg:justify-start'></div>
 								{/* Email input */}
-								<InputField ref={emailRef}>
-									Email hoặc số điện thoại
+								<InputField key={uuidv4()} ref={emailRef}>
+									Địa chỉ email của bạn
+								</InputField>
+								
+								<InputField key={uuidv4()} ref={fullnameRef}>
+									Họ và tên
 								</InputField>
 
 								{/* Password input */}
-								<InputField type='password' ref={passwordRef}>
+								<InputField key={uuidv4()} type='password' ref={passwordRef}>
 									Mật khẩu
 								</InputField>
 
-								<InputField type='password' ref={rePasswordRef}>
+								<InputField key={uuidv4()} type='password' ref={rePasswordRef}>
 									Xác nhận mật khẩu
 								</InputField>
 

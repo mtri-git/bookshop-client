@@ -1,23 +1,38 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import InputField from '../components/InputField'
 import Footer from '../components/Footer'
-import { ToastContainer} from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { HOME_PATH, REGISTER_PATH } from '../constants/path'
-import {toast_error, toast_success} from '../utils/toastNotify'
+import { toast_error, toast_success } from '../utils/toastNotify'
+import authService from '../services/authService'
+import axios from 'axios'
+import { useState } from 'react'
 
 export default function Login() {
+	const [loginData, setLoginData] = useState()
 	const emailRef = React.createRef()
 	const passwordRef = React.createRef()
+	const navigate = useNavigate()
 
+	// Có thể truyền callback vào component để lấy giá trị khi onChange => event.target.value
+	// onEmailChange(ev){
+	// 	value.email = ev.target.value
+	// }
+
+	const login = async (data) => {
+		// return await authService.login(data)
+		const res = await authService
+			.login(data)
+			.then((res) => setLoginData(res))
+	}
 
 	const onSubmit = () => {
 		const value = {} // contain login data
 		value.email = emailRef.current.value
 		value.password = passwordRef.current.value
-		console.log(value)
 
 		if (!value.email) {
 			toast_error('😶 🌫Thiếu email')
@@ -29,17 +44,24 @@ export default function Login() {
 		const mailRegex =
 			/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 		if (!mailRegex.test(value.email)) {
-			toast_error('😶 🌫Email sai định dạng')
+			toast_error('😶 Email sai định dạng')
 			return
 		}
 		// show error
-		toast_success('👍 Wow so easy!')
+		login(value)
+		if (loginData.status === 200) {
+			toast_success('👍 Wow so easy!')	
+			navigate(HOME_PATH)
+		} else toast_error('Tài khoản hoặc mật khẩu không đúng')
+		console.log(loginData)
 	}
 
 	return (
 		<>
 			<main className='my-10 py-10'>
-				<h1 className='text-center pb-10 text-6xl font-bold text-orange-500'>Đăng nhập</h1>
+				<h1 className='text-center pb-10 text-6xl font-bold text-orange-500'>
+					Đăng nhập
+				</h1>
 				<div className='h-full px-6 text-gray-800'>
 					<div className='flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6'>
 						<Link
@@ -137,7 +159,7 @@ export default function Login() {
 					</div>
 				</div>
 			</main>
-      <Footer/>
+			<Footer />
 		</>
 	)
 }
