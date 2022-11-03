@@ -5,7 +5,7 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
 
 export default function CartItem() {
 	return (
-		<div className='wrapper border-y-2 w-10/12 m-auto'>
+		<div className='wrapper border-b-2 w-10/12 m-auto'>
 			<div className='container flex py-4 gap-4 m-auto justify-center'>
 				<div className='check-box-container'>
 					<input type='checkbox' className='accent-red-500 w-5 h-4 mt-4' />
