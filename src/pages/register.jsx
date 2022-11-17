@@ -76,7 +76,7 @@ export default function Register() {
 							<form className='border-2 p-20'>
 								<div className='flex flex-row items-center justify-center lg:justify-start'></div>
 								{/* Email input */}
-								<InputField key={uuidv4()} ref={emailRef}>
+								<InputField key={uuidv4()} type='email' ref={emailRef}>
 									Địa chỉ email của bạn
 								</InputField>
 								

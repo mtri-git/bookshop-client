@@ -15,6 +15,7 @@ export const WISHLIST_PATH = '/profile/wishlist'
 
 export const REGISTER_PATH = '/register'
 export const LOGIN_PATH = '/login'
+export const FORGET_PASSWORD_PATH = '/forget-password'
 
 export const CART_PATH='/cart'
 export const PAYMENT_PATH='/payment'

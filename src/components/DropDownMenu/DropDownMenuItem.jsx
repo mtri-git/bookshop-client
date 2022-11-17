@@ -1,8 +1,9 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
-export default function DropDownMenuItem({ children, link }) {
+export default function DropDownMenuItem({ children, link, onClickIn }) {
 	const onClick = () => {
+		onClickIn()
 		document
 			.getElementById('dropdown-menu')
 			.setAttribute('style', 'display: none')

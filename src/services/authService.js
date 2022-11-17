@@ -7,6 +7,10 @@ const authService = {
 
     register(data){
         return api.post('/auth/register', data)
+    },
+
+    changePassword(data){
+        return api.post('/auth/change-password', data)
     }
 }
 

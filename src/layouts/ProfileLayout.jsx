@@ -1,8 +1,7 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import React, { useEffect } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { CART_PATH, PAYMENT_HISTORY_PATH, PAYMENT_PATH, PROFILE_PATH, WISHLIST_PATH } from '../constants/path'
-import { faHeart } from '@fortawesome/free-solid-svg-icons'
 
 export default function ProfileLayout() {
 	const activeClassNameTW = " p-3 px-10 text-orange-500 border-b-4 border-orange-500 hover:text-orange-500"
@@ -22,7 +21,7 @@ export default function ProfileLayout() {
 			</div>
 			<div className="p-3 grid-cols-3 items-stretch text-center text-xl border rounded">
 				<NavLink to={PROFILE_PATH} end className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}>Thông tin</NavLink>
-				<NavLink to={WISHLIST_PATH} className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}><FontAwesomeIcon icon={faHeart} /><span> Wishlist</span></NavLink>
+				<NavLink to={WISHLIST_PATH} className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}><span> Wishlist</span></NavLink>
 				{/* <NavLink to={CART_PATH} className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}>Giỏ hàng</NavLink> */}
 				<NavLink to={PAYMENT_HISTORY_PATH} className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}>Thanh toán</NavLink>
 			</div>

@@ -3,13 +3,14 @@ import BookCard from '../../components/BookCard'
 import { v4 as uuidv4 } from 'uuid'
 
 export default function Wishlist() {
-  const book = {
+	const book = {
+		_id: '12',
 		thumbnailUrl:
 			'https://cdn0.fahasa.com/media/catalog/product/i/m/image_195509_1_29246.jpg',
 		title: 'Dạy sao cho trẻ nghe lời',
-		price: '70.000',
-		salePrice: '80.000',
-		sold: '10',
+		price: 70000,
+		sale: 0.3,
+		sold: 10,
 	}
 	return (
 		<>

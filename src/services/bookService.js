@@ -1,7 +1,7 @@
 import api from "../constants/api";
 
 const bookService = {
-    getBook(data){
+    getBook(){
         return api.get('/book')
     },
     getBookById(data){

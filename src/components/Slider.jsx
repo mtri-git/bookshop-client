@@ -14,6 +14,16 @@ export default function Slider() {
 	return (
     <>
             <Swiper
+            breakpoints={{
+                576: {
+                  // width: 576,
+                  slidesPerView: 2,
+                },
+                768: {
+                  // width: 768,
+                  slidesPerView: 1,
+                },
+              }}
                 spaceBetween={30}
                 centeredSlides={true}
                 autoplay={{
