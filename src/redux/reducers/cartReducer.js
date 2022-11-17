@@ -10,16 +10,14 @@ import { getLocalStorage } from '../../utils/localStorage'
 const cart = getLocalStorage(CART_LS)
 
 const INIT_STATE = {
-	cart: cart || [],
-	quantity: 0
+	cart: cart || []
 }
 
 export default function cartReducer(state = INIT_STATE, action) {
 	switch (action.type) {
 		case ADD_ITEM_TO_CART:
 			return {
-				cart: [...action.payload],
-				quantity: state.quantity + 1
+				cart: [...action.payload]
 			}
 		case REMOVE_ITEM_IN_CART:
 			return {
@@ -29,14 +27,12 @@ export default function cartReducer(state = INIT_STATE, action) {
 		case INCREASE_ITEM_IN_CART:
 			return {
 				...state,
-				cart: [...action.payload],
-				quantity: state.quantity+1
+				cart: [...action.payload]
 			}
 		case DECREASE_ITEM_IN_CART:
 			return {
 				...state,
-				cart: [...action.payload],
-				quantity: state.quantity-1
+				cart: [...action.payload]
 			}
 		default:
 			return state

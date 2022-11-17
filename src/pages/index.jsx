@@ -4,10 +4,12 @@ import { v4 as uuidv4 } from 'uuid'
 import Slider from '../components/Slider'
 import { useBooks } from '../hooks/useBooks'
 import Loading from '../components/Loading'
+import { useTotalCartItem } from '../redux/selectors/useTotalCartItem'
 
 export default function Home() {
 	const books = useBooks()
-
+	const total = useTotalCartItem()
+	console.log('total ITem: ', total);
 	useEffect(() => {
 		// scroll to top when access this page
 		window.scrollTo({
