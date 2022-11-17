@@ -12,7 +12,19 @@ module.exports = {
       borderRadius:{
         'image': '50%'
       },
-      
+      letterSpacing:{
+        'otp':'3rem'
+      },
+      fontSize:{
+        'otp':'2rem'
+      },
+      animation: {
+        'spin-slow': 'spin 2.5s linear infinite',
+      },
+      flex: {
+        '1': '1 0 0%',
+        '2':'2 0 0%'
+      }
     }
   },
   plugins: [],

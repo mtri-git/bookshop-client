@@ -14,7 +14,7 @@ const toast_error = (err) => {
 }
 
 const toast_success = (message) => {
-    toast.success('👍 Wow so easy!', {
+    toast.success(message, {
         position: 'top-center',
         autoClose: 3000,
         hideProgressBar: true,

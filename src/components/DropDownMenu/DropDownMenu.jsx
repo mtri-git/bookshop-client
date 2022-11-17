@@ -1,15 +1,22 @@
 import React, { useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
+import { LOGOUT } from '../../constants/authConstants'
 import { HOME_PATH, PAYMENT_PATH, PROFILE_PATH } from '../../constants/path'
+import { logoutAction } from '../../redux/actions/authAction'
 import DropDownMenuItem from './DropDownMenuItem'
-import useOutsideAlerter from '../../hooks/useOutSideAlert'
 
-export default function DropDownMenu({ title, children }) {
+export default function DropDownMenu({ title, avatarUrl, fullname }) {
 	const ref = useRef()
+	const dispatch = useDispatch()
 
 	const onClick = () => {
 		if (ref.current.style.display === 'none')
 			ref.current.style.display = 'block'
 		else ref.current.style.display = 'none'
+	}
+
+	const onLogout = () => {
+		dispatch(logoutAction())
 	}
 
 	const onDisplayNone = () => {
@@ -50,10 +57,10 @@ export default function DropDownMenu({ title, children }) {
 					<div className='w-8 h-8 m-auto rounded-full border border-orange-600'>
 						<img
 							className='w-full h-full rounded-full'
-							src='https://cdn.myanimelist.net/images/characters/9/409383.jpg'
+							src={avatarUrl}
 						/>
 					</div>
-					<span>Võ Minh Trí</span>
+					<span>{fullname}</span>
 				</div>
 				<DropDownMenuItem link={PROFILE_PATH}>
 					Thông tin
@@ -61,7 +68,7 @@ export default function DropDownMenu({ title, children }) {
 				<DropDownMenuItem link={PAYMENT_PATH}>
 					Thanh toán
 				</DropDownMenuItem>
-				<DropDownMenuItem link={HOME_PATH}>Đăng xuất</DropDownMenuItem>
+				<DropDownMenuItem link={HOME_PATH} onClickIn={onLogout}>Đăng xuất</DropDownMenuItem>
 			</div>
 		</div>
 	)

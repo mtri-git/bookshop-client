@@ -2,8 +2,12 @@ import React, { useEffect } from 'react'
 import BookCard from '../components/BookCard'
 import { v4 as uuidv4 } from 'uuid'
 import Slider from '../components/Slider'
+import { useBooks } from '../hooks/useBooks'
+import Loading from '../components/Loading'
 
 export default function Home() {
+	const books = useBooks()
+
 	useEffect(() => {
 		// scroll to top when access this page
 		window.scrollTo({
@@ -13,34 +17,39 @@ export default function Home() {
 	}, [])
 
 	const book = {
+		_id:"12",
 		thumbnailUrl:
 			'https://cdn0.fahasa.com/media/catalog/product/i/m/image_195509_1_29246.jpg',
 		title: 'Dạy sao cho trẻ nghe lời',
-		price: '70.000',
-		salePrice: '80.000',
-		sold: '10',
+		price: 70000,
+		sale: 0.3,
+		sold: 10,
 	}
 	return (
-		<main className='homepage'>
-			<div className='p-10 w-10/12 m-auto'>
-				<Slider/>
+		<main className='homepage pb-20'>
+			<div className='p-10 w-full h-9/12 sm:h-1/12 m-auto'>
+				<Slider />
 			</div>
 			<div className='wrapper divide-y'>
-				<div className='grid gap-4 p-5 m-5 sm:grid sm:grid-cols-5'>
-					<h2 className='text-4xl font-bold text-center pt-5 sm:grid-cols-2 sm:col-span-5'>
+				<div className='p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-8'>
+					<h2 className='text-2xl lg:text-3xl font-bold text-center pt-5 col-span-full'>
 						Mới nhất
 					</h2>
-					<BookCard key={uuidv4()} {...book} />
-					<BookCard key={uuidv4()} {...book} />
-					<BookCard key={uuidv4()} {...book} />
-					<BookCard key={uuidv4()} {...book} />
-					<BookCard key={uuidv4()} {...book} />
-					<BookCard key={uuidv4()} {...book} />
-					<BookCard key={uuidv4()} {...book} />
+					{books ? (
+						books.map((book) => (
+							<BookCard key={uuidv4()} {...book} thumbnailUrl={book.imageUrl} />
+						))
+					) 
+					: 
+					(
+						<div className='col-span-full'>
+							<Loading/>
+						</div>
+					)}
 				</div>
 
-				<div className='grid gap-4 p-5 m-5 sm:grid sm:grid-cols-5'>
-					<h2 className='text-4xl font-bold text-center pt-5 sm:grid-cols-2 sm:col-span-5'>
+				<div className='px-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-5'>
+					<h2 className='text-3xl font-bold text-center pt-5 col-span-full'>
 						Bán chạy nhất
 					</h2>
 					<BookCard {...book} />

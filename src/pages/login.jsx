@@ -5,31 +5,46 @@ import InputField from '../components/InputField'
 import Footer from '../components/Footer'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { HOME_PATH, REGISTER_PATH } from '../constants/path'
+import {
+	FORGET_PASSWORD_PATH,
+	HOME_PATH,
+	REGISTER_PATH,
+} from '../constants/path'
 import { toast_error, toast_success } from '../utils/toastNotify'
 import authService from '../services/authService'
 import axios from 'axios'
 import { useState } from 'react'
+import { useEffect } from 'react'
+import userService from '../services/userService'
+import { setLocalStorage } from '../utils/localStorage'
+import { LOGIN_LS } from '../constants/localStorageConstants'
+import { useDispatch, useSelector } from 'react-redux'
+import { loginAction } from '../redux/actions/authAction'
+import { useSelectUser } from '../redux/selectors/useSelectUser'
 
 export default function Login() {
-	const [loginData, setLoginData] = useState()
 	const emailRef = React.createRef()
 	const passwordRef = React.createRef()
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
 
+	const user = useSelector((state) => state.auth)
 	// Có thể truyền callback vào component để lấy giá trị khi onChange => event.target.value
 	// onEmailChange(ev){
 	// 	value.email = ev.target.value
 	// }
 
-	const login = async (data) => {
-		// return await authService.login(data)
-		const res = await authService
-			.login(data)
-			.then((res) => setLoginData(res))
-	}
+	useEffect(() => {
+		document.title = 'Đăng nhập - BookShop'
+	}, [])
+	useEffect(() => {
+		if (user.isLoggedIn) {
+			toast_success('Đăng nhập thành công')
+			navigate(HOME_PATH)
+		}
+	})
 
-	const onSubmit = () => {
+	const onSubmit = async () => {
 		const value = {} // contain login data
 		value.email = emailRef.current.value
 		value.password = passwordRef.current.value
@@ -48,17 +63,17 @@ export default function Login() {
 			return
 		}
 		// show error
-		login(value)
-		if (loginData.status === 200) {
-			toast_success('👍 Wow so easy!')	
-			navigate(HOME_PATH)
-		} else toast_error('Tài khoản hoặc mật khẩu không đúng')
-		console.log(loginData)
+		try {
+			dispatch(loginAction(value))
+		} catch (error) {
+			console.error(error)
+			toast_error('Lỗi hệ thống')
+		}
 	}
 
 	return (
 		<>
-			<main className='my-10 py-10'>
+			<main className='my-10 py-10 bg-white'>
 				<h1 className='text-center pb-10 text-6xl font-bold text-orange-500'>
 					Đăng nhập
 				</h1>
@@ -102,7 +117,7 @@ export default function Login() {
 									</p>
 								</div>
 								{/* Email input */}
-								<InputField ref={emailRef}>
+								<InputField type='email' ref={emailRef}>
 									Email hoặc số điện thoại
 								</InputField>
 
@@ -124,9 +139,11 @@ export default function Login() {
 											Remember me
 										</label>
 									</div>
-									<a href='#!' className='text-gray-800'>
+									<Link
+										to={FORGET_PASSWORD_PATH}
+										className='text-gray-800'>
 										Forgot password?
-									</a>
+									</Link>
 								</div>
 								<div className='text-center lg:text-left'>
 									<Button type='button' onClick={onSubmit}>
