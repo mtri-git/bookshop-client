@@ -9,7 +9,7 @@ export const useQuery = (callbackPromise, dependencyList) => {
         setLoading(true)
         callbackPromise()
             .then(res => {
-                setData(res.data.book)
+                setData(res.data)
             })
             .catch((err) => {
                 setError(err)

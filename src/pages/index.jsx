@@ -4,31 +4,39 @@ import { v4 as uuidv4 } from 'uuid'
 import Slider from '../components/Slider'
 import { useBooks } from '../hooks/useBooks'
 import Loading from '../components/Loading'
-import { useTotalCartItem } from '../redux/selectors/useTotalCartItem'
+import bookService from '../services/bookService'
+import { useState } from 'react'
 
 export default function Home() {
-	const books = useBooks()
-	const total = useTotalCartItem()
-	console.log('total ITem: ', total);
+	// const books = useBooks()
+	const [books, setBooks] = useState([])
+	const [bestSellerBook, setBestSellerBook] = useState([])
+	
+	const fetchNewBook = async() => {
+		const data = await bookService.getNewBook()
+		setBooks(data.data.book)
+	}
+	const fetchBestSeller = async() => {
+		const data = await bookService.getBestSellerBook()
+		setBestSellerBook(data.data.book)
+	}
+	
+
 	useEffect(() => {
 		// scroll to top when access this page
 		window.scrollTo({
 			top: 0,
 			behavior: 'smooth',
 		})
+		document.title = 'BookShop - Trang chủ'
+		fetchNewBook()
+		fetchBestSeller()
 	}, [])
 
-	const book = {
-		_id:"12",
-		thumbnailUrl:
-			'https://cdn0.fahasa.com/media/catalog/product/i/m/image_195509_1_29246.jpg',
-		title: 'Dạy sao cho trẻ nghe lời',
-		price: 70000,
-		sale: 0.3,
-		sold: 10,
-	}
+	console.log(books)
+
 	return (
-		<main className='homepage pb-20'>
+		<main className='homepage pb-20 bg-white rounded-xl'>
 			<div className='p-10 w-full h-9/12 sm:h-1/12 m-auto'>
 				<Slider />
 			</div>
@@ -54,10 +62,17 @@ export default function Home() {
 					<h2 className='text-3xl font-bold text-center pt-5 col-span-full'>
 						Bán chạy nhất
 					</h2>
-					<BookCard {...book} />
-					<BookCard {...book} />
-					<BookCard {...book} />
-					<BookCard {...book} />
+					{bestSellerBook ? (
+						bestSellerBook.map((book) => (
+							<BookCard key={uuidv4()} {...book} thumbnailUrl={book.imageUrl} />
+						))
+					) 
+					: 
+					(
+						<div className='col-span-full'>
+							<Loading/>
+						</div>
+					)}
 				</div>
 			</div>
 		</main>

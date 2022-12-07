@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import InputField from '../components/InputField'
 import Footer from '../components/Footer'
@@ -11,13 +11,7 @@ import {
 	REGISTER_PATH,
 } from '../constants/path'
 import { toast_error, toast_success } from '../utils/toastNotify'
-import authService from '../services/authService'
-import axios from 'axios'
-import { useState } from 'react'
 import { useEffect } from 'react'
-import userService from '../services/userService'
-import { setLocalStorage } from '../utils/localStorage'
-import { LOGIN_LS } from '../constants/localStorageConstants'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginAction } from '../redux/actions/authAction'
 import { useSelectUser } from '../redux/selectors/useSelectUser'
@@ -42,7 +36,7 @@ export default function Login() {
 			toast_success('Đăng nhập thành công')
 			navigate(HOME_PATH)
 		}
-	})
+	}, [user])
 
 	const onSubmit = async () => {
 		const value = {} // contain login data
@@ -50,21 +44,23 @@ export default function Login() {
 		value.password = passwordRef.current.value
 
 		if (!value.email) {
-			toast_error('😶 🌫Thiếu email')
+			toast_error('Thiếu email')
 			return
 		} else if (!value.password) {
-			toast_error('😶 🌫Thiếu password')
+			toast_error('Thiếu password')
 			return
 		}
 		const mailRegex =
 			/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 		if (!mailRegex.test(value.email)) {
-			toast_error('😶 Email sai định dạng')
+			toast_error('Email sai định dạng')
 			return
 		}
 		// show error
 		try {
 			dispatch(loginAction(value))
+			if(!user.isLoggedIn)
+				toast_error('Email hoặc mật khẩu không đúng')
 		} catch (error) {
 			console.error(error)
 			toast_error('Lỗi hệ thống')

@@ -2,148 +2,121 @@ import { useForm } from 'react-hook-form'
 import React, { useState } from 'react'
 import Button from '../components/Button'
 import Header from '../components/Header/Header'
-import provinces from '../utils/address/province'
-import { v4 as uuidv4 } from 'uuid'
+import { useSelectUser } from '../redux/selectors/useSelectUser'
+import { useCart } from '../redux/selectors/useCart'
+import CheckoutList from '../components/checkoutList/checkoutList'
+import { formatPrice } from '../utils/format'
+import { Link, useNavigate } from 'react-router-dom'
+import { CART_PATH, PAYMENT_HISTORY_PATH } from '../constants/path'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { newOrder } from '../redux/actions/orderAction'
+import { DialogProvider, useDialog } from '../hooks/useDialog'
+import { useMemo } from 'react'
+import {v4 as uuidv4} from 'uuid'
 
 export default function Payment() {
+	const dispatch = useDispatch()
+	const navigate = useNavigate()
+	const {setIsOpenDialog, setDialogData} = useDialog()
 	const [payment, setPayment] = useState('Cash')
-	const [province, setProvince] = useState('')
-	const [ward, setWard] = useState('')
+	const [orderData, setOrderData] = useState({})
+
+	const user = useSelectUser()
+	const cart = useCart()
+	const checkoutItems = cart.cart.filter(cartItem => cartItem.checked)
+	const totalWithSale =  useMemo( () => checkoutItems.reduce(
+		(acc, cartItem) =>
+			acc + (1 - cartItem.sale) * cartItem.price * cartItem.count,
+		0
+	), [checkoutItems])
+
+	useEffect(()=>{
+		const items = checkoutItems.map(item => ( {id: item._id, quantity: item.count}))
+		orderData.order_items = items
+		orderData.address = user?.user.data.address
+		orderData.payment_type = payment
+		setOrderData(orderData)
+		console.log(orderData);
+	}, [payment])
+	
+	useEffect(()=>{
+		if(checkoutItems.length <= 0)
+			navigate(CART_PATH)
+	}, [])
+
+	const onPay = async() => {
+		const res = await dispatch(newOrder(orderData))
+		if(res === 'SUCCESS')
+		{
+			setDialogData({title: "Đặt hàng thành công", content: "Bạn đã đặt hàng thành công"})
+			setIsOpenDialog(true)
+			navigate(PAYMENT_HISTORY_PATH)
+
+		}
+		else
+		{
+			setDialogData({title: "Đặt hàng thất bại", content: "Đặt hàng thất bại"})
+			setIsOpenDialog(true)
+		}
+
+	}
 
 	const onPaymentChange = (event) => {
 		setPayment(event.target.value)
-		console.log(payment)
 	}
-	const { register, handleSubmit } = useForm()
 
-	const onChangeProvince = (event) => {
-		console.log(province)
-		setProvince(event.target.options[event.target.selectedIndex])
-	}
 
 	return (
-		<>
+		<DialogProvider>
+			<div>
 			<Header />
 			<div className='payment-form pb-20 m-auto w-9/12 mt-10'>
 				<div className='rounded-lg bg-white'>
 					<form>
-						<div className='p-5 flex w-5/12'>
-							<label className='flex-1'>Họ và tên</label>
-							<input
-								className='flex-2 rounded-lg border-2 border-orange-500'
-								type='text'
-								placeholder='Nhập họ và tên'
-								{...register('name')}
-							/>
-						</div>
-						<div className='p-5 flex w-5/12'>
-							<label className='flex-1'>Số điện thoại</label>
-							<input
-								className='flex-2 rounded-lg border-2 border-orange-500'
-								type='text'
-								placeholder='Nhập họ và tên'
-								{...register('phone')}
-							/>
-						</div>
-						<div className='p-5 flex w-5/12'>
-							<label className="flex-1">Tỉnh/Thành phố</label>
-							<select
-								className='border-2 flex-2 rounded-lg border-orange-500'
-								onChange={(ev)=> onChangeProvince(ev)}
-								{...register('province')}>
-								<option
-									key={uuidv4()}
-									value=''
-									disabled
-									selected>
-									Chọn tỉnh
-								</option>
-								{Object.keys(provinces).map((key) => (
-									<option
-										key={uuidv4()}
-										value={provinces[key].name}>
-										{provinces[key].name}
-									</option>
-								))}
-							</select>
-						</div>
-						<div className='p-5 flex w-5/12'>
-							<label className='flex-1'>Quận/Huyện</label>
-							<select
-								className='border-2 flex-2 rounded-lg border-orange-500'
-								{...register('district')}>
-								<option
-									className='flex-2 rounded-lg'
-									key={uuidv4()}
-									value=''
-									disabled
-									selected>
-									Chọn Huyện
-								</option>
-								<option key={uuidv4()} value='1'>
-									Test
-								</option>
-								<option key={uuidv4()} value='2'>
-									Test 2
-								</option>
-							</select>
-						</div>
-						<div className='p-5 flex w-5/12'>
-							<label className='flex-1'>Phường/Xã</label>
-							<select
-								className='flex-2 rounded-lg border-2 border-orange-500'
-								{...register('commune')}>
-								<option
-									className='flex-2 rounded-lg'
-									key={uuidv4()}
-									value=''
-									disabled
-									selected>
-									Chọn Phường/Xã
-								</option>
-								<option key={uuidv4()} value='1'>
-									Test
-								</option>
-								<option key={uuidv4()} value='2'>
-									Test 2
-								</option>
-							</select>
-						</div>
-						<div className='p-5 flex w-5/12'>
-							<label className='flex-1'>Địa chỉ nhận hàng</label>
-							<input
-								className='flex-2 rounded-lg border-2 border-orange-500'
-								placeholder='Nhập địa chỉ nhận hàng'
-								{...register('address')}
-							/>
-						</div>
+						{user?.isLoggedIn ? (
+							<div className='p-5 border-dashed border-b-2'>
+								<div className='font-bold text-lg'>Địa chỉ giao hàng: </div>
+								<div className='text-md'>{` ${user?.user.data.fullname} | ${user?.user.data.phone} | ${user?.user.data.address}`}</div>
+								<div className='text-md'>Postal Code: {user?.user.data.postalCode}</div>
+							</div>
+						) : (
+							<>
+								Nothing
+							</>
+						)}
 						<div className='p-2 pl-5'>
-							<h1>Phương thức thanh toán</h1>
-							<div onChange={(event) => onPaymentChange(event)}>
+							<h1 className='font-bold text-lg'>Phương thức thanh toán</h1>
+							<div></div>
+							<div className='pt-5' onChange={(event) => onPaymentChange(event)}>
 								<div className='flex gap-2'>
 									<input
 										type='radio'
 										value='Cash'
 										name='pay'
+										checked={payment === 'Cash'}
+										key={uuidv4()}
 									/>
 									<img
 										className='w-10'
 										src='/icons/cash-icon.svg'
 									/>
-									<span> Thanh toán khi nhận hàng</span>
+									<label> Thanh toán khi nhận hàng</label>
 								</div>
 								<br />
-								<div className='flex gap-2'>
+								<div className='flex gap-2' value={payment}>
 									<input
 										type='radio'
 										value='Momo'
 										name='pay'
+										checked={payment === 'Momo'}
+										key={uuidv4()}
 									/>
 									<img
 										className='w-10'
 										src='/icons/cash-icon.svg'
 									/>
-									<span>Momo</span>
+									<label>Momo</label>
 								</div>
 								<br />
 								<div className='flex gap-2'>
@@ -151,42 +124,54 @@ export default function Payment() {
 										type='radio'
 										value='Bank'
 										name='pay'
+										key={uuidv4()}
+										checked={payment === 'Bank'}
+										
 									/>{' '}
 									<img
 										className='w-10'
 										src='/icons/credit-card.svg'
 									/>
-									<span>Ngân hàng</span>
+									<label>Ngân hàng</label>
 								</div>
 								<br />
 							</div>
 						</div>
 					</form>
-					<div className='border p-5'>
-						<div>
-							<div>
-								<label>Thành tiền: </label>
-								<span>120.000đ</span>
-							</div>
-							<div>
-								<label>Phí giao hàng: </label>
-								<span>120.000đ</span>
-							</div>
-							<div>
-								<label>Tổng tiền: </label>
-								<span>120.000đ</span>
-							</div>
-						</div>
-						<Button
-							onClick={handleSubmit((data) => {
-								data.payment = payment
-								console.log(data)
-							})}>
-							Thanh toán
-						</Button>
+
+					<div className='p-5'>
+						<div>Kiểm kê lại đơn hàng</div>
+						<CheckoutList data={checkoutItems}/>
 					</div>
 				</div>
 			</div>
-		</>
+
+			<div className='p-5 bg-white sticky bottom-0 px-20 shadow-xl text-end'>
+				<div className='border-b-2 pb-2'>
+					<div>
+						<label>Thành tiền: </label>
+						<span>{formatPrice( totalWithSale)}đ</span>
+					</div>
+					<div>
+						<label>Phí giao hàng: </label>
+						<span>12.000đ</span>
+					</div>
+					<div>
+						<label className='font-bold'>Tổng tiền: </label>
+						<span className='font-bold text-orange-600 text-lg'>{formatPrice( totalWithSale)}đ</span>
+					</div>
+					
+				</div>
+				<div className='pt-2 flex'>
+						<Link to={CART_PATH}>🠔 Quay về giỏ hàng</Link>
+						<Button
+							className='ml-auto'
+							onClick={onPay}>
+							Thanh toán
+						</Button>
+					</div>
+			</div>
+			</div>
+		</DialogProvider>
 	)
 }

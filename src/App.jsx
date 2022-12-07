@@ -42,9 +42,12 @@ import Search from './pages/book/search'
 import Profile from './pages/profile/index'
 import PaymentHistory from './pages/profile/payment-history'
 import ForgetPassword from './pages/forget-password'
+import { DialogProvider } from './hooks/useDialog'
+import { BookQuantityProvider } from './hooks/useBookQuantityDetail'
 
 function App() {
 	return (
+	<DialogProvider>
 			<Routes>
 				<Route path={LOGIN_PATH} element={<Login />} />
 				<Route path={PAYMENT_PATH} element={<Payment />} />
@@ -69,10 +72,14 @@ function App() {
 					</Route>
 					{/* Book path */}
 					<Route path={BOOK_PATH}>
-						<Route index element={<Book />} />
+						<Route index element={<Search />} />
 						<Route
 							path={BOOK_DETAIL_PATH}
-							element={<BookDetail />}
+							element={
+							<BookQuantityProvider>
+								<BookDetail />
+							</BookQuantityProvider>
+						}
 						/>
 					</Route>
 					{/* Author path */}
@@ -104,6 +111,7 @@ function App() {
 					<Route path='*' element={<Page404 />} />
 				</Route>
 			</Routes>
+		</DialogProvider>
 	)
 }
 

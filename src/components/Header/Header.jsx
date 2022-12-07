@@ -1,11 +1,13 @@
 import React, { useRef } from 'react'
+import { useEffect } from 'react'
+import { useState } from 'react'
 import {
 	createSearchParams,
 	Link,
 	NavLink,
 	useNavigate,
 } from 'react-router-dom'
-import { LOGIN_FAIL } from '../../constants/authConstants'
+
 import {
 	BOOK_PATH,
 	CART_PATH,
@@ -15,10 +17,13 @@ import {
 	SEARCH_PATH,
 } from '../../constants/path'
 import { useSelectUser } from '../../redux/selectors/useSelectUser'
+import { useTotalCartItem } from '../../redux/selectors/useTotalCartItem'
 import DropDownMenu from '../DropDownMenu/DropDownMenu'
 import './Header.css'
 
 export default function Header() {
+	const [cartCount, setCartCount] = useState(0)
+	const count = useTotalCartItem()
 	// className for NavLink using Tailwind
 	const unActiveClassNameTW =
 		'select-none cursor-pointer w-full h-full rounded  block text-lg text-gray-700 hover:text-orange-600 md:hover:bg-transparent md:hover:text-orange-500 md:p-0 active:text-orange-500'
@@ -33,11 +38,15 @@ export default function Header() {
 			navigate({
 				pathname: SEARCH_PATH,
 				search: `?${createSearchParams({
-					q: searchRef.current.value.trim(),
+					title: searchRef.current.value.trim(),
 				})}`,
 			})
 		}
 	}
+
+	useEffect(()=>{
+		setCartCount(count)
+	})
 
 	return (
 		<header className='header bg-orange-500 sticky z-50 top-0'>
@@ -174,7 +183,7 @@ export default function Header() {
 								</NavLink>
 							</li>
 
-							<li className='rounded '>
+							{/* <li className='rounded '>
 								<NavLink
 									to={CATEGORY_PATH}
 									className={({ isActive }) =>
@@ -184,13 +193,8 @@ export default function Header() {
 									}>
 									Thể loại
 								</NavLink>
-							</li>
+							</li> */}
 
-							{/* <li className='rounded '>
-                <NavLink to={LOGIN_PATH} className={({ isActive }) => isActive ? activeClassNameTW : unActiveClassNameTW}>
-                    Đăng nhập/Đăng ký
-                </NavLink>
-                </li> */}
 
 							<li className='select-none cursor-pointer rounded flex'>
 								{user.isLoggedIn ? (
@@ -206,7 +210,7 @@ export default function Header() {
 								)}
 							</li>
 
-							<li className='rounded '>
+							<li className='rounded px-2'>
 								<NavLink
 									to={CART_PATH}
 									className={({ isActive }) =>
@@ -219,7 +223,7 @@ export default function Header() {
 											<img src='/icons/cart-icon.svg' />
 										</div>
 										<div className='absolute bg-red-500 text-white border border-white text-sm px-2 rounded-full left-1/2 top-1/2'>
-											1
+											{cartCount || 0}
 										</div>
 									</div>
 								</NavLink>

@@ -1,4 +1,4 @@
-export const ward = {
+const wards = {
     "001": {
         "name": "Ba Đình",
         "type": "quan",
@@ -7050,3 +7050,5 @@ export const ward = {
         "parent_code": "96"
     }
 }
+
+export default wards
