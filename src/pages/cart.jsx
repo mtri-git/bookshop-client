@@ -1,14 +1,16 @@
 import React from 'react'
-import CartItem from '../components/CartItem'
+import CartItem from '../components/CartItem/CartItem'
 import { v4 as uuidv4 } from 'uuid'
-import { useSelector } from 'react-redux'
 import { formatPrice } from '../utils/format'
 import { Link, useNavigate } from 'react-router-dom'
 import { HOME_PATH, PAYMENT_PATH } from '../constants/path'
+import { useCart } from '../redux/selectors/useCart'
 
 export default function Cart() {
-	const cart = useSelector((state) => state.cart)
-	const totalWithSale = cart.cart.reduce(
+	const cart = useCart()
+
+	const checkoutItems = cart.cart.filter(cartItem => cartItem.checked)
+	const totalWithSale = checkoutItems.reduce(
 		(acc, cartItem) =>
 			acc + (1 - cartItem.sale) * cartItem.price * cartItem.count,
 		0
@@ -24,8 +26,12 @@ export default function Cart() {
 		navigate()
 	}
 
+	const onCheckItem = (product_id) => {
+		checkItemInCart(product_id)
+	}
+
 	return (
-		<main className='m-auto'>
+		<main className='m-auto bg-white rounded-xl'>
 			{cart.cart.length ? (
 				<>
 					<div className='mx-auto my-5 font-normal text-xl w-8/12'>
@@ -62,11 +68,20 @@ export default function Cart() {
 								{formatPrice(total)} đ
 							</span>
 						</div>
+						{checkoutItems.length > 0 ? 
 						<button
 							className='bg-red-600 text-white text-xl px-5 py-2 rounded-xl w-full m-5'
 							onClick={() => navigate(PAYMENT_PATH)}>
 							Thanh toán
 						</button>
+						:
+						<button
+						className='bg-gray-300 text-white text-xl cursor-not-allowed px-5 py-2 rounded-xl w-full m-5'
+						disabled>
+						Thanh toán
+					</button>
+						}
+						
 					</div>
 				</>
 			) : (

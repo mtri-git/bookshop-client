@@ -1,4 +1,4 @@
-export const commune = {
+const communes = {
     "00001": {
         "name": "Phúc Xá",
         "type": "phuong",
@@ -105990,3 +105990,5 @@ export const commune = {
         "parent_code": "973"
     }
 }
+
+export default communes

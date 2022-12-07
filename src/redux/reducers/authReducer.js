@@ -1,4 +1,4 @@
-import {LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT } from '../../constants/authConstants'
+import {INIT_USER, LOGIN_FAIL, LOGIN_SUCCESS, LOGOUT } from '../../constants/authConstants'
 import { USER_LS } from '../../constants/localStorageConstants'
 import { getLocalStorage } from '../../utils/localStorage'
 
@@ -6,6 +6,7 @@ const user = getLocalStorage(USER_LS)
 const initialUser = user
 	? { isLoggedIn: true, user }
 	: { isLoggedIn: false, user: null }
+
 
 export default function authReducer (state = initialUser, action) {
 	switch (action.type) {
@@ -26,6 +27,11 @@ export default function authReducer (state = initialUser, action) {
 				...state,
 				isLoggedIn: false,
 				user: null,
+			}
+		case INIT_USER:
+			return{
+				...state,
+				user: action.payload.user
 			}
 		default:
 			return state

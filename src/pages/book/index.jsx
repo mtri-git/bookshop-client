@@ -15,7 +15,7 @@ export default function Book() {
 	}, [])
 
 	return (
-		<>
+		<div className='bg-white'>
 		<div>
 			<div>
 				<label>Sắp xếp theo: </label>
@@ -34,6 +34,6 @@ export default function Book() {
 					<Loading />
 				)}
 			</div>
-		</>
+		</div>
 	)
 }
