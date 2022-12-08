@@ -12,7 +12,8 @@ import { removeLocalStorage, setLocalStorage } from '../../utils/localStorage'
 export const intiUser = () => async (dispatch) => {
 	try {
 		const user = await userService.getInfo()
-		setLocalStorage(USER_LS, user.data)
+		if(user)
+			setLocalStorage(USER_LS, user.data)
 		dispatch({
 			type: INIT_USER,
 			payload: {
