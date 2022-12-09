@@ -10,7 +10,7 @@ import { addToCart } from '../../redux/actions/cartAction'
 import bookService from '../../services/bookService'
 import {v4 as uuidv4} from 'uuid'
 import { BookQuantityProvider, useBookQuantityDetail } from '../../hooks/useBookQuantityDetail'
-import { Parser } from 'html-to-react'
+import DescriptionBox from '../../components/DescriptionBox'
 
 export default function BookDetail() {
 	const { id } = useParams()
@@ -61,26 +61,26 @@ export default function BookDetail() {
 					<div className='book-detail p-2 flex-[1.5] ml-auto text-start pl-36'>
 						<h1 className='text-3xl align-middle'>{book?.title}</h1>
 						<div className=' m-2 p-2'>
-							<div className='sa1'>
-								<div className='supplier inline'>
+							<div className='flex'>
+								<div className='flex-2'>
 									<span>Nhà cung cấp: </span>
 									<span className='font-bold mr-5'>
 										Minh Long
 									</span>
 								</div>
 								<div className='author inline'>
-									<span className=''>Tác giả:</span>
-									<span className='font-bold'>Hoa Dương</span>
+									<span className='flex-1'>Tác giả:</span>
+									<span className='font-bold'>{book?.author}</span>
 								</div>
 							</div>
-							<div className='sa2'>
-								<div className='publisher inline'>
+							<div className='flex'>
+								<div className='flex-2'>
 									<span>Nhà xuất bản:</span>
 									<span className='font-bold mr-5'>
-										NXB Phụ Nữ
+									{book?.publisher}
 									</span>
 								</div>
-								<div className='cover inline'>
+								<div className='flex-1'>
 									<span>Hình thức bìa:</span>
 									<span className='font-bold'>Bìa Mềm</span>
 								</div>
@@ -112,7 +112,7 @@ export default function BookDetail() {
 				<div className='p-5 info-detail bg-white rounded mt-5'>
 					<h1 className='font-bold'>Thông tin sản phẩm</h1>
 					<table></table>
-					<div className='description whitespace-pre-line' >{Parser().parse(book?.description)}</div>
+					<DescriptionBox content={book?.description}/>
 				</div>
 
 				<div className='p-5 mt-5 bg-white grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-8'>
