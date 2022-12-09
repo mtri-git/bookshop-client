@@ -44,7 +44,7 @@ export default function BookCard({
 					<div>
 						<img className='mx-auto max-h-[240px] max-w-[232px]' src={thumbnailUrl} alt='Image' />
 					</div>
-					<h2 className='pb-2 px-5 h-16'>{title?.length > 30 ? title?.slice(0, 30)+"..." : title}</h2>
+					<div className='pb-2 px-5 h-16 line-clamp-1'>{title}</div>
 				</Link>
 				<div className='flex'>
 					<div className='w-60'>
