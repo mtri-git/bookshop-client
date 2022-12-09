@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
-import BookCard from '../components/BookCard'
 import { v4 as uuidv4 } from 'uuid'
 import Slider from '../components/Slider'
-import { useBooks } from '../hooks/useBooks'
 import Loading from '../components/Loading'
 import bookService from '../services/bookService'
 import { useState } from 'react'
+import { lazy } from 'react'
+
+const BookCard = lazy(()=> import('../components/BookCard'))
 
 export default function Home() {
 	// const books = useBooks()
@@ -37,8 +38,12 @@ export default function Home() {
 
 	return (
 		<main className='homepage pb-20 bg-white rounded-xl'>
-			<div className='p-10 w-full h-9/12 sm:h-1/12 m-auto'>
-				<Slider />
+			<div className='flex gap-2 justify-between mr-auto p-10 h-96 sm:h-1/12'>
+					<Slider/>
+				<div className='flex flex-col gap-2 w-11/12 h-fit'>
+					<img className='rounded-lg' src='https://cdn0.fahasa.com/media/wysiwyg/Thang-12-2022/Branday_flashsale_Sub%20banner_392x156.jpg'/>
+					<img className='rounded-lg' src='https://cdn0.fahasa.com/media/wysiwyg/Thang-12-2022/Branday_flashsale_Sub%20banner_392x156.jpg'/>
+				</div>
 			</div>
 			<div className='wrapper divide-y'>
 				<div className='p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-8'>

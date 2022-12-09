@@ -39,21 +39,21 @@ export default function Slider() {
             >
                 <SwiperSlide>
                     <img
-                        className="object-fill w-full h-96"
-                        src="/images/slider-3.jpg"
+                        className="object-fill h-auto m-auto"
+                        src="https://cdn0.fahasa.com/media/magentothem/banner7/fhs_potico_840x320.png"
                         alt="image slide 1"
                     />
                 </SwiperSlide>
                 <SwiperSlide>
                     <img
-                        className="object-fill w-full h-96"
+                        className="object-fill h-auto m-auto"
                         src="/images/slider-2.jpg"
                         alt="image slide 2"
                     />
                 </SwiperSlide>
                 <SwiperSlide>
                     <img
-                        className="object-fill w-full h-96"
+                        className="object-fill h-auto m-auto"
                         src="/images/slider-1.jpg"
                         alt="image slide 3"
                     />

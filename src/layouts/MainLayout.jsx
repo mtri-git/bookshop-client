@@ -7,7 +7,6 @@ import { useEffect } from 'react'
 import { intiUser } from '../redux/actions/authAction'
 import CustomDialog from '../components/CustomDialog'
 
-
 export default function MainLayout() {
 	const dispatch = useDispatch()
 
