@@ -30,7 +30,7 @@ export default function FlashSaleBanner({
 						{formatPrice(price)}đ
 					</span>
 					<span className='discount m-2 p-0.5 text-center bg-red-500 text-white font-bold rounded'>
-						-{sale * 100}%
+						-{Math.floor( sale * 100)}%
 					</span>
 				</div>
 			</div>
