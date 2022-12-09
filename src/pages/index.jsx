@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
-import BookCard from '../components/BookCard'
 import { v4 as uuidv4 } from 'uuid'
 import Slider from '../components/Slider'
-import { useBooks } from '../hooks/useBooks'
 import Loading from '../components/Loading'
 import bookService from '../services/bookService'
 import { useState } from 'react'
+import { lazy } from 'react'
+
+const BookCard = lazy(()=> import('../components/BookCard'))
 
 export default function Home() {
 	// const books = useBooks()

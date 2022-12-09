@@ -19,14 +19,12 @@ import {
 	PUBLISHER_PATH,
 	PUBLISHER_DETAIL_PATH,
 	SEARCH_PATH,
-	PROFILE_INFO_PATH,
 	FORGET_PASSWORD_PATH,
 } from './constants/path'
 import Home from './pages'
 import Login from './pages/login'
 import Cart from './pages/cart'
 import Payment from './pages/payment'
-import Book from './pages/book'
 import BookDetail from './pages/book/[id]'
 import Author from './pages/author'
 import AuthorDetail from './pages/author/[id]'
