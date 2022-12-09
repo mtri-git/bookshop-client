@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import InputField from '../components/InputField'
 import Footer from '../components/Footer'
@@ -22,7 +22,7 @@ export default function Login() {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 
-	const user = useSelector((state) => state.auth)
+	const user = useSelectUser()
 	// Có thể truyền callback vào component để lấy giá trị khi onChange => event.target.value
 	// onEmailChange(ev){
 	// 	value.email = ev.target.value
@@ -31,12 +31,6 @@ export default function Login() {
 	useEffect(() => {
 		document.title = 'Đăng nhập - BookShop'
 	}, [])
-	useEffect(() => {
-		if (user.isLoggedIn) {
-			toast_success('Đăng nhập thành công')
-			navigate(HOME_PATH)
-		}
-	}, [user])
 
 	const onSubmit = async () => {
 		const value = {} // contain login data
@@ -61,11 +55,22 @@ export default function Login() {
 			dispatch(loginAction(value))
 			if(!user.isLoggedIn)
 				toast_error('Email hoặc mật khẩu không đúng')
+
+			if (user.isLoggedIn) {
+				toast_success('Đăng nhập thành công')
+				await new Promise(r => setTimeout(r, 2000))
+				navigate(HOME_PATH)
+			}
+
 		} catch (error) {
 			console.error(error)
 			toast_error('Lỗi hệ thống')
 		}
 	}
+	if(user.isLoggedIn)
+		return(
+		<Navigate to={HOME_PATH}/>
+		)
 
 	return (
 		<>

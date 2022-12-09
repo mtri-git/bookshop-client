@@ -22,7 +22,7 @@ const userService = {
 		const config = {
 			headers: { Authorization: `Bearer ${token?.accessToken}` },
 		}
-		return api.put('/user/change-info', data, config)
+		return api.put('/user/update-info', data, config)
 	},
 }
 
