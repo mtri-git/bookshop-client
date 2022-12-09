@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { HOME_PATH } from '../constants/path'
+import { HOME_PATH, LOGIN_PATH } from '../constants/path'
 import InputField from '../components/InputField'
 import Footer from '../components/Footer'
 import Button from '../components/Button'
@@ -58,13 +58,13 @@ export default function Register() {
 		}
 		const { rePassword, ...registerData } = value
 		try {
-			const data = await register(registerData)
-			console.log(data)
+			const data = await authService.register(registerData)
+			console.log('a', data)
 			if (data) {
 				toast_success('Đăng ký thành công')	
 				// Sleep in js: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
 				await new Promise(r => setTimeout(r, 2000));
-				navigate(HOME_PATH)
+				navigate(LOGIN_PATH)
 			}
 			console.log(registerData)
 		} catch (error) {
@@ -132,10 +132,11 @@ export default function Register() {
 										Forgot password?
 									</a>
 								</div>
-								<div className='text-center lg:text-left'>
+								<div className='flex justify-between items-center lg:text-left'>
 									<Button type='button' onClick={onSubmit}>
 										Đăng ký
 									</Button>
+									<Link to={LOGIN_PATH} className='text-gray'>Đăng nhập</Link>
 								</div>
 								{/* Toast Error */}
 								<ToastContainer

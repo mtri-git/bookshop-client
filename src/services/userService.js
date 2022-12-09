@@ -2,19 +2,27 @@ import api from '../constants/api'
 import { LOGIN_LS } from '../constants/localStorageConstants'
 import { getLocalStorage } from '../utils/localStorage'
 
-const token = getLocalStorage(LOGIN_LS)
-const config = {
-	headers: { Authorization: `Bearer ${token?.accessToken}` },
-}
+// const token = getLocalStorage(LOGIN_LS)
+// const config = {
+// 	headers: { Authorization: `Bearer ${token?.accessToken}` },
+// }
 
 const userService = {
 	getInfo() {
+		const token = getLocalStorage(LOGIN_LS)
+		const config = {
+			headers: { Authorization: `Bearer ${token?.accessToken}` },
+		}
 		if (!token) return null
 		return api.get('/user/get-info', config)
 	},
 
 	changeInfo(data) {
-		return api.put('/user/change-info', data, config)
+		const token = getLocalStorage(LOGIN_LS)
+		const config = {
+			headers: { Authorization: `Bearer ${token?.accessToken}` },
+		}
+		return api.put('/user/update-info', data, config)
 	},
 }
 

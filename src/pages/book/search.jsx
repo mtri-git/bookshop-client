@@ -2,11 +2,13 @@ import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
-import BookCard from '../../components/BookCard'
 import Loading from '../../components/Loading'
 import bookService from '../../services/bookService'
 import Pagination from 'rc-pagination';
 import './paginate-decor.less'
+import { lazy } from 'react'
+
+const BookCard = lazy(()=> import('../../components/BookCard'))
 
 
 export default function Search() {
