@@ -6,15 +6,13 @@ import './index.css'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import rootReducer from './redux/reducers'
-import { applyMiddleware } from 'redux'
+import { applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
-import { nodeEnv } from '/utils/config';
 
 const composeEnhancers =
-  (nodeEnv !== 'production' &&
-    typeof window !== 'undefined' &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ||
   compose;
+  
 const store = createStore(rootReducer, /* preloadedState, */ composeEnhancers(
     applyMiddleware(thunk)
   ));
