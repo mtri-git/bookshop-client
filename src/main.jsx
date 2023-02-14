@@ -8,6 +8,7 @@ import { createStore } from 'redux'
 import rootReducer from './redux/reducers'
 import { applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
+import { nodeEnv } from '/utils/config';
 
 const composeEnhancers =
   (nodeEnv !== 'production' &&
