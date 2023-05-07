@@ -42,13 +42,21 @@ import PaymentHistory from './pages/profile/payment-history'
 import ForgetPassword from './pages/forget-password'
 import { DialogProvider } from './hooks/useDialog'
 import { BookQuantityProvider } from './hooks/useBookQuantityDetail'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
 	return (
-	<DialogProvider>
+		<DialogProvider>
 			<Routes>
 				<Route path={LOGIN_PATH} element={<Login />} />
-				<Route path={PAYMENT_PATH} element={<Payment />} />
+				<Route
+					path={PAYMENT_PATH}
+					element={
+						<ProtectedRoute>
+							<Payment />
+						</ProtectedRoute>
+					}
+				/>
 				<Route path={REGISTER_PATH} element={<Register />} />
 				<Route
 					path={FORGET_PASSWORD_PATH}
@@ -60,36 +68,26 @@ function App() {
 					<Route path={SEARCH_PATH} element={<Search />} />
 					<Route path={CART_PATH} element={<Cart />} />
 					<Route />
-					{/* Category path */}
-					<Route path={CATEGORY_PATH}>
-						<Route index element={<Category />} />
-						<Route
-							path={CATEGORY_DETAIL_PATH}
-							element={<CategoryDetail />}
-						/>
-					</Route>
+
 					{/* Book path */}
 					<Route path={BOOK_PATH}>
 						<Route index element={<Search />} />
 						<Route
 							path={BOOK_DETAIL_PATH}
 							element={
-							<BookQuantityProvider>
-								<BookDetail />
-							</BookQuantityProvider>
-						}
-						/>
-					</Route>
-					{/* Author path */}
-					<Route path={AUTHOR_PATH}>
-						<Route index element={<Author />} />
-						<Route
-							path={AUTHOR_DETAIL_PATH}
-							element={<AuthorDetail />}
+								<BookQuantityProvider>
+									<BookDetail />
+								</BookQuantityProvider>
+							}
 						/>
 					</Route>
 					{/* Profile path */}
-					<Route element={<ProfileLayout />}>
+					<Route
+						element={
+							<ProtectedRoute>
+								<ProfileLayout />
+							</ProtectedRoute>
+						}>
 						<Route path={PROFILE_PATH} element={<Profile />} />
 						<Route path={WISHLIST_PATH} element={<Wishlist />} />
 						<Route

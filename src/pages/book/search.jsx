@@ -95,7 +95,7 @@ export default function Search() {
 						<option value='40'>40 sản phẩm</option>
 					</select>
 				</div>
-				<div>
+				{/* <div>
 					<label>Mức giá </label>
 					<select className='border border-black rounded-lg p-2' 
 							name='Sắp xếp theo' 
@@ -108,7 +108,7 @@ export default function Search() {
 						<option value='200000,999999999'>Hơn 200,000đ</option>
 						
 					</select>
-			</div>
+			</div> */}
 
 			</div>
 

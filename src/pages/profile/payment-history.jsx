@@ -10,7 +10,7 @@ export default function PaymentHistory() {
 	const orders = data?.data
 	// console.log(isLoading);
 
-	if(!!orders)
+	if(!orders)
 		return (
 			<div className='bg-white rounded p-5'>
 				<div className='p-5 text-xl text-center'>Chưa có đơn hàng</div>
