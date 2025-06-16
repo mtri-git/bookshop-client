@@ -9,11 +9,11 @@ export default function DropDownMenuItem({ children, link, onClickIn = () => {} 
 			.setAttribute('style', 'display: none')
 	}
 	return (
-		<NavLink to={link}>
+		<NavLink to={link} tabIndex={-1}>
 			<div
-				style={{ zIndex: '100' }}
 				onClick={onClick}
-				className='block pb-2 pr-4 pl-3 text-lg text-gray-700 rounded w-40 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-orange-500 md:p-0 active:text-orange-500 '>
+				className='w-full px-4 py-2 text-base text-gray-700 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-colors duration-150 cursor-pointer text-center focus:bg-orange-100 focus:text-orange-700'
+				style={{ zIndex: 100 }}>
 				{children}
 			</div>
 		</NavLink>

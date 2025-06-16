@@ -70,107 +70,74 @@ export default function Payment() {
 	return (
 		<DialogProvider>
 			<div>
-			<Header />
-			<div className='payment-form pb-20 m-auto w-9/12 mt-10'>
-				<div className='rounded-lg bg-white'>
-					<form>
-						{user?.isLoggedIn ? (
-							<div className='p-5 border-dashed border-b-2'>
-								<div className='font-bold text-lg'>Địa chỉ giao hàng: </div>
-								<div className='text-md'>{` ${user?.user.data.fullname} | ${user?.user.data.phone} | ${user?.user.data.address}`}</div>
-								<div className='text-md'>Postal Code: {user?.user.data.postalCode}</div>
+				<Header />
+				<div className="payment-form pb-20 max-w-2xl w-full mx-auto mt-6 px-2 sm:px-0">
+					<div className="rounded-lg bg-white shadow-md">
+						<form>
+							{user?.isLoggedIn ? (
+								<div className="p-4 sm:p-5 border-dashed border-b-2">
+									<div className="font-bold text-base sm:text-lg">Địa chỉ giao hàng: </div>
+									<div className="text-sm sm:text-md break-words">{` ${user?.user.data.fullname} | ${user?.user.data.phone} | ${user?.user.data.address}`}</div>
+									<div className="text-sm sm:text-md">Postal Code: {user?.user.data.postalCode}</div>
+								</div>
+							) : (
+								<>Nothing</>
+							)}
+							<div className="p-2 sm:pl-5">
+								<h1 className="font-bold text-base sm:text-lg">Phương thức thanh toán</h1>
+								<div className="pt-4 space-y-3" onChange={onPaymentChange}>
+									<div className="flex items-center gap-2">
+										<input type="radio" value="Cash" name="pay" checked={payment === 'Cash'} key={uuidv4()} />
+										<img className="w-8 sm:w-10" src="/icons/cash-icon.svg" />
+										<label className="text-sm sm:text-base">Thanh toán khi nhận hàng</label>
+									</div>
+									<div className="flex items-center gap-2">
+										<input type="radio" value="Momo" name="pay" checked={payment === 'Momo'} key={uuidv4()} />
+										<img className="w-8 sm:w-10" src="/icons/cash-icon.svg" />
+										<label className="text-sm sm:text-base">Momo</label>
+									</div>
+									<div className="flex items-center gap-2">
+										<input type="radio" value="Bank" name="pay" key={uuidv4()} checked={payment === 'Bank'} />
+										<img className="w-8 sm:w-10" src="/icons/credit-card.svg" />
+										<label className="text-sm sm:text-base">Ngân hàng</label>
+									</div>
+								</div>
 							</div>
-						) : (
-							<>
-								Nothing
-							</>
-						)}
-						<div className='p-2 pl-5'>
-							<h1 className='font-bold text-lg'>Phương thức thanh toán</h1>
-							<div></div>
-							<div className='pt-5' onChange={(event) => onPaymentChange(event)}>
-								<div className='flex gap-2'>
-									<input
-										type='radio'
-										value='Cash'
-										name='pay'
-										checked={payment === 'Cash'}
-										key={uuidv4()}
-									/>
-									<img
-										className='w-10'
-										src='/icons/cash-icon.svg'
-									/>
-									<label> Thanh toán khi nhận hàng</label>
-								</div>
-								<br />
-								<div className='flex gap-2' value={payment}>
-									<input
-										type='radio'
-										value='Momo'
-										name='pay'
-										checked={payment === 'Momo'}
-										key={uuidv4()}
-									/>
-									<img
-										className='w-10'
-										src='/icons/cash-icon.svg'
-									/>
-									<label>Momo</label>
-								</div>
-								<br />
-								<div className='flex gap-2'>
-									<input
-										type='radio'
-										value='Bank'
-										name='pay'
-										key={uuidv4()}
-										checked={payment === 'Bank'}
-										
-									/>{' '}
-									<img
-										className='w-10'
-										src='/icons/credit-card.svg'
-									/>
-									<label>Ngân hàng</label>
-								</div>
-								<br />
+						</form>
+						<div className="p-4 sm:p-5">
+							<div className="font-semibold mb-2">Kiểm kê lại đơn hàng</div>
+							<CheckoutList data={checkoutItems}/>
+						</div>
+					</div>
+				</div>
+
+				<div className="p-4 sm:p-5 bg-white fixed sm:static bottom-0 left-0 w-full sm:w-auto shadow-xl text-end z-20 border-t sm:border-0">
+					<div className="max-w-2xl mx-auto flex flex-col sm:flex-row items-center sm:justify-between gap-2 border-b-2 pb-2">
+						<div className="flex flex-col sm:flex-row gap-2 sm:gap-6 w-full sm:w-auto justify-between">
+							<div>
+								<label>Thành tiền: </label>
+								<span>{formatPrice( totalWithSale)}đ</span>
+							</div>
+							<div>
+								<label>Phí giao hàng: </label>
+								<span>12.000đ</span>
+							</div>
+							<div>
+								<label className="font-bold">Tổng tiền: </label>
+								<span className="font-bold text-orange-600 text-lg">{formatPrice( totalWithSale)}đ</span>
 							</div>
 						</div>
-					</form>
-
-					<div className='p-5'>
-						<div>Kiểm kê lại đơn hàng</div>
-						<CheckoutList data={checkoutItems}/>
 					</div>
-				</div>
-			</div>
-
-			<div className='p-5 bg-white sticky bottom-0 px-20 shadow-xl text-end'>
-				<div className='border-b-2 pb-2'>
-					<div>
-						<label>Thành tiền: </label>
-						<span>{formatPrice( totalWithSale)}đ</span>
-					</div>
-					<div>
-						<label>Phí giao hàng: </label>
-						<span>12.000đ</span>
-					</div>
-					<div>
-						<label className='font-bold'>Tổng tiền: </label>
-						<span className='font-bold text-orange-600 text-lg'>{formatPrice( totalWithSale)}đ</span>
-					</div>
-					
-				</div>
-				<div className='pt-2 flex'>
-						<Link to={CART_PATH}>🠔 Quay về giỏ hàng</Link>
+					<div className="max-w-2xl mx-auto pt-2 flex flex-col sm:flex-row items-center gap-2">
+						<Link to={CART_PATH} className="text-sm sm:text-base text-blue-600 hover:underline">🠔 Quay về giỏ hàng</Link>
 						<Button
-							className='ml-auto'
-							onClick={onPay}>
+							className="ml-0 sm:ml-auto w-full sm:w-auto"
+							onClick={onPay}
+						>
 							Thanh toán
 						</Button>
 					</div>
-			</div>
+				</div>
 			</div>
 		</DialogProvider>
 	)
