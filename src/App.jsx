@@ -1,3 +1,4 @@
+import React, { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 
@@ -21,92 +22,96 @@ import {
 	SEARCH_PATH,
 	FORGET_PASSWORD_PATH,
 } from './constants/path'
-import Home from './pages'
-import Login from './pages/login'
-import Cart from './pages/cart'
-import Payment from './pages/payment'
-import BookDetail from './pages/book/[id]'
-import Author from './pages/author'
-import AuthorDetail from './pages/author/[id]'
-import Category from './pages/category'
-import Register from './pages/register'
-import ProfileLayout from './layouts/ProfileLayout'
-import Wishlist from './pages/profile/wishlist'
-import CategoryDetail from './pages/category/[id]'
-import Page404 from './pages/404.jsx'
-import Publisher from './pages/publisher'
-import PublisherDetail from './pages/publisher/[id]'
-import Search from './pages/book/search'
-import Profile from './pages/profile/index'
-import PaymentHistory from './pages/profile/payment-history'
-import ForgetPassword from './pages/forget-password'
 import { DialogProvider } from './hooks/useDialog'
 import { BookQuantityProvider } from './hooks/useBookQuantityDetail'
 import ProtectedRoute from './components/ProtectedRoute'
+import ProfileLayout from './layouts/ProfileLayout'
+
+// Lazy load pages
+const Home = lazy(() => import('./pages'))
+const Login = lazy(() => import('./pages/login'))
+const Cart = lazy(() => import('./pages/cart'))
+const Payment = lazy(() => import('./pages/payment'))
+const BookDetail = lazy(() => import('./pages/book/[id]'))
+const Author = lazy(() => import('./pages/author'))
+const AuthorDetail = lazy(() => import('./pages/author/[id]'))
+const Category = lazy(() => import('./pages/category'))
+const Register = lazy(() => import('./pages/register'))
+const Wishlist = lazy(() => import('./pages/profile/wishlist'))
+const CategoryDetail = lazy(() => import('./pages/category/[id]'))
+const Page404 = lazy(() => import('./pages/404.jsx'))
+const Publisher = lazy(() => import('./pages/publisher'))
+const PublisherDetail = lazy(() => import('./pages/publisher/[id]'))
+const Search = lazy(() => import('./pages/book/search'))
+const Profile = lazy(() => import('./pages/profile/index'))
+const PaymentHistory = lazy(() => import('./pages/profile/payment-history'))
+const ForgetPassword = lazy(() => import('./pages/forget-password'))
 
 function App() {
 	return (
 		<DialogProvider>
-			<Routes>
-				<Route path={LOGIN_PATH} element={<Login />} />
-				<Route
-					path={PAYMENT_PATH}
-					element={
-						<ProtectedRoute>
-							<Payment />
-						</ProtectedRoute>
-					}
-				/>
-				<Route path={REGISTER_PATH} element={<Register />} />
-				<Route
-					path={FORGET_PASSWORD_PATH}
-					element={<ForgetPassword />}
-				/>
-				<Route element={<MainLayout />}>
-					<Route path={HOME_PATH} element={<Home />} />
-					<Route path={CART_PATH} element={<Cart />} />
-					<Route path={SEARCH_PATH} element={<Search />} />
-					<Route path={CART_PATH} element={<Cart />} />
-					<Route />
-
-					{/* Book path */}
-					<Route path={BOOK_PATH}>
-						<Route index element={<Search />} />
-						<Route
-							path={BOOK_DETAIL_PATH}
-							element={
-								<BookQuantityProvider>
-									<BookDetail />
-								</BookQuantityProvider>
-							}
-						/>
-					</Route>
-					{/* Profile path */}
+			<Suspense fallback={<div className="w-full h-screen flex items-center justify-center text-lg">Loading...</div>}>
+				<Routes>
+					<Route path={LOGIN_PATH} element={<Login />} />
 					<Route
+						path={PAYMENT_PATH}
 						element={
 							<ProtectedRoute>
-								<ProfileLayout />
+								<Payment />
 							</ProtectedRoute>
-						}>
-						<Route path={PROFILE_PATH} element={<Profile />} />
-						<Route path={WISHLIST_PATH} element={<Wishlist />} />
-						<Route
-							path={PAYMENT_HISTORY_PATH}
-							element={<PaymentHistory />}
-						/>
-					</Route>
+						}
+					/>
+					<Route path={REGISTER_PATH} element={<Register />} />
+					<Route
+						path={FORGET_PASSWORD_PATH}
+						element={<ForgetPassword />}
+					/>
+					<Route element={<MainLayout />}>
+						<Route path={HOME_PATH} element={<Home />} />
+						<Route path={CART_PATH} element={<Cart />} />
+						<Route path={SEARCH_PATH} element={<Search />} />
+						<Route path={CART_PATH} element={<Cart />} />
+						<Route />
 
-					<Route path={PUBLISHER_PATH}>
-						<Route index element={<Publisher />} />
+						{/* Book path */}
+						<Route path={BOOK_PATH}>
+							<Route index element={<Search />} />
+							<Route
+								path={BOOK_DETAIL_PATH}
+								element={
+									<BookQuantityProvider>
+										<BookDetail />
+									</BookQuantityProvider>
+								}
+							/>
+						</Route>
+						{/* Profile path */}
 						<Route
-							path={PUBLISHER_DETAIL_PATH}
-							element={<PublisherDetail />}
-						/>
-					</Route>
+							element={
+								<ProtectedRoute>
+									<ProfileLayout />
+								</ProtectedRoute>
+							}>
+							<Route path={PROFILE_PATH} element={<Profile />} />
+							<Route path={WISHLIST_PATH} element={<Wishlist />} />
+							<Route
+								path={PAYMENT_HISTORY_PATH}
+								element={<PaymentHistory />}
+							/>
+						</Route>
 
-					<Route path='*' element={<Page404 />} />
-				</Route>
-			</Routes>
+						<Route path={PUBLISHER_PATH}>
+							<Route index element={<Publisher />} />
+							<Route
+								path={PUBLISHER_DETAIL_PATH}
+								element={<PublisherDetail />}
+							/>
+						</Route>
+
+						<Route path='*' element={<Page404 />} />
+					</Route>
+				</Routes>
+			</Suspense>
 		</DialogProvider>
 	)
 }
