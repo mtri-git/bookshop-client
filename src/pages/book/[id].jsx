@@ -141,15 +141,13 @@ export default function BookDetail() {
 											<span className="font-bold text-gray-900">Bìa Mềm</span>
 										</div>
 									</div>
-								</div>
-
-								{/* Price Section */}
-								<div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-6 border border-orange-100">
+								</div>								{/* Price Section */}
+								<div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-5 sm:p-6 border border-orange-100 shadow-sm">
 									<FlashSaleBanner price={book?.price} sale={book?.sale} />
 								</div>								{/* Action Buttons */}
-								<div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+								<div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4">
 									<button
-										className="flex-1 group relative overflow-hidden bg-white border-2 border-red-500 text-red-500 px-4 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg transition-all duration-300 hover:bg-red-500 hover:text-white hover:shadow-xl hover:-translate-y-1 active:translate-y-0 active:shadow-lg"
+										className="flex-1 group relative overflow-hidden bg-white border-2 border-red-500 text-red-500 px-4 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg transition-all duration-300 hover:bg-red-500 hover:text-white hover:shadow-xl hover:-translate-y-1 active:translate-y-0 active:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
 										onClick={addToCartClick}
 									>
 										<span className="relative z-10 flex items-center justify-center">
@@ -159,7 +157,7 @@ export default function BookDetail() {
 											Thêm vào giỏ hàng
 										</span>
 									</button>
-									<button className="flex-1 group relative overflow-hidden bg-gradient-to-r from-red-500 to-red-600 text-white px-4 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg transition-all duration-300 hover:from-red-600 hover:to-red-700 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 active:shadow-lg">
+									<button className="flex-1 group relative overflow-hidden bg-gradient-to-r from-red-500 to-red-600 text-white px-4 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl font-bold text-base sm:text-lg transition-all duration-300 hover:from-red-600 hover:to-red-700 hover:shadow-xl hover:-translate-y-1 active:translate-y-0 active:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
 										<span className="relative z-10 flex items-center justify-center">
 											<svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
 												<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.293l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clipRule="evenodd" />
@@ -172,29 +170,24 @@ export default function BookDetail() {
 						</div>
 					</div>					{/* Product Information Section */}
 					<div className="bg-white rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 backdrop-blur-sm border border-white/20">
-						<div className="flex flex-col sm:flex-row sm:items-center mb-4 sm:mb-6">
-							<div className="bg-gradient-to-r from-orange-500 to-red-500 p-3 rounded-2xl shadow-lg mb-3 sm:mb-0 sm:mr-4 inline-flex self-center">
-								<svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-									<path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-								</svg>
+						<div className="flex flex-col sm:flex-row sm:items-center mb-4 sm:mb-6 gap-2">
+							<div className="flex items-center">
+								<img className="w-8 h-8 mr-2" src="/icons/info-icon.svg" alt="Info Icon" />
+								<h2 className="text-2xl lg:text-3xl font-bold text-gray-900">Thông tin sản phẩm</h2>
 							</div>
-							<h2 className="text-2xl lg:text-3xl font-bold text-gray-900 text-center sm:text-left">Thông tin sản phẩm</h2>
+							<div className="hidden sm:block h-6 w-px bg-gray-300 mx-3"></div>
+							<span className="text-sm text-gray-500">Chi tiết và đặc điểm nổi bật</span>
 						</div>
 						<div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-4 sm:p-6 border border-gray-200">
 							<DescriptionBox content={book?.description} />
 						</div>
-					</div>
-
-					{/* Related Products Section */}
+					</div>					{/* Related Products Section */}
 					<div className="bg-white rounded-3xl shadow-xl p-4 sm:p-6 lg:p-8 backdrop-blur-sm border border-white/20">
 						<div className="text-center mb-6 sm:mb-8">
-							<div className="inline-flex items-center bg-gradient-to-r from-orange-500 to-red-500 p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-lg mb-3 sm:mb-4">
-								<svg className="w-6 h-6 sm:w-8 sm:h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
-									<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-								</svg>
-							</div>
-							<h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+							<h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 flex items-center justify-center">
+								<img className="w-8 h-8 mr-2" src="/icons/star-icon.svg" alt="Related Products Icon" />
 								Sản phẩm liên quan
+								<img className="w-8 h-8 ml-2" src="/icons/star-icon.svg" alt="Related Products Icon" />
 							</h2>
 							<p className="text-gray-600 text-base sm:text-lg">Khám phá những cuốn sách tuyệt vời khác</p>
 						</div>
