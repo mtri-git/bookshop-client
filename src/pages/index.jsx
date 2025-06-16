@@ -37,17 +37,26 @@ export default function Home() {
 	console.log(books)
 
 	return (
-		<main className='homepage pb-20 bg-white rounded-xl'>
-			<div className='flex gap-2 justify-between mr-auto p-10 h-96 sm:h-1/12'>
-					<Slider/>
-				<div className='flex flex-col gap-2 w-11/12 h-fit'>
-					<img className='rounded-lg' src='https://cdn0.fahasa.com/media/wysiwyg/Thang-12-2022/Branday_flashsale_Sub%20banner_392x156.jpg'/>
-					<img className='rounded-lg' src='https://cdn0.fahasa.com/media/wysiwyg/Thang-12-2022/Branday_flashsale_Sub%20banner_392x156.jpg'/>
+		<main className="homepage pb-8 bg-white rounded-xl min-h-screen">
+			{/* Responsive flex: column on mobile, row on md+ */}
+			<div className="flex flex-col md:flex-row gap-4 md:gap-8 justify-between items-center md:items-stretch p-4 md:p-10 h-auto md:h-96">
+				<div className="w-full md:w-2/3 lg:w-3/5 flex-1 h-64 md:h-full flex">
+					<div className="w-full h-full aspect-[2.5/1]">
+						<Slider />
+					</div>
+				</div>
+				<div className="flex flex-col gap-2 w-full md:w-1/3 lg:w-2/5 flex-1 h-64 md:h-full">
+					<div className="flex-1">
+						<img className="rounded-lg w-full h-full object-cover aspect-[2.5/1]" src="https://cdn0.fahasa.com/media/wysiwyg/Thang-12-2022/Branday_flashsale_Sub%20banner_392x156.jpg" alt="Banner 1" />
+					</div>
+					<div className="flex-1">
+						<img className="rounded-lg w-full h-full object-cover aspect-[2.5/1]" src="https://cdn0.fahasa.com/media/wysiwyg/Thang-12-2022/Branday_flashsale_Sub%20banner_392x156.jpg" alt="Banner 2" />
+					</div>
 				</div>
 			</div>
-			<div className='wrapper divide-y'>
-				<div className='p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-8'>
-					<h2 className='text-2xl lg:text-3xl font-bold text-center pt-5 col-span-full'>
+			<div className="wrapper divide-y">
+				<div className="p-4 md:p-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8">
+					<h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center pt-2 sm:pt-5 col-span-full">
 						Mới nhất
 					</h2>
 					{books ? (
@@ -57,14 +66,14 @@ export default function Home() {
 					) 
 					: 
 					(
-						<div className='col-span-full'>
-							<Loading/>
+						<div className="col-span-full">
+							<Loading />
 						</div>
 					)}
 				</div>
 
-				<div className='px-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-5'>
-					<h2 className='text-3xl font-bold text-center pt-5 col-span-full'>
+				<div className="px-4 md:px-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5">
+					<h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center pt-2 sm:pt-5 col-span-full">
 						Bán chạy nhất
 					</h2>
 					{bestSellerBook ? (
@@ -74,8 +83,8 @@ export default function Home() {
 					) 
 					: 
 					(
-						<div className='col-span-full'>
-							<Loading/>
+						<div className="col-span-full">
+							<Loading />
 						</div>
 					)}
 				</div>
