@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
+import LoadingIndicator from './components/LoadingIndicator'
 
 import {
 	HOME_PATH,
@@ -21,6 +22,7 @@ import {
 	PUBLISHER_DETAIL_PATH,
 	SEARCH_PATH,
 	FORGET_PASSWORD_PATH,
+	LOADING_DEMO_PATH,
 } from './constants/path'
 import { DialogProvider } from './hooks/useDialog'
 import { BookQuantityProvider } from './hooks/useBookQuantityDetail'
@@ -46,11 +48,11 @@ const Search = lazy(() => import('./pages/book/search'))
 const Profile = lazy(() => import('./pages/profile/index'))
 const PaymentHistory = lazy(() => import('./pages/profile/payment-history'))
 const ForgetPassword = lazy(() => import('./pages/forget-password'))
+const LoadingDemo = lazy(() => import('./pages/loading-demo'))
 
-function App() {
-	return (
+function App() {	return (
 		<DialogProvider>
-			<Suspense fallback={<div className="w-full h-screen flex items-center justify-center text-lg">Loading...</div>}>
+			<Suspense fallback={<LoadingIndicator fullScreen transparent size="large" color="primary" text="Đang tải..." />}>
 				<Routes>
 					<Route path={LOGIN_PATH} element={<Login />} />
 					<Route
@@ -98,15 +100,16 @@ function App() {
 								path={PAYMENT_HISTORY_PATH}
 								element={<PaymentHistory />}
 							/>
-						</Route>
-
-						<Route path={PUBLISHER_PATH}>
+						</Route>						<Route path={PUBLISHER_PATH}>
 							<Route index element={<Publisher />} />
 							<Route
 								path={PUBLISHER_DETAIL_PATH}
 								element={<PublisherDetail />}
 							/>
 						</Route>
+
+						{/* Loading Demo */}
+						<Route path={LOADING_DEMO_PATH} element={<LoadingDemo />} />
 
 						<Route path='*' element={<Page404 />} />
 					</Route>
