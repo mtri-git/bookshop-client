@@ -1,13 +1,10 @@
-import React, { useRef } from 'react'
-import { useEffect } from 'react'
-import { useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import {
 	createSearchParams,
 	Link,
 	NavLink,
 	useNavigate,
 } from 'react-router-dom'
-
 import {
 	BOOK_PATH,
 	CART_PATH,
@@ -23,12 +20,15 @@ import './Header.css'
 
 export default function Header() {
 	const [cartCount, setCartCount] = useState(0)
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 	const count = useTotalCartItem()
-	// className for NavLink using Tailwind
+	
+	// Enhanced className for NavLink with better styling
 	const unActiveClassNameTW =
-		'select-none cursor-pointer w-full h-full rounded  block text-lg text-gray-700 hover:text-orange-600 md:hover:bg-transparent md:hover:text-orange-500 md:p-0 active:text-orange-500'
+		'block px-4 py-3 md:px-3 md:py-2 rounded-lg text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 md:hover:bg-transparent md:hover:text-orange-600 md:p-0 transition-all duration-200 ease-in-out'
 	const activeClassNameTW =
-		'select-none cursor-pointer w-full h-full text-orange-500 border-b-4 border-orange-500 text-lg hover:text-orange-600'
+		'block px-4 py-3 md:px-3 md:py-2 rounded-lg text-base font-medium text-orange-600 bg-orange-50 md:bg-transparent md:text-orange-600 md:border-b-2 md:border-orange-600 transition-all duration-200 ease-in-out'
+	
 	const navigate = useNavigate()
 	const searchRef = useRef()
 	const user = useSelectUser()
@@ -44,52 +44,40 @@ export default function Header() {
 		}
 	}
 
-	useEffect(()=>{
+	useEffect(() => {
 		setCartCount(count)
-	})
+	}, [count])
+
+	const handleMenuToggle = () => setMobileMenuOpen((prev) => !prev)
+	const closeMenu = () => setMobileMenuOpen(false)
 
 	return (
-		<header className='header bg-orange-500 sticky z-50 top-0'>
-			<div className='flex md:order-2 pr-3text-right text-white font-3xl'></div>
-			<nav className='bg-inherit border-gray-200 px-2 sm:px-4 py-2.5 rounded relative'>
-				<div className='container flex flex-wrap justify-between items-center mx-auto'>
-					<Link to={HOME_PATH} className='flex items-center pl-3'>
-						<img
-							src='/vite.svg'
-							className='mr-3 h-6 sm:h-9'
-							alt='Vite Logo'
-						/>
-						<span className='self-center text-xl font-semibold whitespace-nowrap text-white'>
+		<header className='header bg-gradient-to-r from-orange-500 to-orange-600 sticky z-50 top-0 w-full shadow-lg backdrop-blur-sm'>
+			<nav className='px-4 sm:px-6 py-3 relative'>
+				<div className='container flex flex-wrap justify-between items-center mx-auto max-w-7xl'>
+					{/* Logo */}
+					<Link
+						to={HOME_PATH}
+						className='flex items-center group'
+						onClick={closeMenu}>
+						<div className='bg-white p-2 rounded-lg shadow-sm mr-3 group-hover:shadow-md transition-shadow duration-200'>
+							<img
+								src='/vite.svg'
+								className='h-6 sm:h-8 w-auto'
+								alt='Vite Logo'
+							/>
+						</div>
+						<span className='self-center text-xl sm:text-2xl font-bold text-white group-hover:text-orange-100 transition-colors duration-200'>
 							BookShop
 						</span>
 					</Link>
 
-					<div className='flex md:order-2 pr-3'>
-						<button
-							type='button'
-							data-collapse-toggle='navbar-search'
-							aria-controls='navbar-search'
-							aria-expanded='false'
-							className='md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 mr-1'>
-							<svg
-								className='w-5 h-5'
-								aria-hidden='true'
-								fill='currentColor'
-								viewBox='0 0 20 20'
-								xmlns='http://www.w3.org/2000/svg'>
-								<path
-									fillRule='evenodd'
-									d='M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z'
-									clipRule='evenodd'
-								/>
-							</svg>
-							<span className='sr-only'>Tìm...</span>
-						</button>
-						<div className='hidden relative md:block'>
-							<div className='flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none'>
+					{/* Desktop search */}
+					<div className='hidden md:flex items-center flex-1 max-w-md mx-8'>
+						<div className='relative w-full'>
+							<div className='flex absolute inset-y-0 left-0 items-center pl-4 pointer-events-none'>
 								<svg
-									className='w-5 h-5 text-gray-500'
-									aria-hidden='true'
+									className='w-5 h-5 text-gray-400'
 									fill='currentColor'
 									viewBox='0 0 20 20'
 									xmlns='http://www.w3.org/2000/svg'>
@@ -99,46 +87,126 @@ export default function Header() {
 										clipRule='evenodd'
 									/>
 								</svg>
-								<span className='sr-only'>Search icon</span>
 							</div>
 							<input
 								type='text'
 								id='search-navbar'
 								ref={searchRef}
 								onKeyUp={onSearch}
-								className='block p-2 pl-10 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-								placeholder='Tìm kiếm...'
+								className='block w-full py-3 pl-12 pr-4 text-gray-900 bg-white rounded-xl border-0 shadow-sm focus:ring-2 focus:ring-orange-300 focus:bg-white placeholder-gray-500 transition-all duration-200'
+								placeholder='Tìm kiếm sách...'
 							/>
 						</div>
-						<button
-							data-collapse-toggle='navbar-search'
-							type='button'
-							className='inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600'
-							aria-controls='navbar-search'
-							aria-expanded='false'>
-							<span className='sr-only'>Open menu</span>
-							<svg
-								className='w-6 h-6'
-								aria-hidden='true'
-								fill='currentColor'
-								viewBox='0 0 20 20'
-								xmlns='http://www.w3.org/2000/svg'>
-								<path
-									fillRule='evenodd'
-									d='M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z'
-									clipRule='evenodd'
-								/>
-							</svg>
-						</button>
 					</div>
-					<div
-						className='hidden justify-between items-center w-full md:flex md:w-auto md:order-1'
-						id='navbar-search'>
-						<div className='relative mt-3 md:hidden'>
-							<div className='flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none'>
+
+					{/* Mobile menu button */}
+					<button
+						type='button'
+						className='md:hidden inline-flex items-center p-2 text-white hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300 rounded-lg transition-colors duration-200'
+						aria-controls='navbar-menu'
+						aria-expanded={mobileMenuOpen}
+						onClick={handleMenuToggle}>
+						<span className='sr-only'>Open main menu</span>
+						<svg
+							className='w-6 h-6'
+							fill='none'
+							stroke='currentColor'
+							viewBox='0 0 24 24'
+							xmlns='http://www.w3.org/2000/svg'>
+							{mobileMenuOpen ? (
+								<path
+									strokeLinecap='round'
+									strokeLinejoin='round'
+									strokeWidth={2}
+									d='M6 18L18 6M6 6l12 12'
+								/>
+							) : (
+								<path
+									strokeLinecap='round'
+									strokeLinejoin='round'
+									strokeWidth={2}
+									d='M4 6h16M4 12h16M4 18h16'
+								/>
+							)}
+						</svg>
+					</button>
+
+					{/* Desktop Navigation */}
+					<div className='hidden md:flex items-center space-x-1'>
+						<NavLink
+							to={HOME_PATH}
+							end
+							className={({ isActive }) =>
+								`px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 ${
+									isActive
+										? 'text-white bg-orange-600 shadow-sm'
+										: 'text-orange-100 hover:text-white hover:bg-orange-600'
+								}`
+							}>
+							Trang chủ
+						</NavLink>
+						<NavLink
+							to={BOOK_PATH}
+							className={({ isActive }) =>
+								`px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 ${
+									isActive
+										? 'text-white bg-orange-600 shadow-sm'
+										: 'text-orange-100 hover:text-white hover:bg-orange-600'
+								}`
+							}>
+							Sách
+						</NavLink>
+						
+						{user.isLoggedIn ? (
+							<div className='ml-2'>
+								<DropDownMenu title='Tài khoản' {...user.user.data} />
+							</div>
+						) : (
+							<NavLink
+								to={LOGIN_PATH}
+								className='px-4 py-2 rounded-lg text-base font-medium text-orange-100 hover:text-white hover:bg-orange-600 transition-all duration-200'>
+								Đăng nhập
+							</NavLink>
+						)}
+						
+						<NavLink
+							to={CART_PATH}
+							className={({ isActive }) =>
+								`relative p-2 ml-2 rounded-lg transition-all duration-200 ${
+									isActive
+										? 'bg-orange-600 shadow-sm'
+										: 'hover:bg-orange-600'
+								}`
+							}>
+							<div className='relative w-6 h-6'>
+								<img
+									src='/icons/cart-icon.svg'
+									alt='Cart'
+									className='w-full h-full object-contain'
+								/>
+								{cartCount > 0 && (
+									<span className='absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm min-w-[20px] text-center'>
+										{cartCount > 99 ? '99+' : cartCount}
+									</span>
+								)}
+							</div>
+						</NavLink>
+					</div>
+				</div>
+
+				{/* Mobile menu */}
+				<div
+					id='navbar-menu'
+					className={`${
+						mobileMenuOpen ? 'flex' : 'hidden'
+					} md:hidden flex-col w-full bg-white rounded-lg shadow-lg mt-2 border border-gray-100 transition-all duration-200 ease-in-out`}>
+					
+					{/* Mobile search */}
+					<div className='p-4 border-b border-gray-100'>
+						<div className='relative'>
+							<div className='flex absolute inset-y-0 left-0 items-center pl-4 pointer-events-none'>
 								<svg
-									className='w-5 h-5 text-gray-500'
-									aria-hidden='true'
+									className='w-5 h-5 text-gray-400'
 									fill='currentColor'
 									viewBox='0 0 20 20'
 									xmlns='http://www.w3.org/2000/svg'>
@@ -151,84 +219,67 @@ export default function Header() {
 							</div>
 							<input
 								type='text'
-								id='search-navbar'
-								className='block p-2 pl-10 w-full text-gray-900 bg-gray-50 rounded-lg border border-gray-300 sm:text-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-								placeholder='Search...'
+								ref={searchRef}
+								onKeyUp={onSearch}
+								className='block w-full py-3 pl-12 pr-4 text-gray-900 bg-gray-50 rounded-xl border-0 focus:ring-2 focus:ring-orange-300 focus:bg-white placeholder-gray-500 transition-all duration-200'
+								placeholder='Tìm kiếm sách...'
 							/>
 						</div>
-						<ul className='flex p-3 mt-4 bg-gray-50 rounded-lg border border-gray-100 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white'>
-							<li className='rounded transition duration-150 ease-out hover:ease-in'>
-								<NavLink
-									onClick={(ev) => ev.stopPropagation()}
-									to={HOME_PATH}
-									end
-									className={({ isActive }) =>
-										isActive
-											? activeClassNameTW
-											: unActiveClassNameTW
-									}>
-									Trang chủ
-								</NavLink>
-							</li>
+					</div>
 
-							<li className='rounded '>
-								<NavLink
-									to={BOOK_PATH}
-									className={({ isActive }) =>
-										isActive
-											? activeClassNameTW
-											: unActiveClassNameTW
-									}>
-									Sách
-								</NavLink>
-							</li>
+					{/* Mobile navigation */}
+					<div className='p-2'>
+						<NavLink
+							to={HOME_PATH}
+							end
+							className={({ isActive }) =>
+								isActive ? activeClassNameTW : unActiveClassNameTW
+							}
+							onClick={closeMenu}>
+							Trang chủ
+						</NavLink>
+						<NavLink
+							to={BOOK_PATH}
+							className={({ isActive }) =>
+								isActive ? activeClassNameTW : unActiveClassNameTW
+							}
+							onClick={closeMenu}>
+							Sách
+						</NavLink>
 
-							{/* <li className='rounded '>
-								<NavLink
-									to={CATEGORY_PATH}
-									className={({ isActive }) =>
-										isActive
-											? activeClassNameTW
-											: unActiveClassNameTW
-									}>
-									Thể loại
-								</NavLink>
-							</li> */}
-
-
-							<li className='select-none cursor-pointer rounded flex'>
-								{user.isLoggedIn ? (
-									<DropDownMenu title='Tài khoản' {...user.user.data}></DropDownMenu>
-								) : (
-									<li className='rounded '>
-										<NavLink
-											to={LOGIN_PATH}
-											className={unActiveClassNameTW}>
-											Đăng nhập
-										</NavLink>
-									</li>
+						{user.isLoggedIn ? (
+							<div className='px-4 py-3'>
+								<DropDownMenu title='Tài khoản' {...user.user.data} />
+							</div>
+						) : (
+							<NavLink
+								to={LOGIN_PATH}
+								className={unActiveClassNameTW}
+								onClick={closeMenu}>
+								Đăng nhập
+							</NavLink>
+						)}
+						
+						<NavLink
+							to={CART_PATH}
+							className={({ isActive }) =>
+								`flex items-center ${isActive ? activeClassNameTW : unActiveClassNameTW}`
+							}
+							onClick={closeMenu}>
+							<div className='relative w-6 h-6 mr-3'>
+								<img
+									src='/icons/cart-icon.svg'
+									alt='Cart'
+									className='w-full h-full object-contain'
+								/>
+								{cartCount > 0 && (
+									<span className='absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm min-w-[20px] text-center'>
+										{cartCount > 99 ? '99+' : cartCount}
+									</span>
 								)}
-							</li>
-
-							<li className='rounded px-2'>
-								<NavLink
-									to={CART_PATH}
-									className={({ isActive }) =>
-										isActive
-											? activeClassNameTW
-											: unActiveClassNameTW
-									}>
-									<div className='relative'>
-										<div className='w-7'>
-											<img src='/icons/cart-icon.svg' />
-										</div>
-										<div className='absolute bg-red-500 text-white border border-white text-sm px-2 rounded-full left-1/2 top-1/2'>
-											{cartCount || 0}
-										</div>
-									</div>
-								</NavLink>
-							</li>
-						</ul>
+							</div>
+							Giỏ hàng
+						</NavLink>
 					</div>
 				</div>
 			</nav>

@@ -45,24 +45,30 @@ export default function DropDownMenu({ title, avatarUrl, fullname }) {
 	// useOutsideAlerter(ref, onDisplayNone(ref))
 
 	return (
-		<div
-			onClick={onClick}
-			className='py-2 px-4 text-lg text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-orange-500 md:p-0 active:text-orange-500 '>
-			<div>{title}</div>
-			<div
+		<div className="relative inline-block text-left select-none">
+			<button
 				onClick={onClick}
+				type="button"
+				className="flex items-center gap-2 py-2 px-4 text-base font-semibold text-gray-700 bg-white rounded-xl shadow hover:shadow-lg border border-gray-200 hover:bg-orange-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-orange-400"
+			>
+				<div className="w-8 h-8 rounded-full border border-orange-500 overflow-hidden bg-gray-100">
+					<img className="w-full h-full object-cover" src={avatarUrl} alt={fullname} />
+				</div>
+				<span className="hidden sm:inline-block">{fullname || title}</span>
+				<svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+			</button>
+			<div
+				onClick={e => e.stopPropagation()}
 				ref={ref}
-				id='dropdown-menu'
-				style={{zIndex: '100', display: "none"}}
-				className='absolute bg-white w-40 py-4 m-2 shadow-xl shadow-orange-500/50 text-center rounded mix-blend-color-dodge'>
-				<div className='border-b pd-2 border-orange-500'>
-					<div className='w-8 h-8 m-auto rounded-full border border-orange-600'>
-						<img
-							className='w-full h-full rounded-full'
-							src={avatarUrl}
-						/>
+				id="dropdown-menu"
+				style={{zIndex: 100, display: "none"}}
+				className="absolute right-0 mt-2 w-48 origin-top-right bg-white rounded-xl shadow-2xl ring-1 ring-black/5 focus:outline-none animate-fade-in flex flex-col py-2 border border-orange-100"
+			>
+				<div className="flex flex-col items-center border-b border-orange-200 pb-3 mb-2">
+					<div className="w-12 h-12 rounded-full border-2 border-orange-500 overflow-hidden mb-1">
+						<img className="w-full h-full object-cover" src={avatarUrl} alt={fullname} />
 					</div>
-					<span>{fullname}</span>
+					<span className="font-semibold text-gray-800 text-base">{fullname}</span>
 				</div>
 				<DropDownMenuItem link={PROFILE_PATH}>
 					Thông tin
@@ -70,7 +76,9 @@ export default function DropDownMenu({ title, avatarUrl, fullname }) {
 				<DropDownMenuItem link={PAYMENT_HISTORY_PATH}>
 					Đơn hàng
 				</DropDownMenuItem>
-				<DropDownMenuItem link={HOME_PATH} onClickIn={onLogout}>Đăng xuất</DropDownMenuItem>
+				<DropDownMenuItem link={HOME_PATH} onClickIn={onLogout}>
+					<span className="text-red-500 font-semibold">Đăng xuất</span>
+				</DropDownMenuItem>
 			</div>
 		</div>
 	)
