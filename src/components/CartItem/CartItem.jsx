@@ -1,77 +1,173 @@
-import React from 'react'
-import QuantityBox from '../BookDetail.jsx/QuantityBox'
-import { formatPrice } from '../../utils/format'
-import { useDispatch } from 'react-redux'
-import { checkItemInCart, removeFromCart } from '../../redux/actions/cartAction'
+import React from 'react';
+import { useDispatch } from 'react-redux';
+
+import QuantityBox from '../BookDetail.jsx/QuantityBox';
+import { formatPrice } from '../../utils/format';
+import { checkItemInCart, removeFromCart } from '../../redux/actions/cartAction';
 
 export default function CartItem({
-	_id,
-	thumbnailUrl,
-	title,
-	price,
-	sale,
-	count,
-	checked=false
+  _id,
+  thumbnailUrl,
+  title,
+  price,
+  sale,
+  count,
+  checked = false
 }) {
-	const dispatch = useDispatch()
-	const onRemoveFromCart = () => {
-		dispatch(removeFromCart(_id))
-	}
+  const dispatch = useDispatch();
 
-	const onChecked = () => {
-		dispatch(checkItemInCart(_id))
-		// setIsChecked(!checked)
-	}
+  const handleRemoveFromCart = () => {
+    dispatch(removeFromCart(_id));
+  };
 
-	return (
-		<>
-			<div className='wrapper m-2 border-b-2'>
-				<div className='container flex items-end py-4 gap-4 m-auto justify-center'>
-					<div className='check-box-container my-auto'>
-						<input
-							type='checkbox'
-							className='accent-red-500 w-5 h-4 mt-4 flex-1'
-							checked={checked}
-							onClick={onChecked}
-						/>
-					</div>
-					<div className='image-container h-44 w-44 flex-2 my-auto'>
-						<img className='max-w-[150px] max-h-[150px]' src={thumbnailUrl} />
-					</div>
-					<div className='info px-2 flex-2 w-64 my-auto'>
-						<div className='pb-4'>
-							<h2 className='text-lg max-w-xs'>
-								<a>{title.length > 41 ? title.slice(0, 40)+ "..." : title}</a>
-							</h2>
-						</div>
-						<div className='cart-price pt-20 w-44 flex-1 my-auto'>
-							<div className='price-origin px-2 inline  font-medium text-xl'>
-								<span>{formatPrice(price * (1 - sale))}</span>
-							</div>
-							<div className='price-old px-2 inline line-through text-gray-500 flex-1 text-sm'>
-								<span>{formatPrice(price)} đ</span>
-							</div>
-						</div>
-					</div>
-					<div className='cart-number align-text-bottom my-auto flex-2'>
-						<QuantityBox
-							product_id={_id}
-							className='pl-3 inline bottom-0'
-							count={count}
-						/>
-					</div>
-					<div className='price-total pl-2 inline bottom-0 text-red-500 font-bold text-lg flex-1 my-auto'>
-						{formatPrice((1-sale)*price * count)}
-					</div>
-					<div className='flex-1 my-auto'>
-						<img
-							onClick={onRemoveFromCart}
-							className='w-10 cursor-pointer'
-							src='/icons/trashcan-icon.svg'
-						/>
-					</div>
-				</div>
-			</div>
-		</>
-	)
+  const handleCheckChange = () => {
+    dispatch(checkItemInCart(_id));
+  };
+
+  const discountedPrice = price * (1 - sale);
+  const totalPrice = discountedPrice * count;
+  const truncatedTitle = title.length > 41 ? `${title.slice(0, 40)}...` : title;
+
+  return (
+    <div className="border-b border-gray-200 last:border-b-0">
+      {/* Mobile Layout */}
+      <div className="block sm:hidden p-4">
+        <div className="flex items-start gap-3">
+          {/* Checkbox */}
+          <input
+            type="checkbox"
+            className="accent-red-500 w-4 h-4 mt-1 cursor-pointer flex-shrink-0"
+            checked={checked}
+            onChange={handleCheckChange}
+            aria-label={`Select ${title}`}
+          />
+          
+          {/* Product Image */}
+          <div className="w-20 h-20 flex-shrink-0">
+            <img
+              className="w-full h-full object-contain rounded-lg"
+              src={thumbnailUrl}
+              alt={title}
+            />
+          </div>
+          
+          {/* Product Details */}
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-medium text-gray-900 leading-tight mb-2">
+              {truncatedTitle}
+            </h3>
+            
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg font-semibold text-red-600">
+                {formatPrice(discountedPrice)} đ
+              </span>
+              {sale > 0 && (
+                <span className="text-xs text-gray-500 line-through">
+                  {formatPrice(price)} đ
+                </span>
+              )}
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <QuantityBox
+                  product_id={_id}
+                  count={count}
+                  className="scale-90"
+                />
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div className="text-sm font-bold text-red-500">
+                  {formatPrice(totalPrice)} đ
+                </div>
+                <button
+                  onClick={handleRemoveFromCart}
+                  className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                  aria-label={`Remove ${title} from cart`}
+                >
+                  <img
+                    className="w-4 h-4 opacity-60 hover:opacity-100 transition-opacity"
+                    src="/icons/trashcan-icon.svg"
+                    alt="Remove item"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden sm:flex items-center py-4 px-6 gap-6">
+        {/* Checkbox */}
+        <div className="flex-shrink-0">
+          <input
+            type="checkbox"
+            className="accent-red-500 w-5 h-5 cursor-pointer"
+            checked={checked}
+            onChange={handleCheckChange}
+            aria-label={`Select ${title}`}
+          />
+        </div>
+
+        {/* Product Image */}
+        <div className="w-32 h-32 flex-shrink-0 flex items-center justify-center">
+          <img
+            className="max-w-full max-h-full object-contain"
+            src={thumbnailUrl}
+            alt={title}
+          />
+        </div>
+
+        {/* Product Info */}
+        <div className="flex-1 min-w-0 pr-4">
+          <h3 className="text-lg font-medium text-gray-900 leading-tight mb-3">
+            {truncatedTitle}
+          </h3>
+          
+          <div className="space-y-1">
+            <div className="text-xl font-semibold text-red-600">
+              {formatPrice(discountedPrice)} đ
+            </div>
+            {sale > 0 && (
+              <div className="text-sm text-gray-500 line-through">
+                {formatPrice(price)} đ
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Quantity Controls */}
+        <div className="flex-shrink-0">
+          <QuantityBox
+            product_id={_id}
+            count={count}
+          />
+        </div>
+
+        {/* Total Price */}
+        <div className="flex-shrink-0 text-right min-w-[120px]">
+          <div className="text-lg font-bold text-red-500">
+            {formatPrice(totalPrice)} đ
+          </div>
+        </div>
+
+        {/* Remove Button */}
+        <div className="flex-shrink-0">
+          <button
+            onClick={handleRemoveFromCart}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors group"
+            aria-label={`Remove ${title} from cart`}
+          >
+            <img
+              className="w-6 h-6 group-hover:opacity-70 transition-opacity"
+              src="/icons/trashcan-icon.svg"
+              alt="Remove item"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
