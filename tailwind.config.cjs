@@ -25,10 +25,12 @@ module.exports = {
       },
       fontSize:{
         'otp':'2rem'
-      },animation: {
+      },      animation: {
         'spin-slow': 'spin 2.5s linear infinite',
         'book-flip': 'bookFlip 1.5s ease-in-out infinite',
         'progress': 'progressBar 1s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.3s ease-in-out forwards',
+        'slide-up': 'slideUp 0.4s ease-out forwards',
       },
       keyframes: {
         bookFlip: {
@@ -39,7 +41,15 @@ module.exports = {
           '0%': { width: '0%' },
           '50%': { width: '70%' },
           '100%': { width: '100%' },
-        }
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
+          '0%': { transform: 'translateY(20px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
       },
       flex: {
         '1': '1 0 0%',
