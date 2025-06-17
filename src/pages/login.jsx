@@ -71,110 +71,167 @@ export default function Login() {
 		return(
 		<Navigate to={HOME_PATH}/>
 		)
-
 	return (
 		<>
-			<main className='my-10 py-10 bg-white'>
-				<h1 className='text-center pb-10 text-6xl font-bold text-orange-500'>
-					Đăng nhập
-				</h1>
-				<div className='h-full px-6 text-gray-800'>
-					<div className='flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6'>
-						<Link
-							to={HOME_PATH}
-							className='justify-self-center self-center grow-0 shrink-1'>
-							<img src='/vite.svg' className='w-80' />
-							<h2 className='text-2xl text-center pt-2 text-gray-500 font-bold'>
-								BookShop
-							</h2>
-						</Link>
-						<div className='xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0'>
-							<form className='border-2 p-20'>
-								<div className='flex flex-row items-center justify-center lg:justify-start'>
-									<p className='text-lg mb-0 mr-4'>
-										Đăng nhập với
-									</p>
+			<main className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 flex flex-col justify-center sm:px-6 lg:px-8'>
+				<div className="sm:mx-auto sm:w-full sm:max-w-md mb-8">
+					<Link to={HOME_PATH} className="flex justify-center items-center">
+						<img src='/vite.svg' className='w-20 h-20' alt="BookShop Logo" />
+						<h2 className='text-3xl font-extrabold text-gray-800 ml-2'>
+							BookShop
+						</h2>
+					</Link>
+					<h1 className='mt-6 text-center text-4xl font-extrabold bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent'>
+						Đăng nhập
+					</h1>
+					<p className="mt-2 text-center text-sm text-gray-600">
+						Chào mừng bạn trở lại với BookShop
+					</p>
+				</div>
+
+				<div className='sm:mx-auto sm:w-full sm:max-w-md'>
+					<div className='bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100'>
+						<div className="h-2 bg-gradient-to-r from-orange-500 to-red-500"></div>
+						<div className="px-6 py-8 sm:px-10 sm:py-8">
+							{/* Social Login */}
+							<div>
+								<p className='text-sm font-medium text-gray-700 mb-3'>
+									Đăng nhập với
+								</p>
+								<div className="flex justify-center items-center space-x-4">
 									<button
 										type='button'
-										data-mdb-ripple='true'
-										data-mdb-ripple-color='light'
-										className='inline-block p-3 bg-orange-600 text-white font-medium text-xs leading-tight uppercase rounded-full shadow-md hover:bg-orange-700 focus:bg-orange-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-orange-800 active:shadow-lg transition duration-150 ease-in-out mx-1'>
-										{/* Facebook */}
-										<svg
-											xmlns='http://www.w3.org/2000/svg'
-											viewBox='0 0 320 512'
-											className='w-4 h-4'>
-											{/*! Font Awesome Pro 6.0.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. */}
+										className='flex justify-center items-center px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition-all duration-200'>
+										<svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
 											<path
-												fill='currentColor'
-												d='M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z'
+												fill="#EA4335"
+												d="M12 5c1.6 0 3 .5 4.1 1.4l3-2.9C17 1.9 14.6 1 12 1S6.6 1.8 4.3 3.6L7.3 6.5C8.4 5.6 10.1 5 12 5z"
+											/>
+											<path
+												fill="#4285F4"
+												d="M20.3 12c0-.8-.1-1.7-.3-2.4H12v4.5h4.8c-.2 1.1-.8 2-1.7 2.7l3 2.3c1.7-1.6 2.7-4 2.7-6.8l-.5-.3z"
+											/>
+											<path
+												fill="#FBBC05"
+												d="M7.3 14.7l-3 2.3C5.6 19.1 8.6 21 12 21c3.2 0 6-1.1 7.9-3l-3-2.3c-1 .7-2.2 1.1-3.6 1.1-2.8 0-5.1-1.9-6-4.4H4.1v2.3h3.2z"
+											/>
+											<path
+												fill="#34A853"
+												d="M12 21c4.5 0 8.2-3.2 9-7.6L17.9 11c-.8 2.2-2.9 3.8-5.9 3.8-3.9 0-7-3.1-7-7s3.1-7 7-7c2.4 0 4.5 1.2 5.8 3.1L21 .5C18.9 2.3 15.7 0 12 0 5.4 0 0 5.4 0 12s5.4 12 12 12z"
 											/>
 										</svg>
+										Google
 									</button>
 								</div>
-								<div className='flex items-center my-4 before:flex-1 before:border-t before:border-gray-300 before:mt-0.5 after:flex-1 after:border-t after:border-gray-300 after:mt-0.5'>
-									<p className='text-center font-semibold mx-4 mb-0'>
-										Or
-									</p>
+							</div>
+
+							<div className='flex items-center my-6'>
+								<div className='flex-grow border-t border-gray-300'></div>
+								<span className='flex-shrink mx-4 text-gray-600 text-sm'>Hoặc đăng nhập với</span>
+								<div className='flex-grow border-t border-gray-300'></div>
+							</div>
+
+							{/* Login Form */}
+							<form className='space-y-6'>
+								<div>
+									<label htmlFor="email" className="block text-sm font-medium text-gray-700">
+										Email hoặc số điện thoại
+									</label>
+									<div className="mt-1 relative rounded-md shadow-sm">
+										<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+											<svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+												<path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+												<path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+											</svg>
+										</div>
+										<InputField 
+											type='email'
+											ref={emailRef}
+											className='pl-10'
+										>
+											Email hoặc số điện thoại
+										</InputField>
+									</div>
 								</div>
-								{/* Email input */}
-								<InputField type='email' ref={emailRef}>
-									Email hoặc số điện thoại
-								</InputField>
 
-								{/* Password input */}
-								<InputField type='password' ref={passwordRef}>
-									Mật khẩu
-								</InputField>
+								<div>
+									<label htmlFor="password" className="block text-sm font-medium text-gray-700">
+										Mật khẩu
+									</label>
+									<div className="mt-1 relative rounded-md shadow-sm">
+										<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+											<svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+												<path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+											</svg>
+										</div>
+										<InputField 
+											type='password'
+											ref={passwordRef}
+											className='pl-10'
+										>
+											Mật khẩu
+										</InputField>
+									</div>
+								</div>
 
-								<div className='flex justify-between items-center mb-6'>
-									<div className='form-group form-check'>
+								<div className='flex items-center justify-between'>
+									<div className='flex items-center'>
 										<input
-											type='checkbox'
-											className='form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-orange-600 checked:border-orange-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer'
-											id='exampleCheck2'
+											id="remember-me"
+											name="remember-me"
+											type="checkbox"
+											className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded transition-all duration-200 cursor-pointer"
 										/>
-										<label
-											className='form-check-label inline-block text-gray-800'
-											htmlFor='exampleCheck2'>
-											Remember me
+										<label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 cursor-pointer">
+											Ghi nhớ đăng nhập
 										</label>
 									</div>
 									<Link
 										to={FORGET_PASSWORD_PATH}
-										className='text-gray-800'>
-										Forgot password?
+										className="text-sm font-medium text-orange-600 hover:text-orange-500 transition-all duration-200">
+										Quên mật khẩu?
 									</Link>
 								</div>
-								<div className='text-center lg:text-left'>
-									<Button type='button' onClick={onSubmit}>
+
+								<div>
+									<Button 
+										type='button' 
+										onClick={onSubmit}
+										className='w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium'
+									>
+										<svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+											<path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+										</svg>
 										Đăng nhập
 									</Button>
-									<p className='text-sm font-semibold mt-2 pt-1 mb-0'>
-										Chưa có tài khoản?
-										<Link
-											to={REGISTER_PATH}
-											className='text-red-600 hover:text-red-700 focus:text-red-700 transition duration-200 ease-in-out pl-2'>
-											Đăng ký ngay
-										</Link>
-									</p>
-									{/* Toast Error */}
-									<ToastContainer
-										position='top-center'
-										autoClose={3000}
-										hideProgressBar
-										newestOnTop={false}
-										closeOnClick
-										rtl
-										pauseOnFocusLoss
-										draggable
-										pauseOnHover
-										theme='colored'
-									/>
 								</div>
 							</form>
+
+							<div className="mt-6">
+								<p className="text-center text-sm font-medium text-gray-700">
+									Chưa có tài khoản?{" "}
+									<Link
+										to={REGISTER_PATH}
+										className="text-orange-600 hover:text-orange-500 font-semibold transition-all duration-200">
+										Đăng ký ngay
+									</Link>
+								</p>
+							</div>
 						</div>
 					</div>
+					{/* Toast Error */}
+					<ToastContainer
+						position='top-center'
+						autoClose={3000}
+						hideProgressBar
+						newestOnTop={false}
+						closeOnClick
+						rtl
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+						theme='colored'
+					/>
 				</div>
 			</main>
 			<Footer />

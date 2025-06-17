@@ -72,88 +72,179 @@ export default function Register() {
 			toast_error(error.response.data.message)
 		}
 	}
+	
 	return (
 		<>
-			<main className='my-10 py-10 bg-white'>
-				<div className='px-6 h-full text-gray-800'>
-					<h1 className='text-center pb-10 text-6xl font-bold text-orange-500'>
-						Đăng ký
+			<main className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 flex flex-col justify-center sm:px-6 lg:px-8'>
+				<div className="sm:mx-auto sm:w-full sm:max-w-md mb-8">
+					<Link to={HOME_PATH} className="flex justify-center items-center">
+						<img src='/vite.svg' className='w-20 h-20' alt="BookShop Logo" />
+						<h2 className='text-3xl font-extrabold text-gray-800 ml-2'>
+							BookShop
+						</h2>
+					</Link>
+					<h1 className='mt-6 text-center text-4xl font-extrabold bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent'>
+						Đăng ký tài khoản
 					</h1>
-					<div className='flex xl:justify-center lg:justify-between justify-center items-center flex-wrap h-full g-6'>
-						<Link
-							to={HOME_PATH}
-							className='justify-self-center self-center grow-0 shrink-1'>
-							<img src='/vite.svg' className='w-80' />
-						</Link>
-						<div className='xl:ml-20 xl:w-5/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0'>
-							<form className='border-2 p-20'>
-								<div className='flex flex-row items-center justify-center lg:justify-start'></div>
-								{/* Email input */}
-								<InputField
-									key={uuidv4()}
-									type='email'
-									ref={emailRef}>
-									Địa chỉ email của bạn
-								</InputField>
+					<p className="mt-2 text-center text-sm text-gray-600">
+						Tham gia cùng BookShop để khám phá thế giới sách
+					</p>
+				</div>
 
-								<InputField key={uuidv4()} ref={fullnameRef}>
-									Họ và tên
-								</InputField>
-
-								{/* Password input */}
-								<InputField
-									key={uuidv4()}
-									type='password'
-									ref={passwordRef}>
-									Mật khẩu
-								</InputField>
-
-								<InputField
-									key={uuidv4()}
-									type='password'
-									ref={rePasswordRef}>
-									Xác nhận mật khẩu
-								</InputField>
-
-								<div className='flex justify-between items-center mb-6'>
-									<div className='form-group form-check'>
-										<input
-											type='checkbox'
-											className='form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-orange-600 checked:border-orange-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer'
-											id='exampleCheck2'
-										/>
-										<label
-											className='form-check-label inline-block text-gray-800'
-											htmlFor='exampleCheck2'>
-											Remember me
-										</label>
+				<div className='sm:mx-auto sm:w-full sm:max-w-md'>
+					<div className='bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100'>
+						<div className="h-2 bg-gradient-to-r from-orange-500 to-red-500"></div>
+						<div className="px-6 py-8 sm:px-10 sm:py-8">
+							{/* Register Form */}
+							<form className='space-y-6'>
+								<div>
+									<label htmlFor="email" className="block text-sm font-medium text-gray-700">
+										Địa chỉ email
+									</label>
+									<div className="mt-1 relative rounded-md shadow-sm">
+										<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+											<svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+												<path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+												<path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+											</svg>
+										</div>
+										<InputField
+											key={uuidv4()}
+											type='email'
+											ref={emailRef}
+											className='pl-10'
+										>
+											Địa chỉ email của bạn
+										</InputField>
 									</div>
-									<a href='#!' className='text-gray-800'>
-										Forgot password?
-									</a>
 								</div>
-								<div className='flex justify-between items-center lg:text-left'>
-									<Button type='button' onClick={onSubmit}>
+
+								<div>
+									<label htmlFor="fullname" className="block text-sm font-medium text-gray-700">
+										Họ và tên
+									</label>
+									<div className="mt-1 relative rounded-md shadow-sm">
+										<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+											<svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+												<path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+											</svg>
+										</div>
+										<InputField 
+											key={uuidv4()} 
+											ref={fullnameRef}
+											className='pl-10'
+										>
+											Họ và tên
+										</InputField>
+									</div>
+								</div>
+
+								<div>
+									<label htmlFor="password" className="block text-sm font-medium text-gray-700">
+										Mật khẩu
+									</label>
+									<div className="mt-1 relative rounded-md shadow-sm">
+										<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+											<svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+												<path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+											</svg>
+										</div>
+										<InputField
+											key={uuidv4()}
+											type='password'
+											ref={passwordRef}
+											className='pl-10'
+										>
+											Mật khẩu
+										</InputField>
+									</div>
+									<p className="mt-1 text-xs text-gray-500">Mật khẩu phải có ít nhất 6 ký tự</p>
+								</div>
+
+								<div>
+									<label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+										Xác nhận mật khẩu
+									</label>
+									<div className="mt-1 relative rounded-md shadow-sm">
+										<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+											<svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+												<path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+											</svg>
+										</div>
+										<InputField
+											key={uuidv4()}
+											type='password'
+											ref={rePasswordRef}
+											className='pl-10'
+										>
+											Xác nhận mật khẩu
+										</InputField>
+									</div>
+								</div>
+
+								<div className='flex items-center'>
+									<input
+										id="terms"
+										name="terms"
+										type="checkbox"
+										className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded transition-all duration-200 cursor-pointer"
+									/>
+									<label htmlFor="terms" className="ml-2 block text-sm text-gray-700 cursor-pointer">
+										Tôi đồng ý với <span className="text-orange-600 hover:text-orange-500 cursor-pointer">Điều khoản dịch vụ</span> và <span className="text-orange-600 hover:text-orange-500 cursor-pointer">Chính sách bảo mật</span>
+									</label>
+								</div>
+
+								<div>
+									<Button 
+										type='button' 
+										onClick={onSubmit}
+										className='w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium'
+									>
+										<svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+											<path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
+										</svg>
 										Đăng ký
 									</Button>
-									<Link to={LOGIN_PATH} className='text-gray'>Đăng nhập</Link>
 								</div>
-								{/* Toast Error */}
-								<ToastContainer
-									position='top-center'
-									autoClose={3000}
-									hideProgressBar
-									newestOnTop={false}
-									closeOnClick
-									rtl
-									pauseOnFocusLoss
-									draggable
-									pauseOnHover
-									theme='colored'
-								/>
 							</form>
+
+							<div className="mt-6">
+								<div className="relative">
+									<div className="absolute inset-0 flex items-center">
+										<div className="w-full border-t border-gray-300"></div>
+									</div>
+									<div className="relative flex justify-center text-sm">
+										<span className="px-2 bg-white text-gray-500">Đã có tài khoản?</span>
+									</div>
+								</div>
+
+								<div className="mt-6">
+									<Link
+										to={LOGIN_PATH}
+										className="w-full flex justify-center items-center px-4 py-3 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:text-orange-500 transition-all duration-200"
+									>
+										<svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+											<path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+										</svg>
+										Đăng nhập
+									</Link>
+								</div>
+							</div>
 						</div>
 					</div>
+					{/* Toast Error */}
+					<ToastContainer
+						position='top-center'
+						autoClose={3000}
+						hideProgressBar
+						newestOnTop={false}
+						closeOnClick
+						rtl
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+						theme='colored'
+					/>
 				</div>
 			</main>
 			<Footer />
