@@ -21,27 +21,67 @@ import './Header.css'
 export default function Header() {
 	const [cartCount, setCartCount] = useState(0)
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+	const [desktopSearchValue, setDesktopSearchValue] = useState('')
+	const [mobileSearchValue, setMobileSearchValue] = useState('')
 	const count = useTotalCartItem()
-	
+	const router = useNavigate()
+
 	// Enhanced className for NavLink with better styling
 	const unActiveClassNameTW =
 		'block px-4 py-3 md:px-3 md:py-2 rounded-lg text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 md:hover:bg-transparent md:hover:text-orange-600 md:p-0 transition-all duration-200 ease-in-out'
 	const activeClassNameTW =
 		'block px-4 py-3 md:px-3 md:py-2 rounded-lg text-base font-medium text-orange-600 bg-orange-50 md:bg-transparent md:text-orange-600 md:border-b-2 md:border-orange-600 transition-all duration-200 ease-in-out'
-	
 	const navigate = useNavigate()
-	const searchRef = useRef()
+	const desktopSearchRef = useRef()
+	const mobileSearchRef = useRef()
 	const user = useSelectUser()
-
 	const onSearch = (event) => {
-		if (event.key === 'Enter') {
-			navigate({
-				pathname: SEARCH_PATH,
-				search: `?${createSearchParams({
-					title: searchRef.current.value.trim(),
-				})}`,
-			})
+		// Update appropriate search value state based on which input is being used
+		const inputValue = event.target.value;
+		
+		// Determine which input is being used
+		if (event.target === desktopSearchRef.current) {
+			setDesktopSearchValue(inputValue);
+		} else if (event.target === mobileSearchRef.current) {
+			setMobileSearchValue(inputValue);
 		}
+		
+		// Perform search on Enter key
+		if (event && event.key === 'Enter') {
+			performSearch(inputValue);
+		}
+	}
+	
+	const handleDesktopInputChange = (event) => {
+		setDesktopSearchValue(event.target.value);
+	}
+	
+	const handleMobileInputChange = (event) => {
+		setMobileSearchValue(event.target.value);
+	}
+	const performSearch = (inputValue) => {
+		// Get search value either from the parameter or from the refs
+		let searchValue = inputValue?.trim();
+		
+		// If we don't have a value, don't perform search
+		if (!searchValue) {
+			return;
+		}
+
+		navigate({
+			pathname: SEARCH_PATH,
+			search: `?${createSearchParams({
+				title: searchValue,
+			})}`,
+		})
+		// Close mobile menu if open
+		if (mobileMenuOpen) {
+			setMobileMenuOpen(false)
+		}
+
+		// Clear search fields and states
+		setDesktopSearchValue('');
+		setMobileSearchValue('');
 	}
 
 	useEffect(() => {
@@ -70,9 +110,7 @@ export default function Header() {
 						<span className='self-center text-xl sm:text-2xl font-bold text-white group-hover:text-orange-100 transition-colors duration-200'>
 							BookShop
 						</span>
-					</Link>
-
-					{/* Desktop search */}
+					</Link>					{/* Desktop search */}
 					<div className='hidden md:flex items-center flex-1 max-w-md mx-8'>
 						<div className='relative w-full'>
 							<div className='flex absolute inset-y-0 left-0 items-center pl-4 pointer-events-none'>
@@ -87,15 +125,35 @@ export default function Header() {
 										clipRule='evenodd'
 									/>
 								</svg>
-							</div>
-							<input
+							</div>							<input
 								type='text'
 								id='search-navbar'
-								ref={searchRef}
+								ref={desktopSearchRef}
+								value={desktopSearchValue}
+								onChange={handleDesktopInputChange}
 								onKeyUp={onSearch}
-								className='block w-full py-3 pl-12 pr-4 text-gray-900 bg-white rounded-xl border-0 shadow-sm focus:ring-2 focus:ring-orange-300 focus:bg-white placeholder-gray-500 transition-all duration-200'
+								className='block w-full py-3 pl-12 pr-14 text-gray-900 bg-white rounded-xl border-0 shadow-sm focus:ring-2 focus:ring-orange-300 focus:bg-white placeholder-gray-500 transition-all duration-200'
 								placeholder='Tìm kiếm sách...'
 							/>
+							{desktopSearchValue.trim() && (
+								<button
+									type='button'
+									onClick={() => performSearch(desktopSearchValue)}
+									className='absolute inset-y-0 right-0 flex items-center px-4 text-gray-600 hover:text-orange-500 focus:outline-none transition-colors duration-200'
+									aria-label='Tìm kiếm'>
+									<svg
+										className='w-5 h-5'
+										fill='currentColor'
+										viewBox='0 0 20 20'
+										xmlns='http://www.w3.org/2000/svg'>
+										<path
+											fillRule='evenodd'
+											d='M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z'
+											clipRule='evenodd'
+										/>
+									</svg>
+								</button>
+							)}
 						</div>
 					</div>
 
@@ -137,10 +195,9 @@ export default function Header() {
 							to={HOME_PATH}
 							end
 							className={({ isActive }) =>
-								`px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 ${
-									isActive
-										? 'text-white bg-orange-600 shadow-sm'
-										: 'text-orange-100 hover:text-white hover:bg-orange-600'
+								`px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 ${isActive
+									? 'text-white bg-orange-600 shadow-sm'
+									: 'text-orange-100 hover:text-white hover:bg-orange-600'
 								}`
 							}>
 							Trang chủ
@@ -148,15 +205,14 @@ export default function Header() {
 						<NavLink
 							to={BOOK_PATH}
 							className={({ isActive }) =>
-								`px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 ${
-									isActive
-										? 'text-white bg-orange-600 shadow-sm'
-										: 'text-orange-100 hover:text-white hover:bg-orange-600'
+								`px-4 py-2 rounded-lg text-base font-medium transition-all duration-200 ${isActive
+									? 'text-white bg-orange-600 shadow-sm'
+									: 'text-orange-100 hover:text-white hover:bg-orange-600'
 								}`
 							}>
 							Sách
 						</NavLink>
-						
+
 						{user.isLoggedIn ? (
 							<div className='ml-2'>
 								<DropDownMenu title='Tài khoản' {...user.user.data} />
@@ -168,14 +224,13 @@ export default function Header() {
 								Đăng nhập
 							</NavLink>
 						)}
-						
+
 						<NavLink
 							to={CART_PATH}
 							className={({ isActive }) =>
-								`relative p-2 ml-2 rounded-lg transition-all duration-200 ${
-									isActive
-										? 'bg-orange-600 shadow-sm'
-										: 'hover:bg-orange-600'
+								`relative p-2 ml-2 rounded-lg transition-all duration-200 ${isActive
+									? 'bg-orange-600 shadow-sm'
+									: 'hover:bg-orange-600'
 								}`
 							}>
 							<div className='relative w-6 h-6'>
@@ -197,10 +252,8 @@ export default function Header() {
 				{/* Mobile menu */}
 				<div
 					id='navbar-menu'
-					className={`${
-						mobileMenuOpen ? 'flex' : 'hidden'
-					} md:hidden flex-col w-full bg-white rounded-lg shadow-lg mt-2 border border-gray-100 transition-all duration-200 ease-in-out`}>
-					
+					className={`${mobileMenuOpen ? 'flex' : 'hidden'
+						} md:hidden flex-col w-full bg-white rounded-lg shadow-lg mt-2 border border-gray-100 transition-all duration-200 ease-in-out`}>
 					{/* Mobile search */}
 					<div className='p-4 border-b border-gray-100'>
 						<div className='relative'>
@@ -216,14 +269,34 @@ export default function Header() {
 										clipRule='evenodd'
 									/>
 								</svg>
-							</div>
-							<input
+							</div>							<input
 								type='text'
-								ref={searchRef}
+								ref={mobileSearchRef}
+								value={mobileSearchValue}
+								onChange={handleMobileInputChange}
 								onKeyUp={onSearch}
-								className='block w-full py-3 pl-12 pr-4 text-gray-900 bg-gray-50 rounded-xl border-0 focus:ring-2 focus:ring-orange-300 focus:bg-white placeholder-gray-500 transition-all duration-200'
+								className='block w-full py-3 pl-12 pr-14 text-gray-900 bg-gray-50 rounded-xl border-0 focus:ring-2 focus:ring-orange-300 focus:bg-white placeholder-gray-500 transition-all duration-200'
 								placeholder='Tìm kiếm sách...'
 							/>
+							{mobileSearchValue.trim() && (
+								<button
+									type='button'
+									onClick={() => performSearch(mobileSearchValue)}
+									className='absolute inset-y-0 right-0 flex items-center px-4 text-gray-600 hover:text-orange-500 focus:outline-none transition-colors duration-200'
+									aria-label='Tìm kiếm'>
+									<svg
+										className='w-5 h-5'
+										fill='currentColor'
+										viewBox='0 0 20 20'
+										xmlns='http://www.w3.org/2000/svg'>
+										<path
+											fillRule='evenodd'
+											d='M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z'
+											clipRule='evenodd'
+										/>
+									</svg>
+								</button>
+							)}
 						</div>
 					</div>
 
@@ -259,7 +332,7 @@ export default function Header() {
 								Đăng nhập
 							</NavLink>
 						)}
-						
+
 						<NavLink
 							to={CART_PATH}
 							className={({ isActive }) =>
