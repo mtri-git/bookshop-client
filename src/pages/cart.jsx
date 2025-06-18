@@ -1,15 +1,18 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 import CartItem from '../components/CartItem/CartItem';
 import { formatPrice } from '../utils/format';
-import { HOME_PATH, PAYMENT_PATH } from '../constants/path';
+import { HOME_PATH, LOGIN_PATH, PAYMENT_PATH } from '../constants/path';
 import { useCart } from '../redux/selectors/useCart';
+import { useSelectUser } from '../redux/selectors/useSelectUser';
+import { useDialog } from '../hooks/useDialog';
 
 export default function Cart() {
   const cart = useCart();
   const navigate = useNavigate();
+  const user = useSelectUser();
+  const { openDialog } = useDialog();
 
   const checkoutItems = cart.cart.filter(cartItem => cartItem.checked);
   
@@ -25,7 +28,32 @@ export default function Cart() {
   );
 
   const handlePayment = () => {
-    navigate(PAYMENT_PATH);
+    if (!user.isLoggedIn) {
+      openDialog({
+        title: 'Yêu cầu đăng nhập',
+        content: (
+          <div className="flex flex-col items-center">
+            <div className="mb-4 text-center">
+              <svg className="w-16 h-16 mx-auto text-orange-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              <p className="text-gray-700">Bạn cần đăng nhập để tiến hành đặt hàng</p>
+            </div>
+            <button 
+              onClick={() => navigate(LOGIN_PATH)}
+              className="w-full py-2 px-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 transform hover:scale-105 active:scale-95"
+            >
+              Đăng nhập ngay
+            </button>
+          </div>
+        ),
+        confirmText: 'Để sau',
+        showCancel: true,
+        onConfirm: () => {}
+      });
+    } else {
+      navigate(PAYMENT_PATH);
+    }
   };
 
   const handleCheckItem = (productId) => {
@@ -94,14 +122,14 @@ export default function Cart() {
             className="bg-red-600 text-white text-lg sm:text-xl px-5 py-2 rounded-xl w-full m-2 sm:m-5 hover:bg-red-700 transition-colors"
             onClick={handlePayment}
           >
-            Thanh toán
+            Đặt hàng
           </button>
         ) : (
           <button
             className="bg-gray-300 text-white text-lg sm:text-xl cursor-not-allowed px-5 py-2 rounded-xl w-full m-2 sm:m-5"
             disabled
           >
-            Thanh toán
+            Đặt hàng
           </button>
         )}
       </div>
