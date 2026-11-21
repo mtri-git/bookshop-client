@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { PAYMENT_HISTORY_PATH, PROFILE_PATH, WISHLIST_PATH } from '../constants/path'
 import { useSelectUser } from '../redux/selectors/useSelectUser'
+import Icon from '../components/Icon'
 
 const FALLBACK_AVATAR = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80'
 
@@ -19,27 +20,21 @@ export default function ProfileLayout() {
 			label: 'Thông tin',
 			end: true,
 			icon: (
-				<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-				</svg>
+				<Icon name='user' className="w-4 h-4" />
 			),
 		},
 		{
 			to: WISHLIST_PATH,
 			label: 'Yêu thích',
 			icon: (
-				<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-				</svg>
+				<Icon name='heart' className="w-4 h-4" />
 			),
 		},
 		{
 			to: PAYMENT_HISTORY_PATH,
 			label: 'Đơn hàng',
 			icon: (
-				<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-				</svg>
+				<Icon name='clipboard' className="w-4 h-4" />
 			),
 		},
 	]
@@ -74,9 +69,7 @@ export default function ProfileLayout() {
 								</p>
 							</div>
 							<div className="flex items-center gap-1 text-xs text-gray-500 bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
-								<svg className="w-3.5 h-3.5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-								</svg>
+								<Icon name='sparkles' className="w-3.5 h-3.5 text-orange-500" />
 								<span className="font-medium text-orange-700">Thành viên BookShop</span>
 							</div>
 						</div>

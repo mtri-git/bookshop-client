@@ -1,14 +1,13 @@
 import React from 'react'
 import QuantityBoxDetail from './QuantityBoxDetail'
+import Icon from '../Icon'
+import { formatPrice } from '../../utils/format'
 
 export default function FlashSaleBanner({
 	sale = 0,
 	price = 0,
 	sold = 10,
 }) {
-	const formatPrice = (val) =>
-		Number(val || 0).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1.')
-	
 	const discountAmount = Math.floor(price * sale)
 	const discountedPrice = Math.floor(price * (1 - sale))
 	const percent = Math.floor(sale * 100)
@@ -35,9 +34,7 @@ export default function FlashSaleBanner({
 
 				{sale > 0 && (
 					<p className="text-xs text-emerald-700 font-medium flex items-center gap-1">
-						<svg className="w-4 h-4 fill-current" viewBox="0 0 20 20">
-							<path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-						</svg>
+						<Icon name='check-circle-solid' className="w-4 h-4" />
 						Tiết kiệm: {formatPrice(discountAmount)} đ so với giá bìa
 					</p>
 				)}
@@ -47,7 +44,8 @@ export default function FlashSaleBanner({
 			<div className="bg-red-50/70 border border-red-200 rounded-lg p-3">
 				<div className="flex items-center justify-between text-xs mb-1.5">
 					<span className="font-bold text-red-600 flex items-center gap-1.5">
-						<span>⚡ Flash Sale</span>
+						<Icon name='bolt-solid' className='w-3.5 h-3.5' />
+						<span>Flash Sale</span>
 						<span className="text-gray-500 font-normal">| Số lượng có hạn</span>
 					</span>
 					<span className="text-gray-600 font-medium">Đã bán {sold}</span>

@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux'
 import { loginAction, loginWithGoogleAction } from '../redux/actions/authAction'
 import { useSelectUser } from '../redux/selectors/useSelectUser'
 import { GoogleLogin } from '@react-oauth/google'
+import Icon from '../components/Icon'
 
 export default function Login() {
 	const emailRef = useRef(null)
@@ -96,9 +97,7 @@ export default function Login() {
 				{/* Brand Logo */}
 				<Link to={HOME_PATH} className="flex justify-center items-center gap-2 mb-2">
 					<div className="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white shadow-sm">
-						<svg className="w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-						</svg>
+						<Icon name='book' className="w-6 h-6" />
 					</div>
 					<span className="text-2xl font-bold text-gray-900 tracking-tight">
 						BookShop
@@ -142,9 +141,7 @@ export default function Login() {
 							</label>
 							<div className="relative">
 								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-									<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-									</svg>
+									<Icon name='at-symbol' className="w-4 h-4" />
 								</div>
 								<input
 									ref={emailRef}
@@ -162,9 +159,7 @@ export default function Login() {
 							</label>
 							<div className="relative">
 								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-									<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-									</svg>
+									<Icon name='lock' className="w-4 h-4" />
 								</div>
 								<input
 									ref={passwordRef}
@@ -179,14 +174,9 @@ export default function Login() {
 									className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
 								>
 									{showPassword ? (
-										<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-										</svg>
+										<Icon name='eye-off' className="w-4 h-4" />
 									) : (
-										<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-										</svg>
+										<Icon name='eye' className="w-4 h-4" />
 									)}
 								</button>
 							</div>

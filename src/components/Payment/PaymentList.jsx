@@ -2,6 +2,7 @@ import React from 'react'
 import { formatPrice } from '../../utils/format'
 import PaymentItem from './PaymentItem'
 import { v4 as uuidv4 } from 'uuid'
+import Icon from '../Icon'
 
 const STATUS_CONFIG = {
 	'Đã giao': { color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200', dot: 'bg-emerald-500' },
@@ -28,8 +29,9 @@ export default function PaymentList({ data }) {
 				</div>
 
 				<div className="flex items-center gap-3 text-[11px] text-gray-600">
-					<span className={`font-semibold ${data.is_paid ? 'text-emerald-600' : 'text-amber-600'}`}>
-						{data.is_paid ? '✓ Đã thanh toán' : '⏳ Chưa thanh toán'}
+					<span className={`inline-flex items-center gap-1 font-semibold ${data.is_paid ? 'text-emerald-600' : 'text-amber-600'}`}>
+						<Icon name={data.is_paid ? 'check' : 'clock'} className='w-3.5 h-3.5' />
+						{data.is_paid ? 'Đã thanh toán' : 'Chưa thanh toán'}
 					</span>
 				</div>
 			</div>

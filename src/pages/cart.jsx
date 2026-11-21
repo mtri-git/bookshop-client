@@ -9,6 +9,7 @@ import { useSelectUser } from '../redux/selectors/useSelectUser'
 import { useDialog } from '../hooks/useDialog'
 import { checkAllCartItems, removeSelectedCartItems } from '../redux/actions/cartAction'
 import { toast_info, toast_success } from '../utils/toastNotify'
+import Icon from '../components/Icon'
 
 const FREESHIP_THRESHOLD = 150000
 const STANDARD_SHIPPING_FEE = 25000
@@ -136,9 +137,7 @@ export default function Cart() {
 				content: (
 					<div className="flex flex-col items-center text-center py-2">
 						<div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mb-3">
-							<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-							</svg>
+							<Icon name='user' className="w-6 h-6" />
 						</div>
 						<p className="text-gray-700 font-medium mb-1">Bạn chưa đăng nhập</p>
 						<p className="text-xs text-gray-500 mb-4">
@@ -177,9 +176,7 @@ export default function Cart() {
 
 					<div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs max-w-lg mx-auto p-8 sm:p-12 text-center">
 						<div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-5 rounded-full bg-orange-50 flex items-center justify-center text-orange-500">
-							<svg className="w-12 h-12 sm:w-14 sm:h-14 stroke-current fill-none" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-							</svg>
+							<Icon name='shopping-bag' className="w-12 h-12 sm:w-14 sm:h-14" strokeWidth={1.5} />
 						</div>
 
 						<h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
@@ -234,9 +231,7 @@ export default function Cart() {
 						className="text-xs sm:text-sm font-medium text-orange-600 hover:text-orange-700 transition-colors flex items-center gap-1"
 					>
 						<span>Tiếp tục mua sắm</span>
-						<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-						</svg>
+						<Icon name='chevron-right' className="w-4 h-4" />
 					</Link>
 				</div>
 
@@ -244,7 +239,7 @@ export default function Cart() {
 				<div className="bg-white rounded-xl border border-gray-200/80 p-3 sm:p-4 mb-4 shadow-xs">
 					<div className="flex items-center justify-between text-xs sm:text-sm mb-1.5">
 						<div className="flex items-center gap-2">
-							<span className="text-base sm:text-lg">🚚</span>
+							<Icon name='truck' className='w-5 h-5 text-orange-500' />
 							{isFreeShipEligible ? (
 								<span className="font-semibold text-emerald-600">
 									Bạn đã đủ điều kiện nhận MIỄN PHÍ VẬN CHUYỂN!
@@ -308,9 +303,7 @@ export default function Cart() {
 									onClick={handleRemoveSelected}
 									className="text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-1 sm:hidden"
 								>
-									<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-									</svg>
+									<Icon name='trash' className="w-3.5 h-3.5" />
 									<span>Xóa ({checkoutItems.length})</span>
 								</button>
 							)}
@@ -330,9 +323,7 @@ export default function Cart() {
 									onClick={handleRemoveSelected}
 									className="text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors inline-flex items-center gap-1.5 border border-red-200"
 								>
-									<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-									</svg>
+									<Icon name='trash' className="w-4 h-4" />
 									<span>Xóa {checkoutItems.length} sản phẩm đã chọn</span>
 								</button>
 							</div>
@@ -344,9 +335,7 @@ export default function Cart() {
 						{/* VOUCHER COUPON BOX */}
 						<div className="bg-white rounded-xl border border-gray-200/80 p-4 shadow-xs">
 							<h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3 flex items-center gap-1.5">
-								<svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-								</svg>
+								<Icon name='ticket' className="w-4 h-4 text-orange-600" />
 								<span>Mã khuyến mãi / Voucher</span>
 							</h3>
 
@@ -372,23 +361,23 @@ export default function Cart() {
 								<button
 									type="button"
 									onClick={() => handleApplyVoucher('BOOK10K')}
-									className="px-2 py-1 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-md border border-orange-200/70 transition-colors"
+									className="inline-flex items-center gap-1 px-2 py-1 bg-orange-50 hover:bg-orange-100 text-orange-700 rounded-md border border-orange-200/70 transition-colors"
 								>
-									🎟 BOOK10K (-10K)
+									<Icon name='ticket' className='w-3.5 h-3.5' /> BOOK10K (-10K)
 								</button>
 								<button
 									type="button"
 									onClick={() => handleApplyVoucher('FREESHIP')}
-									className="px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-md border border-emerald-200/70 transition-colors"
+									className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-md border border-emerald-200/70 transition-colors"
 								>
-									🚚 FREESHIP
+									<Icon name='truck' className='w-3.5 h-3.5' /> FREESHIP
 								</button>
 							</div>
 
 							{appliedVoucher && (
 								<div className="mt-3 p-2 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center justify-between text-xs text-emerald-700">
 									<div className="flex items-center gap-1.5 font-medium">
-										<span>✓</span>
+										<Icon name='check' className='w-3.5 h-3.5' />
 										<span>Đã áp dụng mã: {appliedVoucher.code} ({appliedVoucher.label})</span>
 									</div>
 									<button
@@ -396,7 +385,7 @@ export default function Cart() {
 										className="text-gray-400 hover:text-red-600 p-0.5"
 										aria-label="Hủy mã giảm giá"
 									>
-										✕
+										<Icon name='x' className='w-4 h-4' />
 									</button>
 								</div>
 							)}
@@ -495,21 +484,15 @@ export default function Cart() {
 							{/* TRUST BADGES */}
 							<div className="mt-5 pt-4 border-t border-gray-100 space-y-2 text-xs text-gray-500">
 								<div className="flex items-center gap-2">
-									<svg className="w-4 h-4 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-									</svg>
+									<Icon name='check' className="w-4 h-4 text-emerald-600 flex-shrink-0" />
 									<span>Cam kết 100% sách thật, nguồn gốc rõ ràng</span>
 								</div>
 								<div className="flex items-center gap-2">
-									<svg className="w-4 h-4 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-									</svg>
+									<Icon name='refresh' className="w-4 h-4 text-blue-600 flex-shrink-0" />
 									<span>Đổi trả trong 30 ngày nếu có lỗi từ NXB</span>
 								</div>
 								<div className="flex items-center gap-2">
-									<svg className="w-4 h-4 text-orange-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-									</svg>
+									<Icon name='lock' className="w-4 h-4 text-orange-600 flex-shrink-0" />
 									<span>Bảo mật thông tin thanh toán tuyệt đối</span>
 								</div>
 							</div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { SEARCH_PATH } from '../constants/path'
+import Icon from './Icon'
 
 const slides = [
 	{
@@ -97,9 +98,7 @@ export default function Slider() {
 										className="inline-flex items-center gap-1.5 bg-orange-600 hover:bg-orange-700 active:scale-95 text-white text-xs sm:text-sm font-medium px-3.5 py-1.5 rounded-lg transition shadow-sm"
 									>
 										<span>Khám phá ngay</span>
-										<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-										</svg>
+										<Icon name='arrow-right' className="w-3.5 h-3.5" />
 									</Link>
 								</div>
 							</div>
@@ -114,9 +113,7 @@ export default function Slider() {
 				className="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-150 shadow border border-gray-200 z-10"
 				aria-label="Previous slide"
 			>
-				<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-				</svg>
+				<Icon name='chevron-left' className="w-4 h-4" />
 			</button>
 
 			<button
@@ -124,9 +121,7 @@ export default function Slider() {
 				className="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 hover:bg-white text-gray-800 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-150 shadow border border-gray-200 z-10"
 				aria-label="Next slide"
 			>
-				<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-				</svg>
+				<Icon name='chevron-right' className="w-4 h-4" />
 			</button>
 
 			{/* Indicator Dots */}

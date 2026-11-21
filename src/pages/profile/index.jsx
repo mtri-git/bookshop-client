@@ -3,6 +3,7 @@ import { useSelectUser } from '../../redux/selectors/useSelectUser'
 import userService from '../../services/userService'
 import uploadImageService from '../../services/uploadImageService'
 import { toast_success, toast_error } from '../../utils/toastNotify'
+import Icon from '../../components/Icon'
 
 const INPUT_FIELD = ({ label, children, ...props }) => (
 	<div>
@@ -95,10 +96,7 @@ export default function Profile() {
 								className="px-4 py-2 text-xs font-semibold bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors shadow-xs disabled:opacity-60 flex items-center gap-1.5"
 							>
 								{saving && (
-									<svg className="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
-										<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-										<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-									</svg>
+									<Icon name='spinner' className="animate-spin w-3 h-3" />
 								)}
 								{saving ? 'Đang lưu...' : 'Lưu thay đổi'}
 							</button>
@@ -108,9 +106,7 @@ export default function Profile() {
 							onClick={() => setIsEditable(true)}
 							className="px-4 py-2 text-xs font-semibold text-orange-600 hover:bg-orange-50 border border-orange-200 rounded-lg transition-colors flex items-center gap-1.5"
 						>
-							<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-							</svg>
+							<Icon name='pencil' className="w-3.5 h-3.5" />
 							Chỉnh sửa
 						</button>
 					)}
@@ -134,10 +130,7 @@ export default function Profile() {
 								className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40 cursor-pointer opacity-0 hover:opacity-100 transition-opacity"
 								title="Thay đổi ảnh đại diện"
 							>
-								<svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-								</svg>
+								<Icon name='camera' className="w-5 h-5 text-white" />
 								<input
 									id="avatar-upload"
 									type="file"

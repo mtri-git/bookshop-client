@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HOME_PATH, LOGIN_PATH } from '../constants/path'
+import Icon from '../components/Icon'
 
 export default function ForgetPassword() {
 	const emailRef = useRef(null)
@@ -42,9 +43,7 @@ export default function ForgetPassword() {
 				{/* Logo */}
 				<Link to={HOME_PATH} className="flex justify-center items-center gap-2 mb-2">
 					<div className="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white shadow-sm">
-						<svg className="w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-						</svg>
+						<Icon name='book' className="w-6 h-6" />
 					</div>
 					<span className="text-2xl font-bold text-gray-900 tracking-tight">BookShop</span>
 				</Link>
@@ -96,9 +95,7 @@ export default function ForgetPassword() {
 								</label>
 								<div className="relative">
 									<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-										<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-										</svg>
+										<Icon name='mail' className="w-4 h-4" />
 									</div>
 									<input
 										ref={emailRef}
@@ -117,10 +114,7 @@ export default function ForgetPassword() {
 							>
 								{submitting ? (
 									<>
-										<svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-											<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-											<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-										</svg>
+										<Icon name='spinner' className="animate-spin w-4 h-4" />
 										<span>Đang gửi...</span>
 									</>
 								) : (
@@ -173,9 +167,7 @@ export default function ForgetPassword() {
 					{step === 'done' && (
 						<div className="text-center space-y-5">
 							<div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
-								<svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-								</svg>
+								<Icon name='check' className="w-8 h-8 text-emerald-600" strokeWidth={1.5} />
 							</div>
 							<p className="text-sm text-gray-600">
 								Mật khẩu tạm thời đã được gửi vào email. Vui lòng đăng nhập và đổi ngay.

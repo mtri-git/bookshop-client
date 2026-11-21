@@ -12,6 +12,7 @@ import bookService from '../../services/bookService'
 import { useBookQuantityDetail } from '../../hooks/useBookQuantityDetail'
 import { HOME_PATH, SEARCH_PATH } from '../../constants/path'
 import { toast_success } from '../../utils/toastNotify'
+import Icon from '../../components/Icon'
 
 export default function BookDetail() {
 	const { id } = useParams()
@@ -102,9 +103,7 @@ export default function BookDetail() {
 											alt={book?.title}
 										/>
 										<div className="absolute bottom-3 right-3 bg-gray-900/75 text-white px-2.5 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none flex items-center gap-1">
-											<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-											</svg>
+											<Icon name='zoom-in' className="w-3.5 h-3.5" />
 											<span>Xem ảnh lớn</span>
 										</div>
 									</div>
@@ -112,19 +111,19 @@ export default function BookDetail() {
 									{/* Policy highlights below image */}
 									<div className="w-full max-w-sm mt-4 grid grid-cols-2 gap-2 text-[11px] text-gray-600">
 										<div className="flex items-center gap-1.5 p-2 bg-gray-50 rounded border border-gray-200/70">
-											<span className="text-emerald-600 text-sm">✔</span>
+											<Icon name='shield-check' className='w-4 h-4 text-orange-500' />
 											<span>100% Sách Thật</span>
 										</div>
 										<div className="flex items-center gap-1.5 p-2 bg-gray-50 rounded border border-gray-200/70">
-											<span className="text-blue-600 text-sm">🚚</span>
+											<Icon name='truck' className='w-4 h-4 text-orange-500' />
 											<span>Giao Hàng Toàn Quốc</span>
 										</div>
 										<div className="flex items-center gap-1.5 p-2 bg-gray-50 rounded border border-gray-200/70">
-											<span className="text-purple-600 text-sm">🔄</span>
+											<Icon name='refresh' className='w-4 h-4 text-orange-500' />
 											<span>Đổi Trả Trong 30 Ngày</span>
 										</div>
 										<div className="flex items-center gap-1.5 p-2 bg-gray-50 rounded border border-gray-200/70">
-											<span className="text-orange-600 text-sm">🎁</span>
+											<Icon name='gift' className='w-4 h-4 text-orange-500' />
 											<span>Tặng Kèm Bookmark</span>
 										</div>
 									</div>
@@ -185,9 +184,7 @@ export default function BookDetail() {
 												onClick={addToCartClick}
 												className="flex-1 bg-white border-2 border-red-600 text-red-600 hover:bg-red-50 font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 active:scale-98 shadow-sm"
 											>
-												<svg className="w-5 h-5 fill-current" viewBox="0 0 20 20">
-													<path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-												</svg>
+												<Icon name='cart' className="w-5 h-5" />
 												<span>Thêm vào giỏ hàng</span>
 											</button>
 											<button
@@ -206,9 +203,7 @@ export default function BookDetail() {
 					{/* PRODUCT DESCRIPTION SECTION */}
 					<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-7 mb-6">
 						<div className="flex items-center gap-2 pb-3 mb-4 border-b border-gray-200">
-							<svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-							</svg>
+							<Icon name='document' className="w-5 h-5 text-gray-700" />
 							<h2 className="text-lg sm:text-xl font-bold text-gray-900">
 								Mô tả sản phẩm
 							</h2>

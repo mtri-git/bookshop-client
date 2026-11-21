@@ -6,6 +6,7 @@ import bookService from '../../services/bookService'
 import BookCard from '../../components/BookCard'
 import Pagination from '../../components/Pagination'
 import { HOME_PATH } from '../../constants/path'
+import Icon from '../../components/Icon'
 
 const CATEGORIES_LIST = [
 	'Tất cả',
@@ -204,9 +205,7 @@ export default function Search() {
 						onClick={() => setMobileFilterOpen(true)}
 						className="flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 shadow-sm hover:border-orange-300 hover:text-orange-600 transition-colors"
 					>
-						<svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-							<path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z" />
-						</svg>
+						<Icon name='filter' className="w-4 h-4" />
 						Lọc & Sắp xếp
 						{hasActiveFilters && (
 							<span className="w-2 h-2 rounded-full bg-orange-500 inline-block" />
@@ -246,9 +245,7 @@ export default function Search() {
 									onClick={() => setMobileFilterOpen(false)}
 									className="p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
 								>
-									<svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-									</svg>
+									<Icon name='x' className="w-5 h-5" />
 								</button>
 							</div>
 							<div className="flex-1 overflow-y-auto px-5 py-4">
@@ -330,9 +327,7 @@ export default function Search() {
 								</div>
 							) : (
 								<div className="py-20 text-center space-y-3">
-									<svg className="w-12 h-12 mx-auto text-gray-300" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-										<path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 15.803 7.5 7.5 0 0015.803 15.803z" />
-									</svg>
+									<Icon name='search' className="w-12 h-12 mx-auto text-gray-300" strokeWidth={1.5} />
 									<h3 className="text-base font-bold text-gray-800">Không tìm thấy sản phẩm nào</h3>
 									<p className="text-xs text-gray-500 max-w-sm mx-auto">
 										Hãy thử tìm kiếm với từ khóa khác hoặc xóa bớt các bộ lọc đang chọn.

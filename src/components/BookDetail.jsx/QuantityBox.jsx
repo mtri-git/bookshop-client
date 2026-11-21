@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { decreaseCartItemQuantity, increaseCartItemQuantity } from '../../redux/actions/cartAction'
+import Icon from '../Icon'
 
 export default function QuantityBox({ className = '', product_id, count = 1 }) {
 	const dispatch = useDispatch()
@@ -30,9 +31,7 @@ export default function QuantityBox({ className = '', product_id, count = 1 }) {
 						: 'text-gray-600 hover:bg-gray-100 hover:text-orange-600 active:bg-gray-200'
 				}`}
 			>
-				<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 12H4" />
-				</svg>
+				<Icon name='minus' className="w-3.5 h-3.5" />
 			</button>
 
 			<span className="w-8 sm:w-10 text-center text-xs sm:text-sm font-semibold text-gray-800 select-none">
@@ -45,9 +44,7 @@ export default function QuantityBox({ className = '', product_id, count = 1 }) {
 				aria-label="Tăng số lượng"
 				className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-orange-600 active:bg-gray-200 transition-colors"
 			>
-				<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-				</svg>
+				<Icon name='plus' className="w-3.5 h-3.5" />
 			</button>
 		</div>
 	)

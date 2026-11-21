@@ -5,6 +5,7 @@ import { LOGOUT } from '../../constants/authConstants'
 import { HOME_PATH, PAYMENT_HISTORY_PATH, PAYMENT_PATH, PROFILE_PATH } from '../../constants/path'
 import { logoutAction } from '../../redux/actions/authAction'
 import DropDownMenuItem from './DropDownMenuItem'
+import Icon from '../Icon'
 
 export default function DropDownMenu({ title, avatarUrl, fullname }) {
 	const ref = useRef()
@@ -55,7 +56,7 @@ export default function DropDownMenu({ title, avatarUrl, fullname }) {
 					<img className="w-full h-full object-cover" src={avatarUrl} alt={fullname} />
 				</div>
 				<span className="hidden sm:inline-block">{fullname || title}</span>
-				<svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+				<Icon name='chevron-down' className="w-4 h-4 text-orange-500" />
 			</button>
 			<div
 				onClick={e => e.stopPropagation()}

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { useDialog } from '../hooks/useDialog'
+import Icon from './Icon'
 
 export default function CustomDialog() {
   const { isOpenDialog, dialogData, setIsOpenDialog } = useDialog()
@@ -60,9 +61,7 @@ export default function CustomDialog() {
             className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 rounded-lg p-1 hover:bg-gray-100 transition-colors focus:outline-none"
             aria-label="Đóng"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <Icon name='x' className="w-5 h-5" />
           </button>
         </div>
         

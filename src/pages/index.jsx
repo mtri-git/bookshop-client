@@ -6,50 +6,41 @@ import BookCard from '../components/BookCard'
 import bookService, { FALLBACK_BOOKS } from '../services/bookService'
 import { SEARCH_PATH } from '../constants/path'
 import { toast_success } from '../utils/toastNotify'
+import Icon from '../components/Icon'
 
 // Service highlights list with clean solid icons
 const FEATURES = [
 	{
 		icon: (
-			<svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-			</svg>
+			<Icon name='archive' className="w-5 h-5 text-orange-600" />
 		),
 		title: 'Freeship từ 150K',
 		desc: 'Giao hàng tận nơi toàn quốc',
 	},
 	{
 		icon: (
-			<svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-			</svg>
+			<Icon name='shield-check' className="w-5 h-5 text-emerald-600" />
 		),
 		title: '100% Sách thật',
 		desc: 'Cam kết nguồn gốc xuất bản',
 	},
 	{
 		icon: (
-			<svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-			</svg>
+			<Icon name='clock' className="w-5 h-5 text-blue-600" />
 		),
 		title: 'Giao nhanh 2h',
 		desc: 'Nội thành Hà Nội & TP.HCM',
 	},
 	{
 		icon: (
-			<svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-			</svg>
+			<Icon name='refresh' className="w-5 h-5 text-purple-600" />
 		),
 		title: 'Đổi trả 30 ngày',
 		desc: 'Thủ tục hoàn tiền dễ dàng',
 	},
 	{
 		icon: (
-			<svg className="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-			</svg>
+			<Icon name='currency' className="w-5 h-5 text-rose-600" />
 		),
 		title: 'Tích lũy điểm thưởng',
 		desc: 'Đổi voucher cho đơn sau',
@@ -62,72 +53,56 @@ const CATEGORIES = [
 		name: 'Văn học',
 		count: '1,240+ cuốn',
 		icon: (
-			<svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-			</svg>
+			<Icon name='book' className="w-5 h-5 text-blue-600" />
 		),
 	},
 	{
 		name: 'Kinh tế',
 		count: '850+ cuốn',
 		icon: (
-			<svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-			</svg>
+			<Icon name='trending-up' className="w-5 h-5 text-amber-600" />
 		),
 	},
 	{
 		name: 'Kỹ năng',
 		count: '920+ cuốn',
 		icon: (
-			<svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-			</svg>
+			<Icon name='light-bulb' className="w-5 h-5 text-emerald-600" />
 		),
 	},
 	{
 		name: 'Thiếu nhi',
 		count: '640+ cuốn',
 		icon: (
-			<svg className="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-			</svg>
+			<Icon name='face-smile' className="w-5 h-5 text-pink-600" />
 		),
 	},
 	{
 		name: 'Manga - Comic',
 		count: '1,500+ cuốn',
 		icon: (
-			<svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M13 10V3L4 14h7v7l9-11h-7z" />
-			</svg>
+			<Icon name='bolt' className="w-5 h-5 text-purple-600" />
 		),
 	},
 	{
 		name: 'Ngoại văn',
 		count: '430+ cuốn',
 		icon: (
-			<svg className="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-			</svg>
+			<Icon name='globe' className="w-5 h-5 text-cyan-600" />
 		),
 	},
 	{
 		name: 'Khoa học',
 		count: '310+ cuốn',
 		icon: (
-			<svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-			</svg>
+			<Icon name='beaker' className="w-5 h-5 text-indigo-600" />
 		),
 	},
 	{
 		name: 'Tâm lý',
 		count: '520+ cuốn',
 		icon: (
-			<svg className="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-			</svg>
+			<Icon name='heart' className="w-5 h-5 text-rose-600" />
 		),
 	},
 ]
@@ -287,11 +262,11 @@ export default function Home() {
 			<section className="px-4 sm:px-6 lg:px-8">
 				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
 					{FEATURES.map((item, idx) => (
-						<div key={idx} className="flex items-center gap-3 p-1.5">
+						<div key={idx} className="flex items-center gap-3 p-1.5 min-w-0">
 							<div className="p-2 bg-white rounded-lg border border-gray-200 shadow-sm shrink-0">
 								{item.icon}
 							</div>
-							<div>
+							<div className="min-w-0">
 								<h4 className="font-bold text-xs sm:text-sm text-gray-900">
 									{item.title}
 								</h4>
@@ -311,9 +286,7 @@ export default function Home() {
 					<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-3 border-b border-red-100">
 						<div className="flex items-center gap-2.5">
 							<span className="bg-red-600 text-white font-extrabold text-xs uppercase px-2.5 py-1 rounded flex items-center gap-1.5 shadow-sm">
-								<svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
-									<path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
-								</svg>
+								<Icon name='bolt-solid' className="w-3.5 h-3.5" />
 								<span>FLASH SALE</span>
 							</span>
 							<h2 className="text-base sm:text-lg font-bold text-gray-900">
@@ -465,9 +438,7 @@ export default function Home() {
 						className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-medium text-xs sm:text-sm shadow-sm transition-colors active:scale-98"
 					>
 						<span>Khám phá thêm hàng ngàn tựa sách</span>
-						<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-						</svg>
+						<Icon name='arrow-right' className="w-4 h-4" />
 					</Link>
 				</div>
 			</section>

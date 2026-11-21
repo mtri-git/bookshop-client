@@ -11,6 +11,7 @@ import { newOrder } from '../redux/actions/orderAction'
 import { DialogProvider, useDialog } from '../hooks/useDialog'
 import { v4 as uuidv4 } from 'uuid'
 import { toast_error, toast_success } from '../utils/toastNotify'
+import Icon from '../components/Icon'
 
 const PAYMENT_METHODS = [
 	{
@@ -18,9 +19,7 @@ const PAYMENT_METHODS = [
 		label: 'Thanh toán khi nhận hàng (COD)',
 		desc: 'Trả tiền mặt khi nhận được hàng',
 		icon: (
-			<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-			</svg>
+			<Icon name='cash' className="w-5 h-5" />
 		),
 	},
 	{
@@ -28,9 +27,7 @@ const PAYMENT_METHODS = [
 		label: 'Ví MoMo',
 		desc: 'Thanh toán qua ứng dụng MoMo',
 		icon: (
-			<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-			</svg>
+			<Icon name='device-mobile' className="w-5 h-5" />
 		),
 	},
 	{
@@ -38,9 +35,7 @@ const PAYMENT_METHODS = [
 		label: 'Chuyển khoản ngân hàng',
 		desc: 'Internet Banking hoặc thẻ nội địa',
 		icon: (
-			<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-			</svg>
+			<Icon name='credit-card' className="w-5 h-5" />
 		),
 	},
 ]
@@ -115,31 +110,22 @@ function PaymentContent() {
 						{/* Delivery Address */}
 						<div className="bg-white rounded-xl border border-gray-200/80 shadow-xs p-5">
 							<h2 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-								<svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-								</svg>
+								<Icon name='location' className="w-4 h-4 text-orange-600" />
 								Địa chỉ giao hàng
 							</h2>
 
 							{user?.isLoggedIn ? (
 								<div className="space-y-2 text-sm">
 									<div className="flex items-center gap-2">
-										<svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-										</svg>
+										<Icon name='user' className="w-4 h-4 text-gray-400 shrink-0" />
 										<span className="font-medium text-gray-900">{userData.fullname}</span>
 									</div>
 									<div className="flex items-center gap-2">
-										<svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-										</svg>
+										<Icon name='phone' className="w-4 h-4 text-gray-400 shrink-0" />
 										<span className="text-gray-700">{userData.phone || 'Chưa cập nhật SĐT'}</span>
 									</div>
 									<div className="flex items-start gap-2">
-										<svg className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-										</svg>
+										<Icon name='location' className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
 										<span className="text-gray-700">
 											{userData.address || 'Chưa cập nhật địa chỉ'}
 											{userData.postalCode && `, Mã bưu điện: ${userData.postalCode}`}
@@ -154,9 +140,7 @@ function PaymentContent() {
 						{/* Payment Method */}
 						<div className="bg-white rounded-xl border border-gray-200/80 shadow-xs p-5">
 							<h2 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-								<svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-								</svg>
+								<Icon name='credit-card' className="w-4 h-4 text-orange-600" />
 								Phương thức thanh toán
 							</h2>
 
@@ -271,10 +255,7 @@ function PaymentContent() {
 							>
 								{loading ? (
 									<>
-										<svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-											<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-											<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-										</svg>
+										<Icon name='spinner' className="animate-spin w-4 h-4" />
 										Đang xử lý...
 									</>
 								) : (
@@ -286,9 +267,7 @@ function PaymentContent() {
 								to={CART_PATH}
 								className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs font-medium text-gray-500 hover:text-orange-600 transition-colors"
 							>
-								<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-								</svg>
+								<Icon name='chevron-left' className="w-4 h-4" />
 								Quay lại giỏ hàng
 							</Link>
 						</div>
