@@ -4,19 +4,12 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './index.css'
 import { Provider } from 'react-redux'
-import { createStore, applyMiddleware, compose } from 'redux'
+import { configureStore } from '@reduxjs/toolkit'
 import rootReducer from './redux/reducers'
-import thunk from 'redux-thunk'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 
-const composeEnhancers =
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ||
-  compose;
-  
-const store = createStore(
-  rootReducer,
-  composeEnhancers(applyMiddleware(thunk))
-);
+// configureStore includes redux-thunk and Redux DevTools by default
+const store = configureStore({ reducer: rootReducer })
 
 const GOOGLE_CLIENT_ID =
   import.meta.env.VITE_GOOGLE_CLIENT_ID ||

@@ -25,7 +25,7 @@ const slides = [
 		title: 'Văn Học Kinh Điển Thế Giới',
 		subtitle: 'Những tác phẩm tuyển chọn vượt thời gian',
 		badge: 'TUYỂN CHỌN',
-		tagColor: 'bg-slate-800',
+		tagColor: 'bg-gray-800',
 	},
 ]
 

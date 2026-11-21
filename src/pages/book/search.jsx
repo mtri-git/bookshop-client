@@ -4,8 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import Loading from '../../components/Loading'
 import bookService from '../../services/bookService'
 import BookCard from '../../components/BookCard'
-import Pagination from 'rc-pagination'
-import './paginate-decor.less'
+import Pagination from '../../components/Pagination'
 import { HOME_PATH } from '../../constants/path'
 
 const CATEGORIES_LIST = [
@@ -352,10 +351,9 @@ export default function Search() {
 						{paginate.totalPage > 1 && (
 							<div className="flex justify-center pt-4">
 								<Pagination
-									onChange={onPageChange}
 									current={currentPage}
-									total={paginate.totalPage * 10}
-									showTitle={false}
+									totalPage={paginate.totalPage}
+									onChange={onPageChange}
 								/>
 							</div>
 						)}

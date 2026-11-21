@@ -474,7 +474,7 @@ export default function Home() {
 
 			{/* PROMOTION BANNER STRIP - SOLID DEEP SLATE */}
 			<section className="px-4 sm:px-6 lg:px-8">
-				<div className="rounded-xl bg-slate-900 text-white p-6 sm:p-8 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6">
+				<div className="rounded-xl bg-gray-900 text-white p-6 sm:p-8 border border-gray-800 flex flex-col md:flex-row items-center justify-between gap-6">
 					<div className="space-y-2 max-w-xl text-center md:text-left">
 						<span className="bg-yellow-400 text-gray-900 font-bold text-[11px] px-2.5 py-0.5 rounded uppercase tracking-wider">
 							Ưu Đãi Độc Quyền
@@ -482,7 +482,7 @@ export default function Home() {
 						<h3 className="text-xl sm:text-2xl font-bold">
 							Hội Sách Mùa Hè 2026 - Giảm Thêm 15%
 						</h3>
-						<p className="text-slate-300 text-xs sm:text-sm">
+						<p className="text-gray-300 text-xs sm:text-sm">
 							Áp dụng cho đơn hàng từ 300.000đ khi nhập mã <span className="font-mono text-yellow-300 font-bold">SUMMER2026</span> tại giỏ hàng.
 						</p>
 					</div>

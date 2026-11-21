@@ -2,6 +2,8 @@ import React, { Suspense, lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import MainLayout from './layouts/MainLayout'
 import LoadingIndicator from './components/LoadingIndicator'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 import {
 	HOME_PATH,
@@ -22,7 +24,6 @@ import {
 	PUBLISHER_DETAIL_PATH,
 	SEARCH_PATH,
 	FORGET_PASSWORD_PATH,
-	LOADING_DEMO_PATH,
 } from './constants/path'
 import { DialogProvider } from './hooks/useDialog'
 import { BookQuantityProvider } from './hooks/useBookQuantityDetail'
@@ -48,9 +49,9 @@ const Search = lazy(() => import('./pages/book/search'))
 const Profile = lazy(() => import('./pages/profile/index'))
 const PaymentHistory = lazy(() => import('./pages/profile/payment-history'))
 const ForgetPassword = lazy(() => import('./pages/forget-password'))
-const LoadingDemo = lazy(() => import('./pages/loading-demo'))
 
-function App() {	return (
+function App() {
+	return (
 		<DialogProvider>
 			<Suspense fallback={<LoadingIndicator fullScreen transparent size="large" color="primary" text="Đang tải..." />}>
 				<Routes>
@@ -72,8 +73,6 @@ function App() {	return (
 						<Route path={HOME_PATH} element={<Home />} />
 						<Route path={CART_PATH} element={<Cart />} />
 						<Route path={SEARCH_PATH} element={<Search />} />
-						<Route path={CART_PATH} element={<Cart />} />
-						<Route />
 
 						{/* Book path */}
 						<Route path={BOOK_PATH}>
@@ -100,7 +99,8 @@ function App() {	return (
 								path={PAYMENT_HISTORY_PATH}
 								element={<PaymentHistory />}
 							/>
-						</Route>						<Route path={PUBLISHER_PATH}>
+						</Route>
+						<Route path={PUBLISHER_PATH}>
 							<Route index element={<Publisher />} />
 							<Route
 								path={PUBLISHER_DETAIL_PATH}
@@ -108,13 +108,11 @@ function App() {	return (
 							/>
 						</Route>
 
-						{/* Loading Demo */}
-						<Route path={LOADING_DEMO_PATH} element={<LoadingDemo />} />
-
 						<Route path='*' element={<Page404 />} />
 					</Route>
 				</Routes>
 			</Suspense>
+			<ToastContainer position='top-center' autoClose={2500} hideProgressBar theme='light' />
 		</DialogProvider>
 	)
 }

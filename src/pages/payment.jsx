@@ -11,8 +11,6 @@ import { newOrder } from '../redux/actions/orderAction'
 import { DialogProvider, useDialog } from '../hooks/useDialog'
 import { v4 as uuidv4 } from 'uuid'
 import { toast_error, toast_success } from '../utils/toastNotify'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 
 const PAYMENT_METHODS = [
 	{
@@ -315,7 +313,6 @@ function PaymentContent() {
 				</div>
 			</div>
 
-			<ToastContainer position="top-center" autoClose={2500} hideProgressBar theme="light" />
 		</main>
 	)
 }

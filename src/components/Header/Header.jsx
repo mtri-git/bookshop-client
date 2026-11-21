@@ -16,7 +16,6 @@ import {
 import { useSelectUser } from '../../redux/selectors/useSelectUser'
 import { useTotalCartItem } from '../../redux/selectors/useTotalCartItem'
 import DropDownMenu from '../DropDownMenu/DropDownMenu'
-import './Header.css'
 
 export default function Header() {
 	const [cartCount, setCartCount] = useState(0)

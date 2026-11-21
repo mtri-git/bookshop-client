@@ -1,8 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { HOME_PATH, LOGIN_PATH } from '../constants/path'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import { toast_error, toast_success } from '../utils/toastNotify'
 import authService from '../services/authService'
 import { useDispatch } from 'react-redux'
@@ -273,7 +271,6 @@ export default function Register() {
 				</div>
 			</div>
 
-			<ToastContainer position="top-center" autoClose={2500} hideProgressBar theme="light" />
 		</main>
 	)
 }

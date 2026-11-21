@@ -3,8 +3,6 @@ import { useSelectUser } from '../../redux/selectors/useSelectUser'
 import userService from '../../services/userService'
 import uploadImageService from '../../services/uploadImageService'
 import { toast_success, toast_error } from '../../utils/toastNotify'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 
 const INPUT_FIELD = ({ label, children, ...props }) => (
 	<div>
@@ -232,7 +230,6 @@ export default function Profile() {
 				</div>
 			</div>
 
-			<ToastContainer position="top-center" autoClose={2500} hideProgressBar theme="light" />
 		</div>
 	)
 }

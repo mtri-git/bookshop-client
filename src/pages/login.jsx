@@ -1,7 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import {
 	FORGET_PASSWORD_PATH,
 	HOME_PATH,
@@ -231,7 +229,6 @@ export default function Login() {
 				</div>
 			</div>
 
-			<ToastContainer position="top-center" autoClose={2500} hideProgressBar theme="light" />
 		</main>
 	)
 }
