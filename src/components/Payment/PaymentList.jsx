@@ -1,43 +1,57 @@
 import React from 'react'
 import { formatPrice } from '../../utils/format'
 import PaymentItem from './PaymentItem'
-import {v4 as uuidv4} from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
+
+const STATUS_CONFIG = {
+	'Đã giao': { color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200', dot: 'bg-emerald-500' },
+	'Đang giao': { color: 'text-blue-700', bg: 'bg-blue-50 border-blue-200', dot: 'bg-blue-500' },
+	'Chờ xác nhận': { color: 'text-amber-700', bg: 'bg-amber-50 border-amber-200', dot: 'bg-amber-500' },
+	'Đã hủy': { color: 'text-red-700', bg: 'bg-red-50 border-red-200', dot: 'bg-red-500' },
+}
 
 export default function PaymentList({ data }) {
+	const statusCfg = STATUS_CONFIG[data.status] || STATUS_CONFIG['Chờ xác nhận']
+
 	return (
-		<div className="bg-white rounded-xl shadow border border-orange-100 p-2 sm:p-4 my-6 w-full max-w-2xl mx-auto overflow-x-auto">
-			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2 w-full">
-				<div className="text-orange-500 font-semibold text-base break-words max-w-full">Đơn hàng: #{data._id}</div>
-				<div className="flex flex-col sm:items-end text-xs sm:text-sm text-gray-600 w-full sm:w-auto">
-					<div className="break-words">
-						<span className="font-medium">Tình trạng: </span>
-						<span className={data.status === 'Đã giao' ? 'text-green-600 font-semibold' : 'text-yellow-600 font-semibold'}>{data.status}</span>
-					</div>
-					<div className="break-words">
-						<span className="font-medium">Thanh toán: </span>
-						<span className={data.is_paid ? 'text-green-600 font-semibold' : 'text-red-500 font-semibold'}>{data.is_paid ? 'Đã thanh toán' : 'Chưa thanh toán'}</span>
-					</div>
+		<div className="rounded-xl border border-gray-200/80 overflow-hidden">
+			{/* Order Header */}
+			<div className="px-4 sm:px-5 py-3 bg-gray-50 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+				<div className="flex items-center gap-2 flex-wrap">
+					<span className="text-xs font-bold text-gray-700">
+						Đơn hàng #{data._id?.slice(-8)?.toUpperCase()}
+					</span>
+					<span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full border ${statusCfg.bg} ${statusCfg.color}`}>
+						<span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dot}`} />
+						{data.status || 'Chờ xác nhận'}
+					</span>
+				</div>
+
+				<div className="flex items-center gap-3 text-[11px] text-gray-600">
+					<span className={`font-semibold ${data.is_paid ? 'text-emerald-600' : 'text-amber-600'}`}>
+						{data.is_paid ? '✓ Đã thanh toán' : '⏳ Chưa thanh toán'}
+					</span>
 				</div>
 			</div>
-			<div className="divide-y divide-gray-100 w-full">
+
+			{/* Items */}
+			<div className="divide-y divide-gray-100">
 				{data?.order_items?.map((item) => (
-					<PaymentItem key={uuidv4()} {...item} {...item.info} _id={item.info._id}/>
+					<PaymentItem key={uuidv4()} {...item} {...item.info} _id={item.info?._id} />
 				))}
 			</div>
-			<div className="flex flex-col sm:flex-row sm:justify-end gap-2 mt-4 w-full">
-				<div className="bg-orange-50 rounded-lg px-3 py-2 flex flex-col sm:items-end w-full sm:w-auto">
-					<div className="text-xs sm:text-sm text-gray-500 mb-1">
-						<span>Khuyến mãi: </span>
-						<span className="text-green-600 font-semibold">-10.000đ</span>
-					</div>
-					<div className="text-sm sm:text-base font-semibold break-words">
-						<label>Thành tiền: </label>
-						<span className="text-orange-500 font-bold text-base sm:text-lg">
-							{formatPrice(data.order_total_value)}đ
+
+			{/* Total */}
+			<div className="px-4 sm:px-5 py-3 bg-gray-50/50 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-end gap-2">
+				<div className="flex items-center gap-4 text-sm">
+					<span className="text-gray-600">Tổng cộng:</span>
+					<div className="text-right">
+						<span className="text-base font-bold text-orange-600">
+							{formatPrice(data.order_total_value)} đ
 						</span>
 						{data.total && (
-							<span className="line-through text-gray-400 ml-2 text-base font-normal">
-								{formatPrice(data.total)}đ
+							<span className="text-xs text-gray-400 line-through ml-2">
+								{formatPrice(data.total)} đ
 							</span>
 						)}
 					</div>

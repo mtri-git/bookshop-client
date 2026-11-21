@@ -1,38 +1,54 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { useDispatch } from 'react-redux'
 import { decreaseCartItemQuantity, increaseCartItemQuantity } from '../../redux/actions/cartAction'
 
-export default function QuantityBox({ className, product_id, count, onChange }) {
-	const ref = useRef()
+export default function QuantityBox({ className = '', product_id, count = 1 }) {
 	const dispatch = useDispatch()
 
-	const onIncrease = () => {
-		ref.current.value++
+	const onIncrease = (e) => {
+		e.stopPropagation()
 		dispatch(increaseCartItemQuantity(product_id))
 	}
-	const onDecrease = () => {
-		if (ref.current.value > 1) {
-			ref.current.value--
+
+	const onDecrease = (e) => {
+		e.stopPropagation()
+		if (count > 1) {
 			dispatch(decreaseCartItemQuantity(product_id))
 		}
 	}
 
 	return (
-		<div className={className + ' p-2 text-center'}>
-			<label className='pr-2 text-lg'>Số lượng</label>
-			<div className=' border inline-block justify-center w-20 px-2 text-lg'>
-				<button
-					className='float-right text-gray-600 font-bold'
-					onClick={onIncrease}>
-					+
-				</button>
-				<input className='w-5 text-center' defaultValue={count} ref={ref} onChange={(ev) => onChange(ev)}/>
-				<button
-					className='float-left text-gray-600 font-bold'
-					onClick={onDecrease}>
-					-
-				</button>
-			</div>
+		<div className={`inline-flex items-center border border-gray-200 rounded-lg overflow-hidden bg-white shadow-xs ${className}`}>
+			<button
+				type="button"
+				onClick={onDecrease}
+				disabled={count <= 1}
+				aria-label="Giảm số lượng"
+				className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center transition-colors ${
+					count <= 1
+						? 'text-gray-300 bg-gray-50 cursor-not-allowed'
+						: 'text-gray-600 hover:bg-gray-100 hover:text-orange-600 active:bg-gray-200'
+				}`}
+			>
+				<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 12H4" />
+				</svg>
+			</button>
+
+			<span className="w-8 sm:w-10 text-center text-xs sm:text-sm font-semibold text-gray-800 select-none">
+				{count}
+			</span>
+
+			<button
+				type="button"
+				onClick={onIncrease}
+				aria-label="Tăng số lượng"
+				className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-orange-600 active:bg-gray-200 transition-colors"
+			>
+				<svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+				</svg>
+			</button>
 		</div>
 	)
 }

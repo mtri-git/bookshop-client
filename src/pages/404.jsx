@@ -1,25 +1,55 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { HOME_PATH } from '../constants/path'
+import { HOME_PATH, SEARCH_PATH } from '../constants/path'
 
 export default function Page404() {
   return (
-    <main>
-        <section className="flex items-center h-full sm:p-16 dark:bg-gray-900 dark:text-gray-100">
-        <div className="container flex flex-col items-center justify-center px-5 mx-auto my-8 space-y-8 text-center sm:max-w-md">
-        <h1 className="text-3xl font-bold text-amber-500">
-            404 - Không tìm thấy
-        </h1>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-40 h-40 dark:text-gray-600">
-                <path fill="currentColor" d="M256,16C123.452,16,16,123.452,16,256S123.452,496,256,496,496,388.548,496,256,388.548,16,256,16ZM403.078,403.078a207.253,207.253,0,1,1,44.589-66.125A207.332,207.332,0,0,1,403.078,403.078Z"></path>
-                <rect width="176" height="32" x="168" y="320" fill="currentColor"></rect>
-                <polygon fill="currentColor" points="210.63 228.042 186.588 206.671 207.958 182.63 184.042 161.37 162.671 185.412 138.63 164.042 117.37 187.958 141.412 209.329 120.042 233.37 143.958 254.63 165.329 230.588 189.37 251.958 210.63 228.042"></polygon>
-                <polygon fill="currentColor" points="383.958 182.63 360.042 161.37 338.671 185.412 314.63 164.042 293.37 187.958 317.412 209.329 296.042 233.37 319.958 254.63 341.329 230.588 365.37 251.958 386.63 228.042 362.588 206.671 383.958 182.63"></polygon>
-            </svg>
-            <p className="text-3xl">Looks like our services are currently offline</p>
-            <Link to={HOME_PATH} rel="noopener noreferrer" className="px-8 py-3 font-semibold rounded dark:bg-violet-400 dark:text-gray-900">Back to homepage</Link>
+    <main className="min-h-screen bg-gray-50/60 flex items-center justify-center px-4 py-16">
+      <div className="text-center max-w-md mx-auto">
+        {/* Big 404 illustration */}
+        <div className="mb-6 flex justify-center">
+          <div className="relative">
+            <span className="text-[120px] sm:text-[160px] font-extrabold text-gray-100 select-none leading-none">
+              404
+            </span>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center">
+                <svg className="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
-    </section>
+
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+          Trang không tồn tại
+        </h1>
+        <p className="text-sm sm:text-base text-gray-500 mb-8 leading-relaxed">
+          Trang bạn đang tìm kiếm đã bị xóa, đổi tên hoặc tạm thời không khả dụng.
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link
+            to={HOME_PATH}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-xl transition-colors shadow-sm text-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <span>Về trang chủ</span>
+          </Link>
+          <Link
+            to={SEARCH_PATH}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 text-gray-700 font-semibold rounded-xl transition-colors border border-gray-200 shadow-sm text-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span>Khám phá sách</span>
+          </Link>
+        </div>
+      </div>
     </main>
   )
 }

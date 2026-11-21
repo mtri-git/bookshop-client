@@ -51,17 +51,17 @@ export default function CustomDialog() {
         role="dialog"
       >
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-orange-50 to-orange-100 px-6 py-4 border-b border-orange-100">
-          <h2 className="text-xl font-bold text-gray-800">
+        <div className="relative bg-white px-6 py-4 border-b border-gray-200">
+          <h2 className="text-lg font-bold text-gray-900">
             {dialogData.title || 'Thông báo'}
           </h2>
           <button 
             onClick={onClose} 
-            className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 rounded-full p-1 hover:bg-gray-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-300"
+            className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 rounded-lg p-1 hover:bg-gray-100 transition-colors focus:outline-none"
             aria-label="Đóng"
           >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
@@ -90,7 +90,7 @@ export default function CustomDialog() {
               }
               onClose()
             }}
-            className="px-5 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2"
+            className="px-5 py-2 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg shadow-sm transition-colors focus:outline-none"
           >
             {dialogData.confirmText || 'OK'}
           </button>

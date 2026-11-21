@@ -46,9 +46,8 @@ export const addToCart = (product, quantity) => async (dispatch) => {
 }
 
 export const removeFromCart = (productId) => async (dispatch) => {
-	const cart = getLocalStorage(CART_LS)
+	const cart = getLocalStorage(CART_LS) || []
 	const updatedCart = cart.filter((cartItem) => cartItem._id !== productId)
-	console.log(updatedCart);
 	setLocalStorage(CART_LS, updatedCart)
 
 	dispatch({
@@ -58,24 +57,25 @@ export const removeFromCart = (productId) => async (dispatch) => {
 }
 
 export const decreaseCartItemQuantity = (productId) => async (dispatch) => {
-	const cart = getLocalStorage(CART_LS)
+	const cart = getLocalStorage(CART_LS) || []
 	const decreaseItem = cart.find((cartItem) => cartItem._id === productId)
+	if (!decreaseItem) return
 	const index = cart.indexOf(decreaseItem)
 
-	console.log('daata', decreaseItem)
-	if (decreaseItem.count >= 1) {
+	if (decreaseItem.count > 1) {
 		cart[index].count -= 1
 		setLocalStorage(CART_LS, cart)
 		dispatch({
-		type: DECREASE_ITEM_IN_CART,
+			type: DECREASE_ITEM_IN_CART,
 			payload: cart,
 		})
 	}
 }
 
 export const checkItemInCart = (productId) => async (dispatch) => {
-	const cart = getLocalStorage(CART_LS)
+	const cart = getLocalStorage(CART_LS) || []
 	const checkItem = cart.find((cartItem) => cartItem._id === productId)
+	if (!checkItem) return
 	const index = cart.indexOf(checkItem)
 	cart[index].checked = !checkItem.checked
 	setLocalStorage(CART_LS, cart)
@@ -83,7 +83,29 @@ export const checkItemInCart = (productId) => async (dispatch) => {
 		type: CHECK_ITEM_IN_CART,
 		payload: cart,
 	})
-	
+}
+
+export const checkAllCartItems = (checked) => async (dispatch) => {
+	const cart = getLocalStorage(CART_LS) || []
+	const updatedCart = cart.map((cartItem) => ({
+		...cartItem,
+		checked: Boolean(checked),
+	}))
+	setLocalStorage(CART_LS, updatedCart)
+	dispatch({
+		type: CHECK_ITEM_IN_CART,
+		payload: updatedCart,
+	})
+}
+
+export const removeSelectedCartItems = () => async (dispatch) => {
+	const cart = getLocalStorage(CART_LS) || []
+	const updatedCart = cart.filter((cartItem) => !cartItem.checked)
+	setLocalStorage(CART_LS, updatedCart)
+	dispatch({
+		type: REMOVE_ITEM_IN_CART,
+		payload: updatedCart,
+	})
 }
 
 export const increaseCartItemQuantity = (productId) => async (dispatch) => {

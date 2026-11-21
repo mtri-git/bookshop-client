@@ -1,253 +1,279 @@
-import React from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { HOME_PATH, LOGIN_PATH } from '../constants/path'
-import InputField from '../components/InputField'
-import Footer from '../components/Footer'
-import Button from '../components/Button'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { toast_error, toast_success } from '../utils/toastNotify'
 import authService from '../services/authService'
-import { v4 as uuidv4 } from 'uuid'
-import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { loginWithGoogleAction } from '../redux/actions/authAction'
+import { GoogleLogin } from '@react-oauth/google'
 
 export default function Register() {
-	const navigate = useNavigate()	
-	const emailRef = React.createRef()
-	const fullnameRef = React.createRef()
-	const passwordRef = React.createRef()
-	const rePasswordRef = React.createRef()
+	const navigate = useNavigate()
+	const dispatch = useDispatch()
+	const emailRef = useRef(null)
+	const fullnameRef = useRef(null)
+	const passwordRef = useRef(null)
+	const rePasswordRef = useRef(null)
+	const [agreeTerms, setAgreeTerms] = useState(false)
+	const [submitting, setSubmitting] = useState(false)
 
-	const register = async (data) => {
-		await authService.register(data)
-	}
-
-	useEffect(()=>{
-		document.title = 'BookShop - Đăng ký'
+	useEffect(() => {
+		document.title = 'Đăng ký - BookShop'
 	}, [])
 
-	const onSubmit = async() => {
-		const value = {} // contain login data
-		value.email = emailRef.current.value
-		value.fullname = fullnameRef.current.value
-		value.password = passwordRef.current.value
-		value.rePassword = rePasswordRef.current.value
+	const handleGoogleSuccess = async (credentialResponse) => {
+		try {
+			if (!credentialResponse?.credential) {
+				toast_error('Không tìm thấy thông tin đăng nhập Google')
+				return
+			}
+			const base64Url = credentialResponse.credential.split('.')[1]
+			const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+			const jsonPayload = decodeURIComponent(
+				atob(base64)
+					.split('')
+					.map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+					.join('')
+			)
+			const googleUser = JSON.parse(jsonPayload)
 
-		if (!value.email) {
-			toast_error('Thiếu email')
+			await dispatch(loginWithGoogleAction(googleUser, credentialResponse.credential))
+			toast_success(`Đăng ký Google thành công! Chào ${googleUser.name || 'bạn'}`)
+			setTimeout(() => {
+				navigate(HOME_PATH)
+			}, 800)
+		} catch (error) {
+			console.error('Google register error:', error)
+			toast_error('Xử lý đăng ký với Google thất bại')
+		}
+	}
+
+	const onSubmit = async (e) => {
+		if (e) e.preventDefault()
+		const email = emailRef.current?.value?.trim()
+		const fullname = fullnameRef.current?.value?.trim()
+		const password = passwordRef.current?.value
+		const rePassword = rePasswordRef.current?.value
+
+		if (!email) {
+			toast_error('Vui lòng nhập email')
 			return
-		} else if (!value.password) {
-			toast_error('Thiếu mật khẩu')
+		}
+		if (!fullname) {
+			toast_error('Vui lòng nhập họ và tên')
 			return
-		} else if (!value.fullname) {
-			toast_error('Thiếu họ và tên')
+		}
+		if (!password) {
+			toast_error('Vui lòng nhập mật khẩu')
 			return
-		} else if (!value.rePassword) {
-			toast_error('Cần xác nhận mật khẩu')
+		}
+		if (password.length < 6) {
+			toast_error('Mật khẩu phải có ít nhất 6 ký tự')
 			return
-		} else if (value.rePassword !== value.password) {
+		}
+		if (!rePassword) {
+			toast_error('Vui lòng xác nhận mật khẩu')
+			return
+		}
+		if (password !== rePassword) {
 			toast_error('Mật khẩu xác nhận không khớp')
 			return
 		}
-
-		const mailRegex =
-			/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-		if (!mailRegex.test(value.email)) {
-			toast_error('Email sai định dạng')
+		if (!agreeTerms) {
+			toast_error('Vui lòng đồng ý với Điều khoản dịch vụ')
 			return
 		}
-		const { rePassword, ...registerData } = value
+
+		const mailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+		if (!mailRegex.test(email)) {
+			toast_error('Email không đúng định dạng')
+			return
+		}
+
+		setSubmitting(true)
 		try {
-			const data = await authService.register(registerData)
-			console.log('a', data)
+			const data = await authService.register({ email, fullname, password })
 			if (data) {
-				toast_success('Đăng ký thành công')	
-				// Sleep in js: https://stackoverflow.com/questions/951021/what-is-the-javascript-version-of-sleep
-				await new Promise(r => setTimeout(r, 2000));
-				navigate(LOGIN_PATH)
+				toast_success('Đăng ký thành công! Đang chuyển hướng...')
+				setTimeout(() => {
+					navigate(LOGIN_PATH)
+				}, 1200)
 			}
-			console.log(registerData)
 		} catch (error) {
-			console.log(error.response.data.message);
-			toast_error(error.response.data.message)
+			toast_error(error?.response?.data?.message || 'Đăng ký không thành công. Email có thể đã được sử dụng.')
+		} finally {
+			setSubmitting(false)
 		}
 	}
-	
+
 	return (
-		<>
-			<main className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 flex flex-col justify-center sm:px-6 lg:px-8'>
-				<div className="sm:mx-auto sm:w-full sm:max-w-md mb-8">
-					<Link to={HOME_PATH} className="flex justify-center items-center">
-						<img src='/vite.svg' className='w-20 h-20' alt="BookShop Logo" />
-						<h2 className='text-3xl font-extrabold text-gray-800 ml-2'>
-							BookShop
-						</h2>
-					</Link>
-					<h1 className='mt-6 text-center text-4xl font-extrabold bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent'>
-						Đăng ký tài khoản
-					</h1>
-					<p className="mt-2 text-center text-sm text-gray-600">
-						Tham gia cùng BookShop để khám phá thế giới sách
-					</p>
-				</div>
+		<main className="min-h-screen bg-gray-50/80 py-12 flex flex-col justify-center px-4 sm:px-6 lg:px-8">
+			<div className="sm:mx-auto sm:w-full sm:max-w-md">
+				{/* Brand Logo */}
+				<Link to={HOME_PATH} className="flex justify-center items-center gap-2 mb-2">
+					<div className="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white shadow-sm">
+						<svg className="w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24">
+							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+						</svg>
+					</div>
+					<span className="text-2xl font-bold text-gray-900 tracking-tight">
+						BookShop
+					</span>
+				</Link>
 
-				<div className='sm:mx-auto sm:w-full sm:max-w-md'>
-					<div className='bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100'>
-						<div className="h-2 bg-gradient-to-r from-orange-500 to-red-500"></div>
-						<div className="px-6 py-8 sm:px-10 sm:py-8">
-							{/* Register Form */}
-							<form className='space-y-6'>
-								<div>
-									<label htmlFor="email" className="block text-sm font-medium text-gray-700">
-										Địa chỉ email
-									</label>
-									<div className="mt-1 relative rounded-md shadow-sm">
-										<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-											<svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-												<path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-												<path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-											</svg>
-										</div>
-										<InputField
-											key={uuidv4()}
-											type='email'
-											ref={emailRef}
-											className='pl-10'
-										>
-											Địa chỉ email của bạn
-										</InputField>
-									</div>
-								</div>
+				<h1 className="text-center text-xl sm:text-2xl font-bold text-gray-900 mt-2">
+					Tạo tài khoản mới
+				</h1>
+				<p className="mt-1 text-center text-xs sm:text-sm text-gray-500">
+					Khám phá hàng ngàn tựa sách hấp dẫn cùng ưu đãi thành viên
+				</p>
+			</div>
 
-								<div>
-									<label htmlFor="fullname" className="block text-sm font-medium text-gray-700">
-										Họ và tên
-									</label>
-									<div className="mt-1 relative rounded-md shadow-sm">
-										<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-											<svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-												<path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-											</svg>
-										</div>
-										<InputField 
-											key={uuidv4()} 
-											ref={fullnameRef}
-											className='pl-10'
-										>
-											Họ và tên
-										</InputField>
-									</div>
-								</div>
+			<div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
+				<div className="bg-white py-8 px-6 sm:px-10 rounded-xl border border-gray-200 shadow-sm">
+					{/* Google Sign-in */}
+					<div className="flex justify-center w-full">
+						<GoogleLogin
+							onSuccess={handleGoogleSuccess}
+							onError={() => toast_error('Đăng ký với Google thất bại')}
+							shape="rectangular"
+							size="large"
+							text="signup_with"
+							locale="vi"
+							width="100%"
+						/>
+					</div>
 
-								<div>
-									<label htmlFor="password" className="block text-sm font-medium text-gray-700">
-										Mật khẩu
-									</label>
-									<div className="mt-1 relative rounded-md shadow-sm">
-										<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-											<svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-												<path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-											</svg>
-										</div>
-										<InputField
-											key={uuidv4()}
-											type='password'
-											ref={passwordRef}
-											className='pl-10'
-										>
-											Mật khẩu
-										</InputField>
-									</div>
-									<p className="mt-1 text-xs text-gray-500">Mật khẩu phải có ít nhất 6 ký tự</p>
-								</div>
+					<div className="flex items-center my-5">
+						<div className="flex-grow border-t border-gray-200"></div>
+						<span className="flex-shrink mx-3 text-gray-400 text-xs">hoặc đăng ký bằng email</span>
+						<div className="flex-grow border-t border-gray-200"></div>
+					</div>
 
-								<div>
-									<label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-										Xác nhận mật khẩu
-									</label>
-									<div className="mt-1 relative rounded-md shadow-sm">
-										<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-											<svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-												<path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-											</svg>
-										</div>
-										<InputField
-											key={uuidv4()}
-											type='password'
-											ref={rePasswordRef}
-											className='pl-10'
-										>
-											Xác nhận mật khẩu
-										</InputField>
-									</div>
+					<form onSubmit={onSubmit} className="space-y-4">
+						{/* Email */}
+						<div>
+							<label className="block text-xs font-semibold text-gray-700 mb-1">
+								Địa chỉ email <span className="text-red-500">*</span>
+							</label>
+							<div className="relative">
+								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+									<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+									</svg>
 								</div>
-
-								<div className='flex items-center'>
-									<input
-										id="terms"
-										name="terms"
-										type="checkbox"
-										className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded transition-all duration-200 cursor-pointer"
-									/>
-									<label htmlFor="terms" className="ml-2 block text-sm text-gray-700 cursor-pointer">
-										Tôi đồng ý với <span className="text-orange-600 hover:text-orange-500 cursor-pointer">Điều khoản dịch vụ</span> và <span className="text-orange-600 hover:text-orange-500 cursor-pointer">Chính sách bảo mật</span>
-									</label>
-								</div>
-
-								<div>
-									<Button 
-										type='button' 
-										onClick={onSubmit}
-										className='w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium'
-									>
-										<svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-											<path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-										</svg>
-										Đăng ký
-									</Button>
-								</div>
-							</form>
-
-							<div className="mt-6">
-								<div className="relative">
-									<div className="absolute inset-0 flex items-center">
-										<div className="w-full border-t border-gray-300"></div>
-									</div>
-									<div className="relative flex justify-center text-sm">
-										<span className="px-2 bg-white text-gray-500">Đã có tài khoản?</span>
-									</div>
-								</div>
-
-								<div className="mt-6">
-									<Link
-										to={LOGIN_PATH}
-										className="w-full flex justify-center items-center px-4 py-3 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:text-orange-500 transition-all duration-200"
-									>
-										<svg className="mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-											<path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-										</svg>
-										Đăng nhập
-									</Link>
-								</div>
+								<input
+									ref={emailRef}
+									type="email"
+									placeholder="name@example.com"
+									required
+									className="block w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white"
+								/>
 							</div>
 						</div>
+
+						{/* Fullname */}
+						<div>
+							<label className="block text-xs font-semibold text-gray-700 mb-1">
+								Họ và tên <span className="text-red-500">*</span>
+							</label>
+							<div className="relative">
+								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+									<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+									</svg>
+								</div>
+								<input
+									ref={fullnameRef}
+									type="text"
+									placeholder="Nguyễn Văn A"
+									required
+									className="block w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white"
+								/>
+							</div>
+						</div>
+
+						{/* Password */}
+						<div>
+							<label className="block text-xs font-semibold text-gray-700 mb-1">
+								Mật khẩu <span className="text-red-500">*</span>
+							</label>
+							<div className="relative">
+								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+									<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+									</svg>
+								</div>
+								<input
+									ref={passwordRef}
+									type="password"
+									placeholder="Tối thiểu 6 ký tự"
+									required
+									className="block w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white"
+								/>
+							</div>
+						</div>
+
+						{/* Confirm Password */}
+						<div>
+							<label className="block text-xs font-semibold text-gray-700 mb-1">
+								Xác nhận mật khẩu <span className="text-red-500">*</span>
+							</label>
+							<div className="relative">
+								<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+									<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+									</svg>
+								</div>
+								<input
+									ref={rePasswordRef}
+									type="password"
+									placeholder="Nhập lại mật khẩu"
+									required
+									className="block w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white"
+								/>
+							</div>
+						</div>
+
+						{/* Terms */}
+						<div className="flex items-start text-xs pt-1">
+							<input
+								id="terms"
+								type="checkbox"
+								checked={agreeTerms}
+								onChange={(e) => setAgreeTerms(e.target.checked)}
+								className="mt-0.5 rounded border-gray-300 text-orange-600 focus:ring-orange-500 cursor-pointer"
+							/>
+							<label htmlFor="terms" className="ml-2 text-gray-600 cursor-pointer">
+								Tôi đồng ý với <span className="text-orange-600 hover:underline">Điều khoản dịch vụ</span> và <span className="text-orange-600 hover:underline">Chính sách bảo mật</span>
+							</label>
+						</div>
+
+						{/* Submit */}
+						<button
+							type="submit"
+							disabled={submitting}
+							className="w-full mt-2 py-2.5 px-4 bg-orange-600 hover:bg-orange-700 active:scale-98 text-white font-semibold text-xs sm:text-sm rounded-lg transition shadow-sm disabled:opacity-60"
+						>
+							{submitting ? 'Đang đăng ký...' : 'Đăng ký'}
+						</button>
+					</form>
+
+					<div className="mt-6 text-center text-xs text-gray-600">
+						Đã có tài khoản?{' '}
+						<Link
+							to={LOGIN_PATH}
+							className="text-orange-600 hover:underline font-bold"
+						>
+							Đăng nhập
+						</Link>
 					</div>
-					{/* Toast Error */}
-					<ToastContainer
-						position='top-center'
-						autoClose={3000}
-						hideProgressBar
-						newestOnTop={false}
-						closeOnClick
-						rtl
-						pauseOnFocusLoss
-						draggable
-						pauseOnHover
-						theme='colored'
-					/>
 				</div>
-			</main>
-			<Footer />
-		</>
+			</div>
+
+			<ToastContainer position="top-center" autoClose={2500} hideProgressBar theme="light" />
+		</main>
 	)
 }

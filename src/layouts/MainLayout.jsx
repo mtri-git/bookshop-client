@@ -18,7 +18,7 @@ export default function MainLayout() {
 		<>
 		<CustomDialog/>
 			<Header />
-			<div className='w-11/12 m-auto bg-gray-100 rounded-lg top-68 pb-5'>
+			<div className='w-full max-w-screen-2xl mx-auto bg-gray-100/70 rounded-lg pb-5'>
 				<Outlet />
 			</div>
 			<Footer />

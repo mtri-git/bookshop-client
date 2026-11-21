@@ -1,25 +1,67 @@
 import React from 'react'
-import { generatePath, Link } from 'react-router-dom';
-import { BOOK_DETAIL_PATH } from '../../constants/path';
-import { formatPrice } from '../../utils/format';
+import { formatPrice } from '../../utils/format'
+import { generatePath, Link } from 'react-router-dom'
+import { BOOK_DETAIL_PATH } from '../../constants/path'
 
-export default function PaymentItem({_id, imageUrl, title, price, quantity, sale}) {
-  const path = generatePath(BOOK_DETAIL_PATH, {id: _id})
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400'
+
+export default function PaymentItem({ _id, imageUrl, title, price = 0, quantity = 1, sale = 0 }) {
+	const path = generatePath(BOOK_DETAIL_PATH, { id: _id })
+	const discountedPrice = Math.round(price * (1 - (sale || 0)))
+	const totalPrice = discountedPrice * quantity
+	const discountPercent = Math.round((sale || 0) * 100)
+
 	return (
-		<div className="flex flex-col sm:flex-row gap-3 sm:gap-7 items-center border-y rounded-lg p-2 w-full overflow-x-auto">
-      <Link to={path} className="w-20 h-24 flex-shrink-0 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden">
-        <img src={imageUrl || 'https://c8.alamy.com/comp/ECTX75/south-africa-20-twenty-rand-bank-note-ECTX75.jpg'} className="object-contain w-full h-full" alt={title} />
-      </Link>
-      <Link to={path} className="flex-1 font-medium text-gray-800 text-sm sm:text-base break-words w-full">{title || "title"}</Link>
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-5 items-center flex-1 w-full">
-        <div className="text-red-500 font-bold text-sm sm:text-base">{formatPrice(price*(1-sale)) ||"50.000"}đ</div>
-        <div className="line-through text-xs sm:text-sm text-gray-400">{formatPrice(price) || "80.000"} đ</div>
-        <div className="text-xs sm:text-sm">x {quantity || 1}</div>
-      </div>
-      <div className="flex flex-col items-end min-w-[90px]">
-        <div className="text-orange-500 font-bold text-sm sm:text-base">{formatPrice(price*quantity*(1-sale)) || "100.000"}đ</div>
-        <div className="line-through text-xs sm:text-sm text-gray-400">{formatPrice(price*quantity) || "100.000"}đ</div>
-      </div>
-    </div>
+		<div className="flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3">
+			{/* Thumbnail */}
+			<Link
+				to={path}
+				className="w-14 h-18 sm:w-16 sm:h-20 flex-shrink-0 bg-gray-50 border border-gray-200 rounded-lg overflow-hidden flex items-center justify-center hover:shadow-xs transition-shadow"
+			>
+				<img
+					src={imageUrl || FALLBACK_IMG}
+					className="max-w-full max-h-full object-contain"
+					alt={title}
+					onError={(e) => { e.target.src = FALLBACK_IMG }}
+				/>
+			</Link>
+
+			{/* Info */}
+			<div className="flex-1 min-w-0">
+				<Link
+					to={path}
+					className="text-xs sm:text-sm font-medium text-gray-900 hover:text-orange-600 transition-colors line-clamp-2 leading-snug"
+				>
+					{title || 'Tên sách'}
+				</Link>
+
+				<div className="mt-1 flex items-center gap-2 flex-wrap">
+					<span className="text-xs sm:text-sm font-bold text-red-600">
+						{formatPrice(discountedPrice)} đ
+					</span>
+					{sale > 0 && (
+						<>
+							<span className="text-[11px] text-gray-400 line-through">
+								{formatPrice(price)} đ
+							</span>
+							<span className="text-[10px] font-bold text-red-600 bg-red-50 px-1 rounded">
+								-{discountPercent}%
+							</span>
+						</>
+					)}
+					<span className="text-[11px] text-gray-500">× {quantity}</span>
+				</div>
+			</div>
+
+			{/* Subtotal */}
+			<div className="text-right shrink-0">
+				<div className="text-sm font-bold text-orange-600">{formatPrice(totalPrice)} đ</div>
+				{sale > 0 && (
+					<div className="text-[11px] text-gray-400 line-through">
+						{formatPrice(price * quantity)} đ
+					</div>
+				)}
+			</div>
+		</div>
 	)
 }

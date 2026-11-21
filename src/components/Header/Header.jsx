@@ -92,22 +92,20 @@ export default function Header() {
 	const closeMenu = () => setMobileMenuOpen(false)
 
 	return (
-		<header className='header bg-gradient-to-r from-orange-500 to-orange-600 sticky z-50 top-0 w-full shadow-lg backdrop-blur-sm'>
+		<header className='header bg-orange-600 sticky z-50 top-0 w-full shadow-sm'>
 			<nav className='px-4 sm:px-6 py-3 relative'>
 				<div className='container flex flex-wrap justify-between items-center mx-auto max-w-7xl'>
 					{/* Logo */}
 					<Link
 						to={HOME_PATH}
-						className='flex items-center group'
+						className='flex items-center group gap-2.5'
 						onClick={closeMenu}>
-						<div className='bg-white p-2 rounded-lg shadow-sm mr-3 group-hover:shadow-md transition-shadow duration-200'>
-							<img
-								src='/vite.svg'
-								className='h-6 sm:h-8 w-auto'
-								alt='Vite Logo'
-							/>
+						<div className='w-9 h-9 rounded-lg bg-white flex items-center justify-center text-orange-600 shadow-sm'>
+							<svg className="w-5 h-5 fill-none stroke-current" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+							</svg>
 						</div>
-						<span className='self-center text-xl sm:text-2xl font-bold text-white group-hover:text-orange-100 transition-colors duration-200'>
+						<span className='self-center text-xl sm:text-2xl font-extrabold text-white tracking-tight'>
 							BookShop
 						</span>
 					</Link>					{/* Desktop search */}
@@ -133,14 +131,14 @@ export default function Header() {
 								onChange={handleDesktopInputChange}
 								onKeyUp={onSearch}
 								className='block w-full py-3 pl-12 pr-14 text-gray-900 bg-white rounded-xl border-0 shadow-sm focus:ring-2 focus:ring-orange-300 focus:bg-white placeholder-gray-500 transition-all duration-200'
-								placeholder='Tìm kiếm sách...'
+								placeholder='TÃ¬m kiáº¿m sÃ¡ch...'
 							/>
 							{desktopSearchValue.trim() && (
 								<button
 									type='button'
 									onClick={() => performSearch(desktopSearchValue)}
 									className='absolute inset-y-0 right-0 flex items-center px-4 text-gray-600 hover:text-orange-500 focus:outline-none transition-colors duration-200'
-									aria-label='Tìm kiếm'>
+									aria-label='TÃ¬m kiáº¿m'>
 									<svg
 										className='w-5 h-5'
 										fill='currentColor'
@@ -156,6 +154,21 @@ export default function Header() {
 							)}
 						</div>
 					</div>
+
+					{/* Mobile: Cart icon visible in top bar */}
+					<NavLink
+						to={CART_PATH}
+						className='md:hidden relative p-2 text-white hover:bg-orange-700 rounded-lg transition-colors duration-200'
+						aria-label='Gi&#7887; h&#224;ng'>
+						<svg className='w-6 h-6' fill='none' stroke='currentColor' strokeWidth={2} viewBox='0 0 24 24'>
+							<path strokeLinecap='round' strokeLinejoin='round' d='M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z' />
+						</svg>
+						{cartCount > 0 && (
+							<span className='absolute top-0.5 right-0.5 bg-red-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-orange-600'>
+								{cartCount > 99 ? '99+' : cartCount}
+							</span>
+						)}
+					</NavLink>
 
 					{/* Mobile menu button */}
 					<button
@@ -200,7 +213,7 @@ export default function Header() {
 									: 'text-orange-100 hover:text-white hover:bg-orange-600'
 								}`
 							}>
-							Trang chủ
+							Trang chá»§
 						</NavLink>
 						<NavLink
 							to={BOOK_PATH}
@@ -210,18 +223,18 @@ export default function Header() {
 									: 'text-orange-100 hover:text-white hover:bg-orange-600'
 								}`
 							}>
-							Sách
+							SÃ¡ch
 						</NavLink>
 
 						{user.isLoggedIn ? (
 							<div className='ml-2'>
-								<DropDownMenu title='Tài khoản' {...user.user.data} />
+								<DropDownMenu title='TÃ i khoáº£n' {...user.user.data} />
 							</div>
 						) : (
 							<NavLink
 								to={LOGIN_PATH}
 								className='px-4 py-2 rounded-lg text-base font-medium text-orange-100 hover:text-white hover:bg-orange-600 transition-all duration-200'>
-								Đăng nhập
+								ÄÄƒng nháº­p
 							</NavLink>
 						)}
 
@@ -276,14 +289,14 @@ export default function Header() {
 								onChange={handleMobileInputChange}
 								onKeyUp={onSearch}
 								className='block w-full py-3 pl-12 pr-14 text-gray-900 bg-gray-50 rounded-xl border-0 focus:ring-2 focus:ring-orange-300 focus:bg-white placeholder-gray-500 transition-all duration-200'
-								placeholder='Tìm kiếm sách...'
+								placeholder='TÃ¬m kiáº¿m sÃ¡ch...'
 							/>
 							{mobileSearchValue.trim() && (
 								<button
 									type='button'
 									onClick={() => performSearch(mobileSearchValue)}
 									className='absolute inset-y-0 right-0 flex items-center px-4 text-gray-600 hover:text-orange-500 focus:outline-none transition-colors duration-200'
-									aria-label='Tìm kiếm'>
+									aria-label='TÃ¬m kiáº¿m'>
 									<svg
 										className='w-5 h-5'
 										fill='currentColor'
@@ -309,7 +322,7 @@ export default function Header() {
 								isActive ? activeClassNameTW : unActiveClassNameTW
 							}
 							onClick={closeMenu}>
-							Trang chủ
+							Trang chá»§
 						</NavLink>
 						<NavLink
 							to={BOOK_PATH}
@@ -317,19 +330,19 @@ export default function Header() {
 								isActive ? activeClassNameTW : unActiveClassNameTW
 							}
 							onClick={closeMenu}>
-							Sách
+							SÃ¡ch
 						</NavLink>
 
 						{user.isLoggedIn ? (
 							<div className='px-4 py-3'>
-								<DropDownMenu title='Tài khoản' {...user.user.data} />
+								<DropDownMenu title='TÃ i khoáº£n' {...user.user.data} />
 							</div>
 						) : (
 							<NavLink
 								to={LOGIN_PATH}
 								className={unActiveClassNameTW}
 								onClick={closeMenu}>
-								Đăng nhập
+								ÄÄƒng nháº­p
 							</NavLink>
 						)}
 
@@ -351,7 +364,7 @@ export default function Header() {
 									</span>
 								)}
 							</div>
-							Giỏ hàng
+							Giá» hÃ ng
 						</NavLink>
 					</div>
 				</div>

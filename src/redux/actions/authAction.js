@@ -12,13 +12,15 @@ import { removeLocalStorage, setLocalStorage } from '../../utils/localStorage'
 export const intiUser = () => async (dispatch) => {
 	try {
 		const user = await userService.getInfo()
-		setLocalStorage(USER_LS, user.data)
-		dispatch({
-			type: INIT_USER,
-			payload: {
-				user: user.data
-			}
-		})
+		if (user?.data) {
+			setLocalStorage(USER_LS, user.data)
+			dispatch({
+				type: INIT_USER,
+				payload: {
+					user: user.data,
+				},
+			})
+		}
 	} catch (error) {
 		dispatch({
 			type: LOGIN_FAIL,
@@ -51,7 +53,29 @@ export const loginAction = (data) => async (dispatch) => {
 				isLoggedIn: false,
 			},
 		})
+		throw error
 	}
+}
+
+export const loginWithGoogleAction = (googleUser, credential) => async (dispatch) => {
+	const userObj = {
+		email: googleUser.email,
+		fullname: googleUser.name || googleUser.email?.split('@')[0],
+		avatar: googleUser.picture,
+		role: 'client',
+		_id: googleUser.sub || `google-${Date.now()}`,
+	}
+	setLocalStorage(LOGIN_LS, {
+		accessToken: credential,
+		refreshToken: credential,
+	})
+	setLocalStorage(USER_LS, userObj)
+	dispatch({
+		type: LOGIN_SUCCESS,
+		payload: {
+			user: userObj,
+		},
+	})
 }
 
 export const logoutAction = () => async (dispatch) => {
@@ -65,8 +89,4 @@ export const logoutAction = () => async (dispatch) => {
 			isLoggedIn: false,
 		},
 	})
-}
-
-export const updateUserAction = (data) => async => {
-	console.log('a')
 }
