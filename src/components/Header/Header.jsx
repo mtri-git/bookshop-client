@@ -131,14 +131,14 @@ export default function Header() {
 								onChange={handleDesktopInputChange}
 								onKeyUp={onSearch}
 								className='block w-full py-3 pl-12 pr-14 text-gray-900 bg-white rounded-xl border-0 shadow-sm focus:ring-2 focus:ring-orange-300 focus:bg-white placeholder-gray-500 transition-all duration-200'
-								placeholder='TÃ¬m kiáº¿m sÃ¡ch...'
+								placeholder='Tìm kiếm sách...'
 							/>
 							{desktopSearchValue.trim() && (
 								<button
 									type='button'
 									onClick={() => performSearch(desktopSearchValue)}
 									className='absolute inset-y-0 right-0 flex items-center px-4 text-gray-600 hover:text-orange-500 focus:outline-none transition-colors duration-200'
-									aria-label='TÃ¬m kiáº¿m'>
+									aria-label='Tìm kiếm'>
 									<svg
 										className='w-5 h-5'
 										fill='currentColor'
@@ -213,7 +213,7 @@ export default function Header() {
 									: 'text-orange-100 hover:text-white hover:bg-orange-600'
 								}`
 							}>
-							Trang chá»§
+							Trang chủ
 						</NavLink>
 						<NavLink
 							to={BOOK_PATH}
@@ -223,18 +223,18 @@ export default function Header() {
 									: 'text-orange-100 hover:text-white hover:bg-orange-600'
 								}`
 							}>
-							SÃ¡ch
+							Sách
 						</NavLink>
 
 						{user.isLoggedIn ? (
 							<div className='ml-2'>
-								<DropDownMenu title='TÃ i khoáº£n' {...user.user.data} />
+								<DropDownMenu title='Tài khoản' {...user.user.data} />
 							</div>
 						) : (
 							<NavLink
 								to={LOGIN_PATH}
 								className='px-4 py-2 rounded-lg text-base font-medium text-orange-100 hover:text-white hover:bg-orange-600 transition-all duration-200'>
-								ÄÄƒng nháº­p
+								Đăng nhập
 							</NavLink>
 						)}
 
@@ -289,14 +289,14 @@ export default function Header() {
 								onChange={handleMobileInputChange}
 								onKeyUp={onSearch}
 								className='block w-full py-3 pl-12 pr-14 text-gray-900 bg-gray-50 rounded-xl border-0 focus:ring-2 focus:ring-orange-300 focus:bg-white placeholder-gray-500 transition-all duration-200'
-								placeholder='TÃ¬m kiáº¿m sÃ¡ch...'
+								placeholder='Tìm kiếm sách...'
 							/>
 							{mobileSearchValue.trim() && (
 								<button
 									type='button'
 									onClick={() => performSearch(mobileSearchValue)}
 									className='absolute inset-y-0 right-0 flex items-center px-4 text-gray-600 hover:text-orange-500 focus:outline-none transition-colors duration-200'
-									aria-label='TÃ¬m kiáº¿m'>
+									aria-label='Tìm kiếm'>
 									<svg
 										className='w-5 h-5'
 										fill='currentColor'
@@ -322,7 +322,7 @@ export default function Header() {
 								isActive ? activeClassNameTW : unActiveClassNameTW
 							}
 							onClick={closeMenu}>
-							Trang chá»§
+							Trang chủ
 						</NavLink>
 						<NavLink
 							to={BOOK_PATH}
@@ -330,19 +330,19 @@ export default function Header() {
 								isActive ? activeClassNameTW : unActiveClassNameTW
 							}
 							onClick={closeMenu}>
-							SÃ¡ch
+							Sách
 						</NavLink>
 
 						{user.isLoggedIn ? (
 							<div className='px-4 py-3'>
-								<DropDownMenu title='TÃ i khoáº£n' {...user.user.data} />
+								<DropDownMenu title='Tài khoản' {...user.user.data} />
 							</div>
 						) : (
 							<NavLink
 								to={LOGIN_PATH}
 								className={unActiveClassNameTW}
 								onClick={closeMenu}>
-								ÄÄƒng nháº­p
+								Đăng nhập
 							</NavLink>
 						)}
 
@@ -364,7 +364,7 @@ export default function Header() {
 									</span>
 								)}
 							</div>
-							Giá» hÃ ng
+							Giỏ hàng
 						</NavLink>
 					</div>
 				</div>
