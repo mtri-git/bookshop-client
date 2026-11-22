@@ -1,18 +1,16 @@
 import React, { useRef, useState } from 'react'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import { useServerFn } from '@tanstack/react-start'
 import { Link } from '../components/Link'
 import { LOGIN_PATH } from '../constants/path'
 import { toast_error, toast_success } from '../utils/toastNotify'
 import { useSetSessionUser } from '../hooks/useUser'
-import { register } from '../server/account.functions'
+import { register } from '../lib/auth'
 import { GoogleButton, safeRedirect } from './login'
 import Icon from '../components/Icon'
 
 export default function Register() {
 	const navigate = useNavigate()
 	const search = useSearch({ strict: false })
-	const signUp = useServerFn(register)
 	const setSessionUser = useSetSessionUser()
 	const emailRef = useRef(null)
 	const fullnameRef = useRef(null)
@@ -71,7 +69,7 @@ export default function Register() {
 
 		setSubmitting(true)
 		try {
-			const user = await signUp({ data: { email, fullname, password } })
+			const user = await register({ email, fullname, password })
 			await finish(user)
 		} catch (error) {
 			toast_error(error?.message || 'Đăng ký không thành công. Email có thể đã được sử dụng.')

@@ -1,6 +1,6 @@
 import { queryOptions } from '@tanstack/react-query'
 import { apiFetch } from './api'
-import { getMe, getOrders } from '../server/account.functions'
+import { getMe, getOrders } from './auth'
 
 const FIVE_MINUTES = 5 * 60 * 1000
 

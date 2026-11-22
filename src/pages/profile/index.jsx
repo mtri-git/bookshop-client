@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useServerFn } from '@tanstack/react-start'
 import { useSetSessionUser, useUser } from '../../hooks/useUser'
-import { changePassword, updateProfile } from '../../server/account.functions'
+import { changePassword, updateProfile } from '../../lib/auth'
 import { toast_success, toast_error } from '../../utils/toastNotify'
 import Icon from '../../components/Icon'
 
@@ -31,7 +30,6 @@ const inputClass =
 	'block w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white disabled:bg-gray-50 disabled:text-gray-500 transition'
 
 function ChangePasswordCard() {
-	const submit = useServerFn(changePassword)
 	const [form, setForm] = useState({ oldPassword: '', newPassword: '', confirm: '' })
 	const [saving, setSaving] = useState(false)
 	const onField = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
@@ -42,7 +40,7 @@ function ChangePasswordCard() {
 		if (form.newPassword !== form.confirm) return toast_error('Mật khẩu xác nhận không khớp')
 		setSaving(true)
 		try {
-			await submit({ data: { oldPassword: form.oldPassword, newPassword: form.newPassword } })
+			await changePassword({ oldPassword: form.oldPassword, newPassword: form.newPassword })
 			toast_success('Đổi mật khẩu thành công')
 			setForm({ oldPassword: '', newPassword: '', confirm: '' })
 		} catch (error) {
@@ -82,7 +80,6 @@ const INPUT_FIELD = ({ label, children, ...props }) => (
 
 export default function Profile() {
 	const userData = useUser() || {}
-	const saveProfile = useServerFn(updateProfile)
 	const setSessionUser = useSetSessionUser()
 
 	const [isEditable, setIsEditable] = useState(false)
@@ -120,7 +117,7 @@ export default function Profile() {
 		try {
 			const { email, ...updateData } = value
 			if (file) updateData.avatarUrl = await uploadAvatar(file)
-			const user = await saveProfile({ data: updateData })
+			const user = await updateProfile(updateData)
 			await setSessionUser(user)
 			setValue(toFormValue(user))
 			toast_success('Cập nhật thông tin thành công!')

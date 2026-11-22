@@ -2,9 +2,7 @@ import { useEffect } from 'react'
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { ToastContainer } from 'react-toastify'
-import toastifyCss from 'react-toastify/dist/ReactToastify.css?url'
 import appCss from '../index.css?url'
-import { meQuery } from '../lib/queries'
 import { DialogProvider } from '../hooks/useDialog'
 import CustomDialog from '../components/CustomDialog'
 import Header from '../components/Header/Header'
@@ -20,10 +18,6 @@ const DEFAULT_DESCRIPTION =
 	'BookShop - nhà sách trực tuyến: sách văn học, kinh tế, kỹ năng, thiếu nhi chính hãng, giao nhanh toàn quốc.'
 
 export const Route = createRootRouteWithContext()({
-	// Resolve the signed-in user once per request (cached by TanStack Query on the client)
-	beforeLoad: async ({ context }) => ({
-		user: await context.queryClient.ensureQueryData(meQuery()),
-	}),
 	head: () => ({
 		meta: [
 			{ charSet: 'utf-8' },
@@ -43,7 +37,6 @@ export const Route = createRootRouteWithContext()({
 				href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap',
 			},
 			{ rel: 'stylesheet', href: appCss },
-			{ rel: 'stylesheet', href: toastifyCss },
 		],
 	}),
 	shellComponent: RootDocument,

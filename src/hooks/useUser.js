@@ -1,12 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from '@tanstack/react-router'
-import { useServerFn } from '@tanstack/react-start'
 import { meQuery } from '../lib/queries'
-import { logout as logoutFn } from '../server/account.functions'
+import { logout as clearSession } from '../lib/auth'
 
-// The current user (null when signed out). Seeded by the root route on SSR.
+// The current user (null when signed out). Resolved in the browser only, so it is
+// null during SSR and fills in after hydration.
 export function useUser() {
-	const { data } = useQuery(meQuery())
+	const { data } = useQuery({ ...meQuery(), enabled: typeof window !== 'undefined' })
 	return data ?? null
 }
 
@@ -23,10 +23,9 @@ export function useSetSessionUser() {
 }
 
 export function useLogout() {
-	const logout = useServerFn(logoutFn)
 	const setSessionUser = useSetSessionUser()
 	return async () => {
-		await logout()
+		clearSession()
 		await setSessionUser(null)
 	}
 }

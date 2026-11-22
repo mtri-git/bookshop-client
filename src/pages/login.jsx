@@ -1,12 +1,11 @@
 import React, { useRef, useState } from 'react'
 import { useNavigate, useSearch } from '@tanstack/react-router'
-import { useServerFn } from '@tanstack/react-start'
 import { GoogleLogin } from '@react-oauth/google'
 import { Link } from '../components/Link'
 import { REGISTER_PATH } from '../constants/path'
 import { toast_error, toast_success } from '../utils/toastNotify'
 import { useSetSessionUser } from '../hooks/useUser'
-import { login, loginWithGoogle } from '../server/account.functions'
+import { login, loginWithGoogle } from '../lib/auth'
 import Icon from '../components/Icon'
 
 const GOOGLE_ENABLED = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID)
@@ -15,14 +14,13 @@ const GOOGLE_ENABLED = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID)
 export const safeRedirect = (value) => (typeof value === 'string' && value.startsWith('/') && !value.startsWith('//') ? value : '/')
 
 export function GoogleButton({ text, onDone }) {
-	const signInWithGoogle = useServerFn(loginWithGoogle)
 	if (!GOOGLE_ENABLED) return null
 
 	const onSuccess = async ({ credential }) => {
 		if (!credential) return toast_error('Không nhận được thông tin đăng nhập Google')
 		try {
 			// The ID token is verified server-side by the API
-			const user = await signInWithGoogle({ data: { credential } })
+			const user = await loginWithGoogle({ credential })
 			await onDone(user)
 		} catch (error) {
 			toast_error(error?.message || 'Đăng nhập Google thất bại')
@@ -58,7 +56,6 @@ export default function Login() {
 	const [submitting, setSubmitting] = useState(false)
 	const navigate = useNavigate()
 	const search = useSearch({ strict: false })
-	const signIn = useServerFn(login)
 	const setSessionUser = useSetSessionUser()
 
 	const finish = async (user) => {
@@ -89,7 +86,7 @@ export default function Login() {
 
 		setSubmitting(true)
 		try {
-			const user = await signIn({ data: { email, password } })
+			const user = await login({ email, password })
 			await finish(user)
 		} catch (error) {
 			toast_error(error?.message || 'Email hoặc mật khẩu không chính xác')

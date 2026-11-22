@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
-import { useServerFn } from '@tanstack/react-start'
 import { Link } from '../components/Link'
 import { CART_PATH, PAYMENT_HISTORY_PATH } from '../constants/path'
 import { useUser } from '../hooks/useUser'
@@ -9,7 +8,7 @@ import { useDialog } from '../hooks/useDialog'
 import { useCart } from '../stores/cart'
 import { priceCart, unitPrice } from '../lib/pricing'
 import { ordersQuery } from '../lib/queries'
-import { createOrder } from '../server/account.functions'
+import { createOrder } from '../lib/auth'
 import { formatPrice } from '../utils/format'
 import { toast_error, toast_success } from '../utils/toastNotify'
 import Icon from '../components/Icon'
@@ -60,7 +59,6 @@ export default function Payment() {
 	const navigate = useNavigate()
 	const queryClient = useQueryClient()
 	const { openDialog } = useDialog()
-	const placeOrder = useServerFn(createOrder)
 	const user = useUser()
 
 	const items = useCart((state) => state.items)
@@ -93,15 +91,13 @@ export default function Payment() {
 
 		setSubmitting(true)
 		try {
-			const order = await placeOrder({
-				data: {
-					items: checkoutItems.map((item) => ({ id: item._id, quantity: item.count })),
-					payment_type: payment,
-					receiver: form.receiver,
-					phone: form.phone,
-					address: form.address,
-					voucher: pricing.voucher?.code,
-				},
+			const order = await createOrder({
+				items: checkoutItems.map((item) => ({ id: item._id, quantity: item.count })),
+				payment_type: payment,
+				receiver: form.receiver,
+				phone: form.phone,
+				address: form.address,
+				voucher: pricing.voucher?.code,
 			})
 			// Only now remove what was actually ordered
 			setPlaced(true)
