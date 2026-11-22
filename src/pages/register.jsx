@@ -1,16 +1,19 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { HOME_PATH, LOGIN_PATH } from '../constants/path'
+import React, { useRef, useState } from 'react'
+import { useNavigate, useSearch } from '@tanstack/react-router'
+import { useServerFn } from '@tanstack/react-start'
+import { Link } from '../components/Link'
+import { LOGIN_PATH } from '../constants/path'
 import { toast_error, toast_success } from '../utils/toastNotify'
-import authService from '../services/authService'
-import { useDispatch } from 'react-redux'
-import { loginWithGoogleAction } from '../redux/actions/authAction'
-import { GoogleLogin } from '@react-oauth/google'
+import { useSetSessionUser } from '../hooks/useUser'
+import { register } from '../server/account.functions'
+import { GoogleButton, safeRedirect } from './login'
 import Icon from '../components/Icon'
 
 export default function Register() {
 	const navigate = useNavigate()
-	const dispatch = useDispatch()
+	const search = useSearch({ strict: false })
+	const signUp = useServerFn(register)
+	const setSessionUser = useSetSessionUser()
 	const emailRef = useRef(null)
 	const fullnameRef = useRef(null)
 	const passwordRef = useRef(null)
@@ -18,35 +21,10 @@ export default function Register() {
 	const [agreeTerms, setAgreeTerms] = useState(false)
 	const [submitting, setSubmitting] = useState(false)
 
-	useEffect(() => {
-		document.title = 'Đăng ký - BookShop'
-	}, [])
-
-	const handleGoogleSuccess = async (credentialResponse) => {
-		try {
-			if (!credentialResponse?.credential) {
-				toast_error('Không tìm thấy thông tin đăng nhập Google')
-				return
-			}
-			const base64Url = credentialResponse.credential.split('.')[1]
-			const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-			const jsonPayload = decodeURIComponent(
-				atob(base64)
-					.split('')
-					.map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-					.join('')
-			)
-			const googleUser = JSON.parse(jsonPayload)
-
-			await dispatch(loginWithGoogleAction(googleUser, credentialResponse.credential))
-			toast_success(`Đăng ký Google thành công! Chào ${googleUser.name || 'bạn'}`)
-			setTimeout(() => {
-				navigate(HOME_PATH)
-			}, 800)
-		} catch (error) {
-			console.error('Google register error:', error)
-			toast_error('Xử lý đăng ký với Google thất bại')
-		}
+	const finish = async (user) => {
+		await setSessionUser(user)
+		toast_success(`Chào mừng ${user?.fullname || 'bạn'} đến với BookShop!`)
+		navigate({ to: safeRedirect(search.redirect), replace: true })
 	}
 
 	const onSubmit = async (e) => {
@@ -93,15 +71,10 @@ export default function Register() {
 
 		setSubmitting(true)
 		try {
-			const data = await authService.register({ email, fullname, password })
-			if (data) {
-				toast_success('Đăng ký thành công! Đang chuyển hướng...')
-				setTimeout(() => {
-					navigate(LOGIN_PATH)
-				}, 1200)
-			}
+			const user = await signUp({ data: { email, fullname, password } })
+			await finish(user)
 		} catch (error) {
-			toast_error(error?.response?.data?.message || 'Đăng ký không thành công. Email có thể đã được sử dụng.')
+			toast_error(error?.message || 'Đăng ký không thành công. Email có thể đã được sử dụng.')
 		} finally {
 			setSubmitting(false)
 		}
@@ -111,7 +84,7 @@ export default function Register() {
 		<main className="min-h-screen bg-gray-50/80 py-12 flex flex-col justify-center px-4 sm:px-6 lg:px-8">
 			<div className="sm:mx-auto sm:w-full sm:max-w-md">
 				{/* Brand Logo */}
-				<Link to={HOME_PATH} className="flex justify-center items-center gap-2 mb-2">
+				<Link to="/" className="flex justify-center items-center gap-2 mb-2">
 					<div className="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white shadow-sm">
 						<Icon name='book' className="w-6 h-6" />
 					</div>
@@ -130,24 +103,7 @@ export default function Register() {
 
 			<div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
 				<div className="bg-white py-8 px-6 sm:px-10 rounded-xl border border-gray-200 shadow-sm">
-					{/* Google Sign-in */}
-					<div className="flex justify-center w-full">
-						<GoogleLogin
-							onSuccess={handleGoogleSuccess}
-							onError={() => toast_error('Đăng ký với Google thất bại')}
-							shape="rectangular"
-							size="large"
-							text="signup_with"
-							locale="vi"
-							width="100%"
-						/>
-					</div>
-
-					<div className="flex items-center my-5">
-						<div className="flex-grow border-t border-gray-200"></div>
-						<span className="flex-shrink mx-3 text-gray-400 text-xs">hoặc đăng ký bằng email</span>
-						<div className="flex-grow border-t border-gray-200"></div>
-					</div>
+					<GoogleButton text="signup_with" onDone={finish} />
 
 					<form onSubmit={onSubmit} className="space-y-4">
 						{/* Email */}
@@ -254,6 +210,7 @@ export default function Register() {
 						Đã có tài khoản?{' '}
 						<Link
 							to={LOGIN_PATH}
+							search={search.redirect ? { redirect: search.redirect } : undefined}
 							className="text-orange-600 hover:underline font-bold"
 						>
 							Đăng nhập

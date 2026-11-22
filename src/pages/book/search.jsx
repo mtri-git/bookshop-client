@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { useSearchParams, Link } from 'react-router-dom'
-import { v4 as uuidv4 } from 'uuid'
+import React, { useState } from 'react'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { useNavigate, useSearch } from '@tanstack/react-router'
+import { Link } from '../../components/Link'
 import Loading from '../../components/Loading'
-import bookService from '../../services/bookService'
+import { searchBooksQuery } from '../../lib/queries'
 import BookCard from '../../components/BookCard'
 import Pagination from '../../components/Pagination'
 import { HOME_PATH } from '../../constants/path'
@@ -35,86 +36,37 @@ const SORT_OPTIONS = [
 	{ label: 'Giá cao', val: 'most-expensive' },
 ]
 
+export const SORT_VALUES = SORT_OPTIONS.map((o) => o.val)
+export const PRICE_VALUES = PRICE_RANGES.map((o) => o.value).filter(Boolean)
+export const CATEGORY_VALUES = CATEGORIES_LIST.slice(1)
+
 export default function Search() {
-	const [books, setBooks] = useState(null)
-	const [searchParams, setSearchParams] = useSearchParams()
-	const [currentPage, setCurrentPage] = useState(1)
-	const [paginate, setPaginate] = useState({ pageSize: 15, totalPage: 1, total: 0 })
-	const [loading, setLoading] = useState(true)
+	const search = useSearch({ from: '/_main/search' })
+	const navigate = useNavigate()
 	const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
 
-	const currentSort = searchParams.get('sort') || 'best-seller'
-	const currentPrice = searchParams.get('price') || ''
-	const currentCategory = searchParams.get('category') || 'Tất cả'
-	const searchTitle = searchParams.get('title') || ''
+	const { data, isPending, isError } = useQuery({ ...searchBooksQuery(search), placeholderData: keepPreviousData })
+	const books = data?.books ?? null
+	const paginate = data?.paginate ?? { pageSize: 15, totalPage: 1, total: 0 }
+	const loading = isPending
 
-	const fetchBooks = async () => {
-		setLoading(true)
-		try {
-			const data = await bookService.searchBook(`${searchParams}`)
-			if (data?.data?.book) {
-				setBooks(data.data.book)
-				if (data.data.paginate) {
-					setPaginate(data.data.paginate)
-				}
-			} else {
-				setBooks([])
-			}
-		} catch (error) {
-			console.warn('Error fetching search books:', error)
-			setBooks([])
-		} finally {
-			setLoading(false)
-		}
-	}
+	const currentSort = search.sort || 'best-seller'
+	const currentPrice = search.price || ''
+	const currentCategory = search.category || 'Tất cả'
+	const searchTitle = search.title || ''
+	const currentPage = search.offset || 1
 
-	useEffect(() => {
-		document.title = searchTitle ? `Tìm kiếm "${searchTitle}" - BookShop` : 'Kho Sách - BookShop'
-	}, [searchTitle])
+	// Every filter change resets to page 1
+	const updateSearch = (patch) =>
+		navigate({ to: '/search', search: (prev) => ({ ...prev, offset: undefined, ...patch }) })
 
-	useEffect(() => {
-		window.scrollTo({ top: 0, behavior: 'smooth' })
-		fetchBooks()
-	}, [searchParams, currentPage])
-
-	const onPageChange = (page) => {
-		setCurrentPage(page)
-		searchParams.set('offset', page)
-		setSearchParams(searchParams)
-	}
-
-	const onSortChange = (sortValue) => {
-		searchParams.set('sort', sortValue)
-		searchParams.set('offset', '1')
-		setCurrentPage(1)
-		setSearchParams(searchParams)
-	}
-
-	const onCategoryChange = (cat) => {
-		if (cat === 'Tất cả') {
-			searchParams.delete('category')
-		} else {
-			searchParams.set('category', cat)
-		}
-		searchParams.set('offset', '1')
-		setCurrentPage(1)
-		setSearchParams(searchParams)
-	}
-
-	const onPriceChange = (priceVal) => {
-		if (!priceVal) {
-			searchParams.delete('price')
-		} else {
-			searchParams.set('price', priceVal)
-		}
-		searchParams.set('offset', '1')
-		setCurrentPage(1)
-		setSearchParams(searchParams)
-	}
+	const onPageChange = (page) => updateSearch({ offset: page > 1 ? page : undefined })
+	const onSortChange = (sortValue) => updateSearch({ sort: sortValue === 'best-seller' ? undefined : sortValue })
+	const onCategoryChange = (cat) => updateSearch({ category: cat === 'Tất cả' ? undefined : cat })
+	const onPriceChange = (priceVal) => updateSearch({ price: priceVal || undefined })
 
 	const clearAllFilters = () => {
-		setSearchParams({})
-		setCurrentPage(1)
+		navigate({ to: '/search', search: searchTitle ? { title: searchTitle } : {} })
 		setMobileFilterOpen(false)
 	}
 
@@ -130,7 +82,7 @@ export default function Search() {
 				</h3>
 				<ul className="mt-3 space-y-1 text-xs">
 					{CATEGORIES_LIST.map((cat, idx) => {
-						const isActive = (cat === 'Tất cả' && !searchParams.get('category')) || currentCategory === cat
+						const isActive = (cat === 'Tất cả' && !search.category) || currentCategory === cat
 						return (
 							<li key={idx}>
 								<button
@@ -319,7 +271,7 @@ export default function Search() {
 								<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
 									{books.map((book) => (
 										<BookCard
-											key={book._id || uuidv4()}
+											key={book._id}
 											{...book}
 											thumbnailUrl={book.imageUrl}
 										/>

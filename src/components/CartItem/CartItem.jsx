@@ -1,9 +1,8 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link } from '../Link'
 import QuantityBox from '../BookDetail.jsx/QuantityBox'
 import { formatPrice } from '../../utils/format'
-import { checkItemInCart, removeFromCart } from '../../redux/actions/cartAction'
+import { useCart } from '../../stores/cart'
 import Icon from '../Icon'
 
 export default function CartItem({
@@ -15,16 +14,15 @@ export default function CartItem({
 	count = 1,
 	checked = false,
 }) {
-	const dispatch = useDispatch()
+	const removeItem = useCart((state) => state.removeItem)
+	const toggleItem = useCart((state) => state.toggleItem)
 
 	const handleRemoveFromCart = (e) => {
 		e.stopPropagation()
-		dispatch(removeFromCart(_id))
+		removeItem(_id)
 	}
 
-	const handleCheckChange = () => {
-		dispatch(checkItemInCart(_id))
-	}
+	const handleCheckChange = () => toggleItem(_id)
 
 	const discountedPrice = Math.round(price * (1 - (sale || 0)))
 	const totalPrice = discountedPrice * count

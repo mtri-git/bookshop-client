@@ -1,12 +1,11 @@
 import React from 'react'
 import { formatPrice } from '../../utils/format'
-import { generatePath, Link } from 'react-router-dom'
-import { BOOK_DETAIL_PATH } from '../../constants/path'
+import { Link } from '../Link'
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400'
 
-export default function PaymentItem({ _id, imageUrl, title, price = 0, quantity = 1, sale = 0 }) {
-	const path = generatePath(BOOK_DETAIL_PATH, { id: _id })
+export default function PaymentItem({ _id, imageUrl, title = 'Sách không còn bán', price = 0, quantity = 1, sale = 0 }) {
+	const path = `/book/${_id}`
 	const discountedPrice = Math.round(price * (1 - (sale || 0)))
 	const totalPrice = discountedPrice * quantity
 	const discountPercent = Math.round((sale || 0) * 100)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from './Link'
 import { HOME_PATH, SEARCH_PATH } from '../constants/path'
 import Icon from './Icon'
 

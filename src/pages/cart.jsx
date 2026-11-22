@@ -1,83 +1,58 @@
 import React, { useState, useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useNavigate } from '@tanstack/react-router'
+import { Link } from '../components/Link'
 import CartItem from '../components/CartItem/CartItem'
 import { formatPrice } from '../utils/format'
 import { HOME_PATH, LOGIN_PATH, PAYMENT_PATH, SEARCH_PATH } from '../constants/path'
-import { useCart } from '../redux/selectors/useCart'
-import { useSelectUser } from '../redux/selectors/useSelectUser'
+import { useCart } from '../stores/cart'
+import { useUser } from '../hooks/useUser'
 import { useDialog } from '../hooks/useDialog'
-import { checkAllCartItems, removeSelectedCartItems } from '../redux/actions/cartAction'
+import { FREESHIP_THRESHOLD, findVoucher, priceCart } from '../lib/pricing'
 import { toast_info, toast_success } from '../utils/toastNotify'
 import Icon from '../components/Icon'
 
-const FREESHIP_THRESHOLD = 150000
-const STANDARD_SHIPPING_FEE = 25000
+export function CartSkeleton() {
+	return (
+		<main className="min-h-screen bg-gray-50/60 pb-12">
+			<div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl animate-pulse space-y-4">
+				<div className="h-4 w-40 bg-gray-200 rounded" />
+				<div className="h-40 bg-white rounded-xl border border-gray-200" />
+				<div className="h-24 bg-white rounded-xl border border-gray-200" />
+			</div>
+		</main>
+	)
+}
 
 export default function Cart() {
-	const cart = useCart()
-	const dispatch = useDispatch()
+	const items = useCart((state) => state.items)
+	const hydrated = useCart((state) => state.hydrated)
+	const voucherInStore = useCart((state) => state.voucher)
+	const setVoucher = useCart((state) => state.setVoucher)
+	const setAllChecked = useCart((state) => state.setAllChecked)
+	const removeChecked = useCart((state) => state.removeChecked)
 	const navigate = useNavigate()
-	const user = useSelectUser()
-	const { openDialog } = useDialog()
+	const user = useUser()
+	const { openDialog, setIsOpenDialog } = useDialog()
 
-	const [voucherCode, setVoucherCode] = useState('')
-	const [appliedVoucher, setAppliedVoucher] = useState(null)
-
-	const items = cart?.cart || []
+	const [voucherCode, setVoucherCode] = useState(voucherInStore || '')
 	const totalItemsCount = items.length
 	const checkoutItems = useMemo(() => items.filter((item) => item.checked), [items])
+	const isAllChecked = items.length > 0 && items.every((item) => item.checked)
 
-	const isAllChecked = useMemo(
-		() => items.length > 0 && items.every((item) => item.checked),
-		[items]
-	)
-
-	// Price calculations
-	const subtotalOriginal = useMemo(
-		() => checkoutItems.reduce((acc, item) => acc + (item.price || 0) * (item.count || 1), 0),
-		[checkoutItems]
-	)
-
-	const subtotalDiscounted = useMemo(
-		() =>
-			checkoutItems.reduce(
-				(acc, item) =>
-					acc +
-					Math.round((item.price || 0) * (1 - (item.sale || 0))) * (item.count || 1),
-				0
-			),
-		[checkoutItems]
-	)
-
-	const productSavings = subtotalOriginal - subtotalDiscounted
-
-	// Shipping fee calculation
-	const isFreeShipEligible = subtotalDiscounted >= FREESHIP_THRESHOLD
-	const freeshipProgress = Math.min(100, Math.round((subtotalDiscounted / FREESHIP_THRESHOLD) * 100))
-
-	// Voucher discount calculation
-	const voucherDiscount = useMemo(() => {
-		if (!appliedVoucher) return 0
-		if (appliedVoucher.type === 'amount') {
-			return Math.min(subtotalDiscounted, appliedVoucher.value)
-		}
-		if (appliedVoucher.type === 'shipping') {
-			return isFreeShipEligible ? 0 : STANDARD_SHIPPING_FEE
-		}
-		return 0
-	}, [appliedVoucher, subtotalDiscounted, isFreeShipEligible])
-
-	const shippingFee = checkoutItems.length === 0
-		? 0
-		: isFreeShipEligible || appliedVoucher?.type === 'shipping'
-		? 0
-		: STANDARD_SHIPPING_FEE
-
-	const finalTotal = Math.max(0, subtotalDiscounted - (appliedVoucher?.type === 'amount' ? voucherDiscount : 0) + shippingFee)
+	// Same rules the API applies when the order is placed
+	const pricing = useMemo(() => priceCart(checkoutItems, voucherInStore), [checkoutItems, voucherInStore])
+	const appliedVoucher = pricing.voucher
+	const subtotalOriginal = pricing.subtotalOriginal
+	const subtotalDiscounted = pricing.itemsValue
+	const productSavings = pricing.productSavings
+	const isFreeShipEligible = pricing.freeShipByAmount
+	const freeshipProgress = pricing.freeshipProgress
+	const voucherDiscount = pricing.voucherDiscount
+	const shippingFee = pricing.shipFee
+	const finalTotal = pricing.total
 
 	const handleToggleAll = () => {
-		dispatch(checkAllCartItems(!isAllChecked))
+		setAllChecked(!isAllChecked)
 	}
 
 	const handleRemoveSelected = () => {
@@ -93,7 +68,7 @@ export default function Cart() {
 			cancelText: 'Hủy',
 			showCancel: true,
 			onConfirm: () => {
-				dispatch(removeSelectedCartItems())
+				removeChecked()
 				toast_success('Đã xóa các sản phẩm được chọn')
 			},
 		})
@@ -105,22 +80,18 @@ export default function Cart() {
 			toast_info('Vui lòng nhập mã giảm giá')
 			return
 		}
-
-		if (code === 'BOOK10K') {
-			setAppliedVoucher({ code: 'BOOK10K', type: 'amount', value: 10000, label: 'Giảm 10.000 đ' })
-			setVoucherCode('BOOK10K')
-			toast_success('Áp dụng mã BOOK10K thành công (-10.000 đ)')
-		} else if (code === 'FREESHIP') {
-			setAppliedVoucher({ code: 'FREESHIP', type: 'shipping', value: STANDARD_SHIPPING_FEE, label: 'Miễn phí vận chuyển' })
-			setVoucherCode('FREESHIP')
-			toast_success('Áp dụng mã FREESHIP thành công!')
-		} else {
+		const voucher = findVoucher(code)
+		if (!voucher) {
 			toast_info('Mã giảm giá không hợp lệ hoặc đã hết hạn')
+			return
 		}
+		setVoucher(voucher.code)
+		setVoucherCode(voucher.code)
+		toast_success(`Áp dụng mã ${voucher.code} thành công (${voucher.label})`)
 	}
 
 	const handleRemoveVoucher = () => {
-		setAppliedVoucher(null)
+		setVoucher(null)
 		setVoucherCode('')
 		toast_info('Đã hủy áp dụng mã giảm giá')
 	}
@@ -131,7 +102,7 @@ export default function Cart() {
 			return
 		}
 
-		if (!user.isLoggedIn) {
+		if (!user) {
 			openDialog({
 				title: 'Yêu cầu đăng nhập',
 				content: (
@@ -144,7 +115,10 @@ export default function Cart() {
 							Vui lòng đăng nhập tài khoản BookShop để tiếp tục thanh toán và nhận ưu đãi tích điểm.
 						</p>
 						<button
-							onClick={() => navigate(LOGIN_PATH)}
+							onClick={() => {
+								setIsOpenDialog(false)
+								navigate({ to: LOGIN_PATH, search: { redirect: PAYMENT_PATH } })
+							}}
 							className="w-full py-2.5 px-4 bg-orange-600 hover:bg-orange-700 text-white font-medium text-sm rounded-lg transition-colors shadow-xs"
 						>
 							Đăng nhập ngay
@@ -156,9 +130,11 @@ export default function Cart() {
 				onConfirm: () => {},
 			})
 		} else {
-			navigate(PAYMENT_PATH)
+			navigate({ to: PAYMENT_PATH })
 		}
 	}
+
+	if (!hydrated) return <CartSkeleton />
 
 	// EMPTY STATE
 	if (totalItemsCount === 0) {

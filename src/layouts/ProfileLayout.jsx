@@ -1,18 +1,14 @@
-import React, { useEffect } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import React from 'react'
+import { NavLink } from '../components/Link'
+import { Outlet } from '@tanstack/react-router'
 import { PAYMENT_HISTORY_PATH, PROFILE_PATH, WISHLIST_PATH } from '../constants/path'
-import { useSelectUser } from '../redux/selectors/useSelectUser'
+import { useUser } from '../hooks/useUser'
 import Icon from '../components/Icon'
 
 const FALLBACK_AVATAR = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80'
 
 export default function ProfileLayout() {
-	useEffect(() => {
-		window.scrollTo(0, 0)
-	}, [])
-
-	const user = useSelectUser()
-	const userData = user?.user?.data || {}
+	const userData = useUser() || {}
 
 	const NAV_TABS = [
 		{
@@ -56,7 +52,6 @@ export default function ProfileLayout() {
 								alt={userData.fullname}
 								onError={(e) => { e.target.src = FALLBACK_AVATAR }}
 							/>
-							<div className="absolute bottom-1 right-1 w-4 h-4 sm:w-5 sm:h-5 bg-emerald-500 border-2 border-white rounded-full" title="Online" />
 						</div>
 
 						<div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">

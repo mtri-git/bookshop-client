@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { Link } from 'react-router-dom'
-import { v4 as uuidv4 } from 'uuid'
+import { useQuery } from '@tanstack/react-query'
+import { Link } from '../components/Link'
 import Slider from '../components/Slider'
 import BookCard from '../components/BookCard'
-import bookService, { FALLBACK_BOOKS } from '../services/bookService'
+import { bestSellersQuery, newBooksQuery } from '../lib/queries'
 import { SEARCH_PATH } from '../constants/path'
 import { toast_success } from '../utils/toastNotify'
 import Icon from '../components/Icon'
@@ -122,82 +122,50 @@ function BookCardSkeleton() {
 	)
 }
 
-export default function Home() {
-	const [newBooks, setNewBooks] = useState([])
-	const [bestSellerBooks, setBestSellerBooks] = useState([])
-	const [loading, setLoading] = useState(true)
-	const [activeTab, setActiveTab] = useState('all') // 'all', 'new', 'bestseller'
-	const [newsletterEmail, setNewsletterEmail] = useState('')
+// Time left until midnight (Vietnam time): the daily flash sale window
+function secondsUntilMidnightVN() {
+	const now = new Date()
+	const vn = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }))
+	const midnight = new Date(vn)
+	midnight.setHours(24, 0, 0, 0)
+	return Math.max(0, Math.floor((midnight - vn) / 1000))
+}
 
-	// Countdown timer state for Flash Sale
-	const [timeLeft, setTimeLeft] = useState({
-		hours: 4,
-		minutes: 19,
-		seconds: 45,
-	})
-
+// Client-only countdown: rendered as "--" during SSR to avoid hydration mismatch
+function useDailyCountdown() {
+	const [seconds, setSeconds] = useState(null)
 	useEffect(() => {
-		const timer = setInterval(() => {
-			setTimeLeft((prev) => {
-				if (prev.seconds > 0) {
-					return { ...prev, seconds: prev.seconds - 1 }
-				} else if (prev.minutes > 0) {
-					return { ...prev, minutes: 59, seconds: 59 }
-				} else if (prev.hours > 0) {
-					return { hours: prev.hours - 1, minutes: 59, seconds: 59 }
-				}
-				return { hours: 8, minutes: 0, seconds: 0 }
-			})
-		}, 1000)
+		setSeconds(secondsUntilMidnightVN())
+		const timer = setInterval(() => setSeconds(secondsUntilMidnightVN()), 1000)
 		return () => clearInterval(timer)
 	}, [])
+	if (seconds === null) return null
+	return {
+		hours: Math.floor(seconds / 3600),
+		minutes: Math.floor((seconds % 3600) / 60),
+		seconds: seconds % 60,
+	}
+}
 
-	useEffect(() => {
-		window.scrollTo({ top: 0, behavior: 'smooth' })
-		document.title = 'BookShop - Nhà Sách Trực Tuyến'
+const pad = (n) => (n === undefined ? '--' : String(n).padStart(2, '0'))
 
-		const fetchData = async () => {
-			setLoading(true)
-			try {
-				const [newRes, bestRes] = await Promise.allSettled([
-					bookService.getNewBook(),
-					bookService.getBestSellerBook(),
-				])
-
-				if (newRes.status === 'fulfilled' && newRes.value?.data?.book) {
-					setNewBooks(newRes.value.data.book)
-				} else {
-					setNewBooks(FALLBACK_BOOKS.slice(0, 5))
-				}
-
-				if (bestRes.status === 'fulfilled' && bestRes.value?.data?.book) {
-					setBestSellerBooks(bestRes.value.data.book)
-				} else {
-					setBestSellerBooks(FALLBACK_BOOKS.slice(5, 10))
-				}
-			} catch (error) {
-				setNewBooks(FALLBACK_BOOKS.slice(0, 5))
-				setBestSellerBooks(FALLBACK_BOOKS.slice(5, 10))
-			} finally {
-				setLoading(false)
-			}
-		}
-
-		fetchData()
-	}, [])
+export default function Home() {
+	const newBooksResult = useQuery(newBooksQuery())
+	const bestSellersResult = useQuery(bestSellersQuery())
+	const newBooks = newBooksResult.data || []
+	const bestSellerBooks = bestSellersResult.data || []
+	const loading = newBooksResult.isPending || bestSellersResult.isPending
+	const loadFailed = newBooksResult.isError && bestSellersResult.isError
+	const [activeTab, setActiveTab] = useState('all') // 'all', 'new', 'bestseller'
+	const timeLeft = useDailyCountdown() || {}
 
 	const displayedBooks = useMemo(() => {
 		if (activeTab === 'new') return newBooks
 		if (activeTab === 'bestseller') return bestSellerBooks
-		return [...bestSellerBooks, ...newBooks]
+		const seen = new Set()
+		return [...bestSellerBooks, ...newBooks].filter((book) => !seen.has(book._id) && seen.add(book._id))
 	}, [activeTab, newBooks, bestSellerBooks])
 
-	const handleNewsletterSubmit = (e) => {
-		e.preventDefault()
-		if (!newsletterEmail || !newsletterEmail.includes('@')) return
-		toast_success('Chúc mừng! Mã giảm giá BOOK20 đã gửi tới email của bạn.')
-		setNewsletterEmail('')
-	}
 
 	return (
 		<main className="homepage pb-12 bg-white rounded-xl shadow-sm border border-gray-200/80 min-h-screen space-y-8 overflow-hidden">
@@ -301,15 +269,15 @@ export default function Home() {
 							</span>
 							<div className="flex items-center gap-1 font-mono font-bold text-xs sm:text-sm">
 								<span className="bg-gray-900 text-white px-2 py-0.5 rounded">
-									{String(timeLeft.hours).padStart(2, '0')}
+									{pad(timeLeft.hours)}
 								</span>
 								<span className="text-gray-900">:</span>
 								<span className="bg-gray-900 text-white px-2 py-0.5 rounded">
-									{String(timeLeft.minutes).padStart(2, '0')}
+									{pad(timeLeft.minutes)}
 								</span>
 								<span className="text-gray-900">:</span>
 								<span className="bg-gray-900 text-white px-2 py-0.5 rounded">
-									{String(timeLeft.seconds).padStart(2, '0')}
+									{pad(timeLeft.seconds)}
 								</span>
 							</div>
 						</div>
@@ -321,7 +289,7 @@ export default function Home() {
 							Array.from({ length: 5 }).map((_, i) => <BookCardSkeleton key={i} />)
 						) : (
 							bestSellerBooks.slice(0, 5).map((book) => (
-								<BookCard key={book._id || uuidv4()} {...book} thumbnailUrl={book.imageUrl} />
+								<BookCard key={book._id} {...book} />
 							))
 						)}
 					</div>
@@ -422,11 +390,11 @@ export default function Home() {
 						Array.from({ length: 10 }).map((_, i) => <BookCardSkeleton key={i} />)
 					) : displayedBooks.length > 0 ? (
 						displayedBooks.map((book) => (
-							<BookCard key={book._id || uuidv4()} {...book} thumbnailUrl={book.imageUrl} />
+							<BookCard key={book._id} {...book} />
 						))
 					) : (
 						<div className="col-span-full py-12 text-center text-gray-500 text-sm">
-							Không có sản phẩm nào.
+							{loadFailed ? 'Không tải được danh sách sách, vui lòng thử lại sau.' : 'Không có sản phẩm nào.'}
 						</div>
 					)}
 				</div>
@@ -468,34 +436,32 @@ export default function Home() {
 				</div>
 			</section>
 
-			{/* NEWSLETTER SIGN-UP - CLEAN CARD */}
+			{/* VOUCHERS - codes that the checkout actually accepts */}
 			<section className="px-4 sm:px-6 lg:px-8">
 				<div className="bg-gray-50 rounded-xl p-5 sm:p-7 border border-gray-200 flex flex-col md:flex-row items-center justify-between gap-5">
 					<div className="space-y-1 text-center md:text-left">
-						<h3 className="text-base sm:text-lg font-bold text-gray-900">
-							Đăng ký nhận thông tin khuyến mãi
-						</h3>
-						<p className="text-xs text-gray-600">
-							Nhận ngay voucher <span className="text-red-600 font-bold">giảm giá 20%</span> cho đơn hàng đầu tiên.
-						</p>
+						<h3 className="text-base sm:text-lg font-bold text-gray-900">Mã giảm giá dành cho bạn</h3>
+						<p className="text-xs text-gray-600">Nhập mã ở bước giỏ hàng. Miễn phí vận chuyển cho đơn từ 150.000 đ.</p>
 					</div>
-
-					<form onSubmit={handleNewsletterSubmit} className="flex w-full md:w-auto gap-2">
-						<input
-							type="email"
-							value={newsletterEmail}
-							onChange={(e) => setNewsletterEmail(e.target.value)}
-							placeholder="Nhập email của bạn..."
-							className="px-3.5 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-orange-500 text-xs sm:text-sm w-full md:w-64 bg-white"
-							required
-						/>
-						<button
-							type="submit"
-							className="px-4 py-2 bg-orange-600 hover:bg-orange-700 active:scale-98 text-white font-medium text-xs sm:text-sm rounded-lg transition shadow-sm whitespace-nowrap"
-						>
-							Đăng ký
-						</button>
-					</form>
+					<div className="flex flex-wrap justify-center gap-2">
+						{[
+							{ code: 'BOOK10K', desc: 'Giảm 10.000 đ' },
+							{ code: 'FREESHIP', desc: 'Miễn phí ship' },
+						].map((v) => (
+							<button
+								key={v.code}
+								type="button"
+								onClick={() => {
+									navigator.clipboard?.writeText(v.code)
+									toast_success(`Đã sao chép mã ${v.code}`)
+								}}
+								className="px-4 py-2 rounded-lg border border-dashed border-orange-400 bg-white text-left hover:bg-orange-50 transition"
+								title="Bấm để sao chép mã">
+								<div className="text-sm font-bold text-orange-600 tracking-wide">{v.code}</div>
+								<div className="text-[11px] text-gray-500">{v.desc}</div>
+							</button>
+						))}
+					</div>
 				</div>
 			</section>
 		</main>
