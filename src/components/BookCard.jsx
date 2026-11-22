@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
-import { Link, generatePath } from 'react-router-dom'
-import { BOOK_DETAIL_PATH } from '../constants/path'
+import { Link } from './Link'
 import { formatPrice } from '../utils/format'
-import { useDispatch } from 'react-redux'
-import { addToCart } from '../redux/actions/cartAction'
+import { useCart } from '../stores/cart'
+import { useWishlist } from '../stores/wishlist'
 import { toast_success } from '../utils/toastNotify'
 import Icon from './Icon'
+
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400'
 
 export default function BookCard({
 	_id,
 	thumbnailUrl,
+	imageUrl,
 	title,
 	price,
 	sale = 0,
@@ -18,30 +20,31 @@ export default function BookCard({
 	category,
 }) {
 	const [imgError, setImgError] = useState(false)
-	const [isLiked, setIsLiked] = useState(false)
-	const path = generatePath(BOOK_DETAIL_PATH, { id: _id || '1' })
-	const dispatch = useDispatch()
-	const fallbackImg = 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400'
+	const image = thumbnailUrl || imageUrl
+	const path = `/book/${_id}`
+	const fallbackImg = FALLBACK_IMG
+	thumbnailUrl = image
+	const addItem = useCart((state) => state.addItem)
+	const isLiked = useWishlist((state) => state.items.some((item) => item._id === _id))
+	const toggleWishlist = useWishlist((state) => state.toggle)
 
 	const addToCartClick = (e) => {
 		e.preventDefault()
 		e.stopPropagation()
-		dispatch(addToCart({ _id, thumbnailUrl: imgError ? fallbackImg : (thumbnailUrl || fallbackImg), title, price, sale }, 1))
+		addItem({ _id, thumbnailUrl: imgError || !image ? FALLBACK_IMG : image, title, price, sale }, 1)
 		toast_success(`Đã thêm "${title?.slice(0, 25)}..." vào giỏ!`)
 	}
 
 	const toggleLike = (e) => {
 		e.preventDefault()
 		e.stopPropagation()
-		setIsLiked(!isLiked)
-		if (!isLiked) {
-			toast_success('Đã lưu vào danh sách yêu thích!')
-		}
+		const added = toggleWishlist({ _id, thumbnailUrl: image, title, price, sale, sold })
+		toast_success(added ? 'Đã lưu vào danh sách yêu thích!' : 'Đã bỏ khỏi danh sách yêu thích')
 	}
 
 	const categoryLabel = (Array.isArray(category) ? category.find(Boolean) : category) || ''
 	const discountPercentage = Math.round(sale * 100)
-	const discountedPrice = price * (1 - sale)
+	const discountedPrice = Math.round(price * (1 - sale))
 
 	return (
 		<div className="group relative min-w-0 bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200 flex flex-col h-full overflow-hidden hover:border-gray-300">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from './Link'
 import { SEARCH_PATH } from '../constants/path'
 import Icon from './Icon'
 

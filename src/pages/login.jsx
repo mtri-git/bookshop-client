@@ -1,16 +1,55 @@
-import React, { useRef, useState, useEffect } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
-import {
-	FORGET_PASSWORD_PATH,
-	HOME_PATH,
-	REGISTER_PATH,
-} from '../constants/path'
-import { toast_error, toast_success } from '../utils/toastNotify'
-import { useDispatch } from 'react-redux'
-import { loginAction, loginWithGoogleAction } from '../redux/actions/authAction'
-import { useSelectUser } from '../redux/selectors/useSelectUser'
+import React, { useRef, useState } from 'react'
+import { useNavigate, useSearch } from '@tanstack/react-router'
+import { useServerFn } from '@tanstack/react-start'
 import { GoogleLogin } from '@react-oauth/google'
+import { Link } from '../components/Link'
+import { REGISTER_PATH } from '../constants/path'
+import { toast_error, toast_success } from '../utils/toastNotify'
+import { useSetSessionUser } from '../hooks/useUser'
+import { login, loginWithGoogle } from '../server/account.functions'
 import Icon from '../components/Icon'
+
+const GOOGLE_ENABLED = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID)
+
+// Only allow redirects back into this site
+export const safeRedirect = (value) => (typeof value === 'string' && value.startsWith('/') && !value.startsWith('//') ? value : '/')
+
+export function GoogleButton({ text, onDone }) {
+	const signInWithGoogle = useServerFn(loginWithGoogle)
+	if (!GOOGLE_ENABLED) return null
+
+	const onSuccess = async ({ credential }) => {
+		if (!credential) return toast_error('Không nhận được thông tin đăng nhập Google')
+		try {
+			// The ID token is verified server-side by the API
+			const user = await signInWithGoogle({ data: { credential } })
+			await onDone(user)
+		} catch (error) {
+			toast_error(error?.message || 'Đăng nhập Google thất bại')
+		}
+	}
+
+	return (
+		<>
+			<div className="flex justify-center w-full">
+				<GoogleLogin
+					onSuccess={onSuccess}
+					onError={() => toast_error('Đăng nhập Google thất bại')}
+					shape="rectangular"
+					size="large"
+					text={text}
+					locale="vi"
+					width="100%"
+				/>
+			</div>
+			<div className="flex items-center my-5">
+				<div className="flex-grow border-t border-gray-200"></div>
+				<span className="flex-shrink mx-3 text-gray-400 text-xs">hoặc email</span>
+				<div className="flex-grow border-t border-gray-200"></div>
+			</div>
+		</>
+	)
+}
 
 export default function Login() {
 	const emailRef = useRef(null)
@@ -18,39 +57,14 @@ export default function Login() {
 	const [showPassword, setShowPassword] = useState(false)
 	const [submitting, setSubmitting] = useState(false)
 	const navigate = useNavigate()
-	const dispatch = useDispatch()
-	const user = useSelectUser()
+	const search = useSearch({ strict: false })
+	const signIn = useServerFn(login)
+	const setSessionUser = useSetSessionUser()
 
-	useEffect(() => {
-		document.title = 'Đăng nhập - BookShop'
-	}, [])
-
-	const handleGoogleSuccess = async (credentialResponse) => {
-		try {
-			if (!credentialResponse?.credential) {
-				toast_error('Không tìm thấy thông tin đăng nhập Google')
-				return
-			}
-			// Decode JWT Payload safely
-			const base64Url = credentialResponse.credential.split('.')[1]
-			const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
-			const jsonPayload = decodeURIComponent(
-				atob(base64)
-					.split('')
-					.map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-					.join('')
-			)
-			const googleUser = JSON.parse(jsonPayload)
-
-			await dispatch(loginWithGoogleAction(googleUser, credentialResponse.credential))
-			toast_success(`Đăng nhập thành công! Chào ${googleUser.name || 'bạn'}`)
-			setTimeout(() => {
-				navigate(HOME_PATH)
-			}, 800)
-		} catch (error) {
-			console.error('Google login error:', error)
-			toast_error('Xử lý đăng nhập Google thất bại')
-		}
+	const finish = async (user) => {
+		await setSessionUser(user)
+		toast_success(`Đăng nhập thành công! Chào ${user?.fullname || 'bạn'}`)
+		navigate({ to: safeRedirect(search.redirect), replace: true })
 	}
 
 	const onSubmit = async (e) => {
@@ -75,27 +89,20 @@ export default function Login() {
 
 		setSubmitting(true)
 		try {
-			await dispatch(loginAction({ email, password }))
-			toast_success('Đăng nhập thành công!')
-			setTimeout(() => {
-				navigate(HOME_PATH)
-			}, 1000)
+			const user = await signIn({ data: { email, password } })
+			await finish(user)
 		} catch (error) {
-			toast_error(error?.response?.data?.message || 'Email hoặc mật khẩu không chính xác')
+			toast_error(error?.message || 'Email hoặc mật khẩu không chính xác')
 		} finally {
 			setSubmitting(false)
 		}
-	}
-
-	if (user.isLoggedIn) {
-		return <Navigate to={HOME_PATH} />
 	}
 
 	return (
 		<main className="min-h-screen bg-gray-50/80 py-12 flex flex-col justify-center px-4 sm:px-6 lg:px-8">
 			<div className="sm:mx-auto sm:w-full sm:max-w-md">
 				{/* Brand Logo */}
-				<Link to={HOME_PATH} className="flex justify-center items-center gap-2 mb-2">
+				<Link to="/" className="flex justify-center items-center gap-2 mb-2">
 					<div className="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white shadow-sm">
 						<Icon name='book' className="w-6 h-6" />
 					</div>
@@ -114,24 +121,7 @@ export default function Login() {
 
 			<div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
 				<div className="bg-white py-8 px-6 sm:px-10 rounded-xl border border-gray-200 shadow-sm">
-					{/* React-OAuth/Google Button */}
-					<div className="flex justify-center w-full">
-						<GoogleLogin
-							onSuccess={handleGoogleSuccess}
-							onError={() => toast_error('Đăng nhập Google thất bại')}
-							shape="rectangular"
-							size="large"
-							text="signin_with"
-							locale="vi"
-							width="100%"
-						/>
-					</div>
-
-					<div className="flex items-center my-5">
-						<div className="flex-grow border-t border-gray-200"></div>
-						<span className="flex-shrink mx-3 text-gray-400 text-xs">hoặc email</span>
-						<div className="flex-grow border-t border-gray-200"></div>
-					</div>
+					<GoogleButton text="signin_with" onDone={finish} />
 
 					{/* Standard Form */}
 					<form onSubmit={onSubmit} className="space-y-4">
@@ -182,22 +172,6 @@ export default function Login() {
 							</div>
 						</div>
 
-						<div className="flex items-center justify-between text-xs pt-1">
-							<label className="flex items-center gap-1.5 cursor-pointer text-gray-600">
-								<input
-									type="checkbox"
-									className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
-								/>
-								<span>Ghi nhớ đăng nhập</span>
-							</label>
-							<Link
-								to={FORGET_PASSWORD_PATH}
-								className="text-orange-600 hover:underline font-medium"
-							>
-								Quên mật khẩu?
-							</Link>
-						</div>
-
 						<button
 							type="submit"
 							disabled={submitting}
@@ -211,6 +185,7 @@ export default function Login() {
 						Chưa có tài khoản?{' '}
 						<Link
 							to={REGISTER_PATH}
+							search={search.redirect ? { redirect: search.redirect } : undefined}
 							className="text-orange-600 hover:underline font-bold"
 						>
 							Đăng ký ngay

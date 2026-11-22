@@ -8,9 +8,9 @@ export default function FlashSaleBanner({
 	price = 0,
 	sold = 10,
 }) {
-	const discountAmount = Math.floor(price * sale)
-	const discountedPrice = Math.floor(price * (1 - sale))
-	const percent = Math.floor(sale * 100)
+	const discountAmount = price - Math.round(price * (1 - sale))
+	const discountedPrice = Math.round(price * (1 - sale))
+	const percent = Math.round(sale * 100)
 
 	return (
 		<div className="w-full flex flex-col gap-4">

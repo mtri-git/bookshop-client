@@ -1,61 +1,38 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { useParams, Link } from 'react-router-dom'
-import { v4 as uuidv4 } from 'uuid'
+import React, { useState } from 'react'
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { useNavigate, useParams } from '@tanstack/react-router'
+import { Link } from '../../components/Link'
 import BookCard from '../../components/BookCard'
 import FlashSaleBanner from '../../components/BookDetail.jsx/FlashSaleBanner'
-import Loading from '../../components/Loading'
 import DescriptionBox from '../../components/DescriptionBox'
 import ImageModal from '../../components/ImageModal'
-import { addToCart } from '../../redux/actions/cartAction'
-import bookService from '../../services/bookService'
+import { bestSellersQuery, bookQuery } from '../../lib/queries'
+import { useCart } from '../../stores/cart'
 import { useBookQuantityDetail } from '../../hooks/useBookQuantityDetail'
-import { HOME_PATH, SEARCH_PATH } from '../../constants/path'
+import { CART_PATH, HOME_PATH, SEARCH_PATH } from '../../constants/path'
 import { toast_success } from '../../utils/toastNotify'
 import Icon from '../../components/Icon'
 
 export default function BookDetail() {
-	const { id } = useParams()
-	const [book, setBook] = useState(null)
-	const [bestSellerBook, setBestSellerBook] = useState([])
+	const { id } = useParams({ from: '/_main/book/$id' })
+	// Loaded by the route loader (SSR), so this never suspends on first render
+	const { data: book } = useSuspenseQuery(bookQuery(id))
+	const { data: bestSellers = [] } = useQuery(bestSellersQuery())
+	const relatedBooks = bestSellers.filter((item) => item._id !== id)
 	const [isShowImage, setIsShowImage] = useState(false)
-	const [loading, setLoading] = useState(true)
 	const { quantity } = useBookQuantityDetail()
-	const dispatch = useDispatch()
-
-	const fetchBestSeller = async () => {
-		try {
-			const data = await bookService.getBestSellerBook()
-			setBestSellerBook(data?.data?.book || [])
-		} catch (e) {
-			console.warn('Could not load bestsellers', e)
-		}
-	}
-
-	useEffect(() => {
-		window.scrollTo({ top: 0, behavior: 'smooth' })
-		setLoading(true)
-
-		bookService
-			.getBookById(id)
-			.then((res) => {
-				setBook(res.data?.book || null)
-			})
-			.catch((err) => {
-				console.warn('Error fetching book detail:', err)
-			})
-			.finally(() => {
-				setLoading(false)
-			})
-
-		fetchBestSeller()
-	}, [id])
+	const addItem = useCart((state) => state.addItem)
+	const navigate = useNavigate()
+	const loading = false
 
 	const addToCartClick = () => {
-		if (!book) return
-		const { _id, imageUrl: thumbnailUrl, title, price, sale } = book
-		dispatch(addToCart({ _id, thumbnailUrl, title, price, sale }, quantity || 1))
+		addItem(book, quantity || 1)
 		toast_success(`Đã thêm ${quantity || 1} sản phẩm vào giỏ hàng!`)
+	}
+
+	const buyNowClick = () => {
+		addItem(book, quantity || 1)
+		navigate({ to: CART_PATH })
 	}
 
 	const fallbackImg = 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=400'
@@ -87,11 +64,7 @@ export default function BookDetail() {
 
 					{/* MAIN PRODUCT DETAIL CARD */}
 					<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6 lg:p-8 mb-6">
-						{loading ? (
-							<div className="py-20 flex justify-center items-center">
-								<Loading />
-							</div>
-						) : (
+						{loading ? null : (
 							<div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
 								{/* Image Column */}
 								<div className="lg:col-span-5 flex flex-col items-center">
@@ -152,13 +125,13 @@ export default function BookDetail() {
 											<div>
 												<span className="text-gray-500 block">Nhà xuất bản:</span>
 												<span className="font-semibold text-gray-800 line-clamp-1">
-													{book?.publisher || 'NXB Trẻ'}
+													{book?.publisher || 'Đang cập nhật'}
 												</span>
 											</div>
 											<div>
 												<span className="text-gray-500 block">Năm xuất bản:</span>
 												<span className="font-semibold text-gray-800">
-													{book?.publication_year || '2024'}
+													{book?.publication_year || 'Đang cập nhật'}
 												</span>
 											</div>
 											<div>
@@ -188,7 +161,7 @@ export default function BookDetail() {
 												<span>Thêm vào giỏ hàng</span>
 											</button>
 											<button
-												onClick={addToCartClick}
+												onClick={buyNowClick}
 												className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 active:scale-98 shadow-sm"
 											>
 												<span>Mua ngay</span>
@@ -228,16 +201,14 @@ export default function BookDetail() {
 							</Link>
 						</div>
 
-						{bestSellerBook && bestSellerBook.length > 0 ? (
+						{relatedBooks.length > 0 ? (
 							<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-								{bestSellerBook.slice(0, 5).map((item) => (
-									<BookCard key={item._id || uuidv4()} {...item} thumbnailUrl={item.imageUrl} />
+								{relatedBooks.slice(0, 5).map((item) => (
+									<BookCard key={item._id} {...item} />
 								))}
 							</div>
 						) : (
-							<div className="py-8 text-center text-gray-400 text-sm">
-								Đang tải sản phẩm liên quan...
-							</div>
+							<div className="py-8 text-center text-gray-400 text-sm">Chưa có sản phẩm liên quan.</div>
 						)}
 					</div>
 				</div>

@@ -1,21 +1,18 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
-import { decreaseCartItemQuantity, increaseCartItemQuantity } from '../../redux/actions/cartAction'
+import { useCart } from '../../stores/cart'
 import Icon from '../Icon'
 
 export default function QuantityBox({ className = '', product_id, count = 1 }) {
-	const dispatch = useDispatch()
+	const setQuantity = useCart((state) => state.setQuantity)
 
 	const onIncrease = (e) => {
 		e.stopPropagation()
-		dispatch(increaseCartItemQuantity(product_id))
+		setQuantity(product_id, count + 1)
 	}
 
 	const onDecrease = (e) => {
 		e.stopPropagation()
-		if (count > 1) {
-			dispatch(decreaseCartItemQuantity(product_id))
-		}
+		if (count > 1) setQuantity(product_id, count - 1)
 	}
 
 	return (
@@ -41,8 +38,9 @@ export default function QuantityBox({ className = '', product_id, count = 1 }) {
 			<button
 				type="button"
 				onClick={onIncrease}
+				disabled={count >= 99}
 				aria-label="Tăng số lượng"
-				className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-orange-600 active:bg-gray-200 transition-colors"
+				className="disabled:opacity-40 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-orange-600 active:bg-gray-200 transition-colors"
 			>
 				<Icon name='plus' className="w-3.5 h-3.5" />
 			</button>

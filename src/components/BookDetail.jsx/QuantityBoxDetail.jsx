@@ -6,7 +6,7 @@ export default function QuantityBoxDetail() {
 	const {quantity, setQuantity} = useBookQuantityDetail()
 	
 	const onIncrease = () => {
-		setQuantity(quantity + 1)
+		setQuantity(Math.min(99, quantity + 1))
 	}
 	
 	const onDecrease = () => {
@@ -63,11 +63,6 @@ export default function QuantityBoxDetail() {
 				</div>
 			)}
 			
-			{/* Stock availability info */}
-			<div className="flex items-center gap-2 text-xs text-gray-500">
-				<Icon name='check-circle-solid' className="w-3 h-3 text-green-500" />
-				<span>Còn hàng - Giao hàng trong 24h</span>
-			</div>
 		</div>
 	)
 }

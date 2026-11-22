@@ -1,9 +1,72 @@
-import React, { useState } from 'react'
-import { useSelectUser } from '../../redux/selectors/useSelectUser'
-import userService from '../../services/userService'
-import uploadImageService from '../../services/uploadImageService'
+import React, { useEffect, useState } from 'react'
+import { useServerFn } from '@tanstack/react-start'
+import { useSetSessionUser, useUser } from '../../hooks/useUser'
+import { changePassword, updateProfile } from '../../server/account.functions'
 import { toast_success, toast_error } from '../../utils/toastNotify'
 import Icon from '../../components/Icon'
+
+const CLOUDINARY_API = import.meta.env.VITE_CLOUDINARY_API || 'https://api.cloudinary.com/v1_1/du3l8upse/upload'
+const CLOUDINARY_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET || 'wb0t30bu'
+const MAX_AVATAR_BYTES = 2 * 1024 * 1024
+
+async function uploadAvatar(file) {
+	const body = new FormData()
+	body.append('file', file)
+	body.append('upload_preset', CLOUDINARY_PRESET)
+	const res = await fetch(CLOUDINARY_API, { method: 'POST', body })
+	const data = await res.json().catch(() => null)
+	if (!res.ok || !data?.secure_url) throw new Error('Tải ảnh lên thất bại')
+	return data.secure_url
+}
+
+const toFormValue = (user) => ({
+	fullname: user?.fullname || '',
+	email: user?.email || '',
+	address: user?.address || '',
+	postalCode: user?.postalCode || '',
+	phone: user?.phone || '',
+})
+
+const inputClass =
+	'block w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white disabled:bg-gray-50 disabled:text-gray-500 transition'
+
+function ChangePasswordCard() {
+	const submit = useServerFn(changePassword)
+	const [form, setForm] = useState({ oldPassword: '', newPassword: '', confirm: '' })
+	const [saving, setSaving] = useState(false)
+	const onField = (field) => (e) => setForm((prev) => ({ ...prev, [field]: e.target.value }))
+
+	const onSubmit = async (e) => {
+		e.preventDefault()
+		if (form.newPassword.length < 6) return toast_error('Mật khẩu mới phải có ít nhất 6 ký tự')
+		if (form.newPassword !== form.confirm) return toast_error('Mật khẩu xác nhận không khớp')
+		setSaving(true)
+		try {
+			await submit({ data: { oldPassword: form.oldPassword, newPassword: form.newPassword } })
+			toast_success('Đổi mật khẩu thành công')
+			setForm({ oldPassword: '', newPassword: '', confirm: '' })
+		} catch (error) {
+			toast_error(error?.message || 'Đổi mật khẩu thất bại')
+		} finally {
+			setSaving(false)
+		}
+	}
+
+	return (
+		<form onSubmit={onSubmit} className="bg-white rounded-xl border border-gray-200/80 shadow-xs p-5 sm:p-8 mt-5">
+			<h2 className="text-base font-bold text-gray-900">Đổi mật khẩu</h2>
+			<p className="text-xs text-gray-500 mt-0.5 mb-4">Tài khoản đăng nhập bằng Google không cần mật khẩu.</p>
+			<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+				<input type="password" required autoComplete="current-password" placeholder="Mật khẩu hiện tại" value={form.oldPassword} onChange={onField('oldPassword')} className={inputClass} />
+				<input type="password" required autoComplete="new-password" placeholder="Mật khẩu mới" value={form.newPassword} onChange={onField('newPassword')} className={inputClass} />
+				<input type="password" required autoComplete="new-password" placeholder="Nhập lại mật khẩu mới" value={form.confirm} onChange={onField('confirm')} className={inputClass} />
+			</div>
+			<button type="submit" disabled={saving} className="mt-4 px-4 py-2 text-xs font-semibold bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors shadow-xs disabled:opacity-60">
+				{saving ? 'Đang lưu...' : 'Cập nhật mật khẩu'}
+			</button>
+		</form>
+	)
+}
 
 const INPUT_FIELD = ({ label, children, ...props }) => (
 	<div>
@@ -18,20 +81,18 @@ const INPUT_FIELD = ({ label, children, ...props }) => (
 )
 
 export default function Profile() {
-	const user = useSelectUser()
-	const userData = user?.user?.data || {}
+	const userData = useUser() || {}
+	const saveProfile = useServerFn(updateProfile)
+	const setSessionUser = useSetSessionUser()
 
 	const [isEditable, setIsEditable] = useState(false)
 	const [saving, setSaving] = useState(false)
 	const [file, setFile] = useState(null)
 	const [preview, setPreview] = useState(null)
-	const [value, setValue] = useState({
-		fullname: userData.fullname || '',
-		email: userData.email || '',
-		address: userData.address || '',
-		postalCode: userData.postalCode || '',
-		phone: userData.phone || '',
-	})
+	const [value, setValue] = useState(() => toFormValue(userData))
+
+	// Free the object URL of the previous preview
+	useEffect(() => () => preview && URL.revokeObjectURL(preview), [preview])
 
 	const onChange = (field) => (e) => {
 		setValue((prev) => ({ ...prev, [field]: e.target.value }))
@@ -39,31 +100,35 @@ export default function Profile() {
 
 	const onFileChange = (e) => {
 		const f = e.target.files[0]
-		if (f) {
-			setFile(f)
-			setPreview(URL.createObjectURL(f))
-		}
+		if (!f) return
+		if (!f.type.startsWith('image/')) return toast_error('Vui lòng chọn file ảnh')
+		if (f.size > MAX_AVATAR_BYTES) return toast_error('Ảnh tối đa 2MB')
+		setFile(f)
+		setPreview(URL.createObjectURL(f))
+	}
+
+	const onCancel = () => {
+		setIsEditable(false)
+		setFile(null)
+		setPreview(null)
+		setValue(toFormValue(userData))
 	}
 
 	const onUpdateInfo = async () => {
+		if (!value.fullname.trim()) return toast_error('Vui lòng nhập họ và tên')
 		setSaving(true)
 		try {
-			let updateData = { ...value }
-			if (file) {
-				const bodyFormData = new FormData()
-				bodyFormData.append('file', file)
-				bodyFormData.append('upload_preset', 'wb0t30bu')
-				const avatar = await uploadImageService.uploadImage(bodyFormData)
-				updateData.avatarUrl = avatar.url
-			}
-			await userService.changeInfo(updateData)
+			const { email, ...updateData } = value
+			if (file) updateData.avatarUrl = await uploadAvatar(file)
+			const user = await saveProfile({ data: updateData })
+			await setSessionUser(user)
+			setValue(toFormValue(user))
 			toast_success('Cập nhật thông tin thành công!')
 			setIsEditable(false)
 			setFile(null)
 			setPreview(null)
 		} catch (error) {
-			toast_error('Có lỗi xảy ra khi cập nhật thông tin')
-			console.error(error)
+			toast_error(error?.message || 'Có lỗi xảy ra khi cập nhật thông tin')
 		} finally {
 			setSaving(false)
 		}
@@ -72,6 +137,7 @@ export default function Profile() {
 	const FALLBACK_AVATAR = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80'
 
 	return (
+		<>
 		<div className="bg-white rounded-xl border border-gray-200/80 shadow-xs overflow-hidden">
 			{/* Header */}
 			<div className="flex items-center justify-between px-5 sm:px-8 py-4 border-b border-gray-100">
@@ -85,7 +151,7 @@ export default function Profile() {
 					{isEditable ? (
 						<>
 							<button
-								onClick={() => { setIsEditable(false); setFile(null); setPreview(null) }}
+								onClick={onCancel}
 								className="px-4 py-2 text-xs font-semibold text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg transition-colors"
 							>
 								Hủy
@@ -179,8 +245,8 @@ export default function Profile() {
 						<input
 							type="email"
 							value={value.email}
-							onChange={onChange('email')}
-							disabled={!isEditable}
+							readOnly
+							disabled
 							placeholder="name@example.com"
 							className="block w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 bg-white disabled:bg-gray-50 disabled:text-gray-500 transition"
 						/>
@@ -224,5 +290,7 @@ export default function Profile() {
 			</div>
 
 		</div>
+		<ChangePasswordCard />
+		</>
 	)
 }

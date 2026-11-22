@@ -1,39 +1,16 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '../../components/Link'
 import BookCard from '../../components/BookCard'
 import { SEARCH_PATH } from '../../constants/path'
 import Icon from '../../components/Icon'
-
-// Placeholder wishlist — in production, connect to Redux wishlist state or API
-const SAMPLE_BOOKS = [
-	{
-		_id: 'wish-1',
-		thumbnailUrl: 'https://cdn0.fahasa.com/media/catalog/product/i/m/image_195509_1_29246.jpg',
-		title: 'Dạy sao cho trẻ nghe lời',
-		price: 70000,
-		sale: 0.3,
-		sold: 10,
-	},
-	{
-		_id: 'wish-2',
-		thumbnailUrl: 'https://cdn0.fahasa.com/media/catalog/product/i/m/image_195509_1_29246.jpg',
-		title: 'Nhà Giả Kim',
-		price: 95000,
-		sale: 0.15,
-		sold: 320,
-	},
-	{
-		_id: 'wish-3',
-		thumbnailUrl: 'https://cdn0.fahasa.com/media/catalog/product/i/m/image_195509_1_29246.jpg',
-		title: 'Đắc Nhân Tâm',
-		price: 86000,
-		sale: 0.2,
-		sold: 580,
-	},
-]
+import { useWishlist } from '../../stores/wishlist'
 
 export default function Wishlist() {
-	const books = SAMPLE_BOOKS
+	const books = useWishlist((state) => state.items)
+	const hydrated = useWishlist((state) => state.hydrated)
+	const clear = () => useWishlist.setState({ items: [] })
+
+	if (!hydrated) return <div className="h-40 bg-white rounded-xl border border-gray-200 animate-pulse" />
 
 	return (
 		<section className="space-y-5">
@@ -49,7 +26,7 @@ export default function Wishlist() {
 					)}
 				</div>
 				{books.length > 0 && (
-					<button className="text-xs text-gray-500 hover:text-red-500 transition-colors">
+					<button type="button" onClick={clear} className="text-xs text-gray-500 hover:text-red-500 transition-colors">
 						Xóa tất cả
 					</button>
 				)}
@@ -58,16 +35,7 @@ export default function Wishlist() {
 			{books.length > 0 ? (
 				<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
 					{books.map((book) => (
-						<div key={book._id} className="relative group">
-							{/* Remove button */}
-							<button
-								className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-50 hover:text-red-500 text-gray-400"
-								title="Xóa khỏi yêu thích"
-							>
-								<Icon name='heart-solid' className="w-4 h-4" />
-							</button>
-							<BookCard {...book} thumbnailUrl={book.thumbnailUrl} />
-						</div>
+						<BookCard key={book._id} {...book} />
 					))}
 				</div>
 			) : (

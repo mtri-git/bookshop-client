@@ -40,6 +40,9 @@ export default function CustomDialog() {
     }
   }
 
+  // Nothing to render while closed (also keeps SSR away from document.body)
+  if (!isOpenDialog) return null
+
   return ReactDOM.createPortal(
     <div 
       id="dialog-backdrop" 

@@ -1,14 +1,24 @@
 import React from 'react'
 import PaymentList from '../../components/Payment/PaymentList'
-import { useOrder } from '../../hooks/useOrder'
-import { v4 as uuidv4 } from 'uuid'
-import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { ordersQuery } from '../../lib/queries'
+import { Link } from '../../components/Link'
 import { HOME_PATH, SEARCH_PATH } from '../../constants/path'
 import Icon from '../../components/Icon'
 
 export default function PaymentHistory() {
-	const { data, isLoading, error } = useOrder()
-	const orders = data?.data
+	const { data: orders, isPending: isLoading, isError, error, refetch } = useQuery(ordersQuery())
+
+	if (isError) {
+		return (
+			<div className="bg-white rounded-xl border border-gray-200/80 shadow-xs p-8 text-center space-y-3">
+				<p className="text-sm text-gray-600">{error?.message || 'Không tải được lịch sử đơn hàng'}</p>
+				<button type="button" onClick={() => refetch()} className="px-4 py-2 text-xs font-semibold text-orange-600 border border-orange-200 rounded-lg hover:bg-orange-50">
+					Thử lại
+				</button>
+			</div>
+		)
+	}
 
 	if (isLoading) {
 		return (
@@ -66,7 +76,7 @@ export default function PaymentHistory() {
 
 			<div className="p-4 sm:p-6 space-y-4">
 				{orders.map((order) => (
-					<PaymentList key={uuidv4()} data={order} />
+					<PaymentList key={order._id} data={order} />
 				))}
 			</div>
 		</div>

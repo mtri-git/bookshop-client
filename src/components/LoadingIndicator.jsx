@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import Icon from './Icon'
 
 const LoadingIndicator = ({ 
@@ -89,16 +88,6 @@ const LoadingIndicator = ({
       {text && <p className={`mt-3 font-medium ${colorClass}`}>{text}</p>}
     </div>
   );
-};
-
-LoadingIndicator.propTypes = {
-  type: PropTypes.oneOf(['spinner', 'dots', 'pulse', 'bar', 'book']),
-  size: PropTypes.oneOf(['small', 'medium', 'large', 'xl']),
-  color: PropTypes.oneOf(['primary', 'secondary', 'accent', 'success', 'warning', 'danger', 'white']),
-  text: PropTypes.string,
-  fullScreen: PropTypes.bool,
-  transparent: PropTypes.bool,
-  className: PropTypes.string
 };
 
 export default LoadingIndicator;
